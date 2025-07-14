@@ -19,6 +19,121 @@
     
     <!-- Configuration -->
     <script src="config.js"></script>
+    
+    <!-- 認証チェック -->
+    <script>
+        // 認証チェック機能
+        let authCheckComplete = false;
+        let supabaseClient = null;
+        
+        // Supabase初期化
+        function initializeAuth() {
+            if (typeof window.supabase === 'undefined' || !window.SUNO_CONFIG) {
+                // 認証システムが利用できない場合は認証ページにリダイレクト
+                window.location.href = '/auth-page.html';
+                return;
+            }
+            
+            supabaseClient = window.supabase.createClient(
+                window.SUNO_CONFIG.supabase.url,
+                window.SUNO_CONFIG.supabase.anonKey
+            );
+            
+            // セッションチェック
+            checkAuthSession();
+        }
+        
+        // 認証セッションチェック
+        async function checkAuthSession() {
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error) {
+                    console.error('Auth session error:', error);
+                    redirectToAuth();
+                    return;
+                }
+                
+                if (!session) {
+                    // 未認証の場合は認証ページにリダイレクト
+                    redirectToAuth();
+                    return;
+                }
+                
+                // 認証済みの場合は使用制限をチェック
+                await checkUsageLimits(session.user.id);
+                authCheckComplete = true;
+                
+                // 使用状況表示を初期化
+                await updateUsageDisplay();
+                
+                // ページコンテンツを表示
+                document.body.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Auth check error:', error);
+                redirectToAuth();
+            }
+        }
+        
+        // 認証ページにリダイレクト
+        function redirectToAuth() {
+            window.location.href = '/auth-page.html';
+        }
+        
+        // 使用制限チェック
+        async function checkUsageLimits(userId) {
+            try {
+                // 使用制限レコードの確認・作成
+                const { data, error } = await supabaseClient
+                    .from('usage_limits')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .single();
+                
+                if (error && error.code === 'PGRST116') {
+                    // 使用制限レコードが存在しない場合は作成
+                    await createUsageLimits(userId);
+                } else if (error) {
+                    console.error('Usage limits check error:', error);
+                }
+            } catch (error) {
+                console.error('Usage limits error:', error);
+            }
+        }
+        
+        // 使用制限レコード作成
+        async function createUsageLimits(userId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('usage_limits')
+                    .insert({
+                        user_id: userId,
+                        prompt_generations_used: 0,
+                        prompt_generations_limit: 100,
+                        lyric_generations_used: 0,
+                        lyric_generations_limit: 3,
+                        reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                    });
+                
+                if (error) {
+                    console.error('Create usage limits error:', error);
+                }
+            } catch (error) {
+                console.error('Create usage limits error:', error);
+            }
+        }
+        
+        // ページ読み込み時に認証チェック実行
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初期状態でページを非表示にする
+            document.body.style.display = 'none';
+            
+            // 認証チェック開始
+            setTimeout(initializeAuth, 100);
+        });
+    </script>
+    
     <style>
         /* ダークモード基本設定 */
         body {
@@ -569,6 +684,186 @@
             background: linear-gradient(135deg, #059669 0%, #047857 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* 使用状況表示 */
+        .usage-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .usage-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+        
+        .usage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .usage-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .usage-count {
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .sign-out-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 8px;
+        }
+        
+        .sign-out-btn:hover {
+            background: #dc2626;
+        }
+        
+        /* 使用制限モーダル */
+        .usage-limit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .usage-limit-modal .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .usage-limit-modal .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .usage-limit-modal .modal-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .usage-limit-modal .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #f59e0b;
+        }
+        
+        .usage-limit-modal .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        
+        .usage-limit-modal .modal-close:hover {
+            background: #f3f4f6;
+        }
+        
+        .usage-limit-modal .modal-body {
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .limit-icon {
+            font-size: 48px;
+            color: #f59e0b;
+            margin-bottom: 16px;
+        }
+        
+        .limit-message {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .limit-info {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .limit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+        
+        .limit-label {
+            color: #6b7280;
+        }
+        
+        .limit-value {
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .btn-understand {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-understand:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
         /* ヘルプモーダル */
@@ -2135,14 +2430,15 @@
         // プロンプト更新
         async function updatePrompt() {
             // 認証チェック
-            if (!currentUser) {
-                alert('プロンプト生成にはログインが必要です');
+            if (!authCheckComplete || !supabaseClient) {
+                alert('認証システムの初期化中です。しばらくお待ちください。');
                 return;
             }
             
             // 使用制限チェック
-            if (await requiresPremium('prompt')) {
-                await handlePremiumRequired('prompt');
+            const canGenerate = await checkPromptGenerationLimit();
+            if (!canGenerate) {
+                showUsageLimitModal('prompt');
                 return;
             }
             
@@ -2169,15 +2465,8 @@
                 
                 // 使用回数を増やして保存
                 if (prompt !== getPlaceholderText()) {
-                    await incrementUsage('prompt');
-                    await savePromptGeneration({
-                        vocalTags: selectedItems.filter(item => getVocalTags().includes(item)),
-                        moodStyles: selectedItems.filter(item => getMoodStyles().includes(item)),
-                        genres: selectedItems.filter(item => getAllGenres().includes(item)),
-                        artistStyles: selectedItems.filter(item => getArtistStyles().includes(item)),
-                        language: selectedPromptLanguage,
-                        generatedPrompt: prompt
-                    });
+                    await incrementUsageCount('prompt');
+
                 }
             } else if (promptSection) {
                 promptSection.style.display = 'none';
@@ -2932,14 +3221,15 @@
         // Pro歌詞生成機能
         async function generateProLyrics() {
             // 認証チェック
-            if (!currentUser) {
-                alert('Pro歌詞生成にはログインが必要です');
+            if (!authCheckComplete || !supabaseClient) {
+                alert('認証システムの初期化中です。しばらくお待ちください。');
                 return;
             }
             
             // 使用制限チェック
-            if (await requiresPremium('lyrics')) {
-                await handlePremiumRequired('lyrics');
+            const canGenerate = await checkLyricGenerationLimit();
+            if (!canGenerate) {
+                showUsageLimitModal('lyrics');
                 return;
             }
             
@@ -2972,26 +3262,8 @@
                 animateProScore('proOriginalityScore', scores.originality);
                 animateProScore('proMusicalScore', scores.musical);
                 
-                // 使用回数を増やして保存
-                await incrementUsage('lyrics');
-                await saveLyricGeneration({
-                    genre: params.genre,
-                    theme: params.theme,
-                    targetAge: params.targetAge,
-                    primaryEmotion: params.emotion,
-                    emotionIntensity: params.emotionIntensity,
-                    emotionChange: params.emotionChange,
-                    languageLevel: params.languageLevel,
-                    metaphorUsage: params.metaphorUsage,
-                    rhythmPattern: params.rhythmPattern,
-                    keywords: params.keywords,
-                    avoidExpressions: params.avoidExpressions,
-                    language: selectedPromptLanguage,
-                    songStructure: getCurrentSongStructure(),
-                    literaryReference: params.literaryReference || '',
-                    generatedLyrics: generatedLyrics,
-                    qualityScores: scores
-                });
+                // 使用回数を増やす
+                await incrementUsageCount('lyrics');
             }, 3000);
         }
         
@@ -3766,6 +4038,197 @@
                 finalChorus: 16,
                 outro: 8
             };
+        }
+        
+        // 使用制限チェック関数
+        async function checkPromptGenerationLimit() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) return false;
+                
+                const { data, error } = await supabaseClient
+                    .from('usage_limits')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .single();
+                
+                if (error) {
+                    console.error('Usage check error:', error);
+                    return false;
+                }
+                
+                return data.prompt_generations_used < data.prompt_generations_limit;
+            } catch (error) {
+                console.error('Prompt generation limit check error:', error);
+                return false;
+            }
+        }
+        
+        async function checkLyricGenerationLimit() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) return false;
+                
+                const { data, error } = await supabaseClient
+                    .from('usage_limits')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .single();
+                
+                if (error) {
+                    console.error('Usage check error:', error);
+                    return false;
+                }
+                
+                return data.lyric_generations_used < data.lyric_generations_limit;
+            } catch (error) {
+                console.error('Lyric generation limit check error:', error);
+                return false;
+            }
+        }
+        
+        // 使用回数を増やす関数
+        async function incrementUsageCount(type) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) return false;
+                
+                const field = type === 'prompt' ? 'prompt_generations_used' : 'lyric_generations_used';
+                
+                // 現在の値を取得してから増加
+                const { data: currentData } = await supabaseClient
+                    .from('usage_limits')
+                    .select(field)
+                    .eq('user_id', session.user.id)
+                    .single();
+                
+                const newValue = (currentData?.[field] || 0) + 1;
+                
+                const { error } = await supabaseClient
+                    .from('usage_limits')
+                    .update({ 
+                        [field]: newValue,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', session.user.id);
+                
+                if (error) {
+                    console.error('Increment usage error:', error);
+                    return false;
+                }
+                
+                // 使用状況を更新表示
+                updateUsageDisplay();
+                return true;
+            } catch (error) {
+                console.error('Increment usage count error:', error);
+                return false;
+            }
+        }
+        
+        // 使用制限モーダル表示
+        function showUsageLimitModal(type) {
+            const typeName = type === 'prompt' ? 'プロンプト生成' : 'Pro歌詞生成';
+            const modal = document.createElement('div');
+            modal.className = 'usage-limit-modal';
+            modal.innerHTML = `
+                <div class="modal-backdrop" onclick="closeUsageLimitModal()"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>⚡ 使用制限に達しました</h3>
+                        <button class="modal-close" onclick="closeUsageLimitModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="limit-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <p class="limit-message">
+                            ${typeName}の無料枠を使い切りました。<br>
+                            来月1日にリセットされます。
+                        </p>
+                        <div class="limit-info">
+                            <div class="limit-item">
+                                <span class="limit-label">プロンプト生成:</span>
+                                <span class="limit-value">100回/月</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="limit-label">Pro歌詞生成:</span>
+                                <span class="limit-value">3回/月</span>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button onclick="closeUsageLimitModal()" class="btn-understand">
+                                理解しました
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 使用制限モーダル閉じる
+        function closeUsageLimitModal() {
+            const modal = document.querySelector('.usage-limit-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // 使用状況表示更新
+        async function updateUsageDisplay() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) return;
+                
+                const { data, error } = await supabaseClient
+                    .from('usage_limits')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .single();
+                
+                if (error) return;
+                
+                // 使用状況表示要素を作成または更新
+                let usageDisplay = document.getElementById('usage-display');
+                if (!usageDisplay) {
+                    usageDisplay = document.createElement('div');
+                    usageDisplay.id = 'usage-display';
+                    usageDisplay.className = 'usage-display';
+                    document.body.appendChild(usageDisplay);
+                }
+                
+                usageDisplay.innerHTML = `
+                    <div class="usage-container">
+                        <div class="usage-item">
+                            <span class="usage-label">プロンプト:</span>
+                            <span class="usage-count">${data.prompt_generations_used}/${data.prompt_generations_limit}</span>
+                        </div>
+                        <div class="usage-item">
+                            <span class="usage-label">歌詞:</span>
+                            <span class="usage-count">${data.lyric_generations_used}/${data.lyric_generations_limit}</span>
+                        </div>
+                        <button onclick="signOut()" class="sign-out-btn">ログアウト</button>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Update usage display error:', error);
+            }
+        }
+        
+        // ログアウト機能
+        async function signOut() {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) throw error;
+                
+                window.location.href = '/auth-page.html';
+            } catch (error) {
+                console.error('Sign out error:', error);
+                alert('ログアウトエラー: ' + error.message);
+            }
         }
     </script>
     

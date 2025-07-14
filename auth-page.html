@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUNO AI Complete Builder - ログイン</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .input-field {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-google {
+            background: white;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .btn-google:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="auth-container w-full max-w-md p-8">
+        <div class="logo">
+            <i class="fas fa-music"></i>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">
+            SUNO AI Complete Builder
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            Everyone Can Be a Creator
+        </p>
+        
+        <button class="btn-google mb-4" onclick="signInWithGoogle()">
+            <i class="fab fa-google"></i>
+            Google でログイン
+        </button>
+        
+        <div class="text-center text-sm text-gray-600 mt-6">
+            ログインすることで利用規約に同意したものとみなされます
+        </div>
+    </div>
+
+    <script>
+        let supabaseClient = null;
+        
+        function initSupabase() {
+            if (typeof window.supabase === 'undefined' || !window.SUNO_CONFIG) {
+                console.error('Supabase or config not loaded');
+                return false;
+            }
+            
+            supabaseClient = window.supabase.createClient(
+                window.SUNO_CONFIG.supabase.url,
+                window.SUNO_CONFIG.supabase.anonKey
+            );
+            return true;
+        }
+        
+        async function signInWithGoogle() {
+            try {
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/index.html'
+                    }
+                });
+                
+                if (error) throw error;
+            } catch (error) {
+                alert('認証エラー: ' + error.message);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!initSupabase()) {
+                alert('認証システムの初期化に失敗しました');
+                return;
+            }
+            
+            // Check if user is already logged in
+            supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                if (session) {
+                    window.location.href = '/index.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
