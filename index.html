@@ -30,7 +30,7 @@
         function initializeAuth() {
             if (typeof window.supabase === 'undefined' || !window.SUNO_CONFIG) {
                 // 認証システムが利用できない場合は認証ページにリダイレクト
-                window.location.href = '/auth-page.html';
+                window.location.href = '/login.html';
                 return;
             }
             
@@ -78,7 +78,7 @@
         
         // 認証ページにリダイレクト
         function redirectToAuth() {
-            window.location.href = '/auth-page.html';
+            window.location.href = '/login.html';
         }
         
         // 使用制限チェック
@@ -4224,7 +4224,7 @@
                 const { error } = await supabaseClient.auth.signOut();
                 if (error) throw error;
                 
-                window.location.href = '/auth-page.html';
+                window.location.href = '/login.html';
             } catch (error) {
                 console.error('Sign out error:', error);
                 alert('ログアウトエラー: ' + error.message);

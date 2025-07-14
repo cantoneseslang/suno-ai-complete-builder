@@ -3,7 +3,15 @@
   "name": "suno-ai-complete-builder",
   "builds": [
     {
-      "src": "index.html",
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
       "use": "@vercel/static"
     },
     {
@@ -13,13 +21,6 @@
     {
       "src": "*.md",
       "use": "@vercel/static"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/suno-prompter.html",
-      "destination": "/",
-      "permanent": false
     }
   ],
   "headers": [
@@ -47,4 +48,4 @@
   ],
   "cleanUrls": true,
   "trailingSlash": false
-} 
+}
