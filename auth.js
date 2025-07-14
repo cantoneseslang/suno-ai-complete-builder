@@ -145,6 +145,10 @@ async function signOut() {
 async function canGeneratePrompt() {
     if (!currentUser) return false;
     
+    // 使用制限を一時的に無効化
+    return true;
+    
+    /*
     try {
         const { data, error } = await supabaseClient
             .rpc('can_generate_prompt', { user_uuid: currentUser.id });
@@ -155,12 +159,17 @@ async function canGeneratePrompt() {
         console.error('Can generate prompt check error:', error);
         return false;
     }
+    */
 }
 
 // Check if user can generate lyrics
 async function canGenerateLyrics() {
     if (!currentUser) return false;
     
+    // 使用制限を一時的に無効化
+    return true;
+    
+    /*
     try {
         const { data, error } = await supabaseClient
             .rpc('can_generate_lyrics', { user_uuid: currentUser.id });
@@ -171,6 +180,7 @@ async function canGenerateLyrics() {
         console.error('Can generate lyrics check error:', error);
         return false;
     }
+    */
 }
 
 // Increment usage count

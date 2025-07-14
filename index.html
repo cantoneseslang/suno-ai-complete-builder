@@ -4204,6 +4204,10 @@
         
         // 使用制限チェック関数
         async function checkPromptGenerationLimit() {
+            // 使用制限を一時的に無効化
+            return true;
+            
+            /*
             try {
                 if (!supabaseClient) return true; // 認証システム無効時は制限なし
                 
@@ -4226,9 +4230,14 @@
                 console.error('Prompt generation limit check error:', error);
                 return true; // エラー時は制限なしで動作
             }
+            */
         }
         
         async function checkLyricGenerationLimit() {
+            // 使用制限を一時的に無効化
+            return true;
+            
+            /*
             try {
                 if (!supabaseClient) return true; // 認証システム無効時は制限なし
                 
@@ -4251,6 +4260,7 @@
                 console.error('Lyric generation limit check error:', error);
                 return true; // エラー時は制限なしで動作
             }
+            */
         }
         
         // 使用回数を増やす関数
