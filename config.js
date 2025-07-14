@@ -6,7 +6,7 @@ const config = {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jYXJ3cXlocG9oeWJuaWduc3hxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI0ODgwMDAsImV4cCI6MjA2ODA2NDAwMH0.Uc9JQYRaIJpHaJNB3-QJLZSZjEYat5He7MMAogD4ruI'
   },
   
-  // Stripe Configuration
+  // Stripe Configuration (for future use)
   stripe: {
     publishableKey: 'pk_live_YOUR_PUBLISHABLE_KEY_HERE', // Replace with your actual key
     accountId: 'acct_1NGFrXLopXhymmb3'
@@ -31,7 +31,7 @@ const config = {
     }
   },
   
-  // Subscription Plans
+  // Subscription Plans (for future use)
   plans: {
     premium: {
       name: 'Premium Plan',
@@ -45,6 +45,14 @@ const config = {
         '新機能への早期アクセス'
       ]
     }
+  },
+  
+  // Authentication Configuration
+  auth: {
+    enableEmailAuth: true,
+    enableGoogleAuth: false, // Temporarily disabled until OAuth is configured
+    enableSignUp: true,
+    requireEmailConfirmation: false // Set to true in production
   }
 };
 
