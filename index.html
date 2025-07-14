@@ -69,10 +69,13 @@
         
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
-            // ローディング画面を表示
-            showAuthLoading();
-            // 認証チェック開始
-            initializeAuth();
+            // 一時的に認証チェックを無効化して、メインコンテンツを表示
+            console.log('Authentication temporarily disabled for testing');
+            document.body.style.display = 'block';
+            
+            // 認証チェックは後で有効化
+            // showAuthLoading();
+            // initializeAuth();
         });
         
         // ローディング画面表示
@@ -146,8 +149,8 @@
                 await checkUsageLimits(session.user.id);
                 authCheckComplete = true;
                 
-                // 使用状況表示を初期化
-                await updateUsageDisplay();
+                // 使用状況表示を初期化（一時的に無効化）
+                // await updateUsageDisplay();
                 
                 // ページコンテンツを表示
                 hideAuthLoading();
@@ -2512,18 +2515,18 @@
 
         // プロンプト更新
         async function updatePrompt() {
-            // 認証チェック
-            if (!authCheckComplete || !supabaseClient) {
-                alert('認証システムの初期化中です。しばらくお待ちください。');
-                return;
-            }
+            // 認証チェック（一時的に無効化）
+            // if (!authCheckComplete || !supabaseClient) {
+            //     alert('認証システムの初期化中です。しばらくお待ちください。');
+            //     return;
+            // }
             
-            // 使用制限チェック
-            const canGenerate = await checkPromptGenerationLimit();
-            if (!canGenerate) {
-                showUsageLimitModal('prompt');
-                return;
-            }
+            // 使用制限チェック（一時的に無効化）
+            // const canGenerate = await checkPromptGenerationLimit();
+            // if (!canGenerate) {
+            //     showUsageLimitModal('prompt');
+            //     return;
+            // }
             
             // 選択されたアイテムは常に英語のまま保持
             let prompt = selectedItems.join(', ');
@@ -2548,7 +2551,7 @@
                 
                 // 使用回数を増やして保存
                 if (prompt !== getPlaceholderText()) {
-                    await incrementUsageCount('prompt');
+                    // await incrementUsageCount('prompt'); // 一時的に無効化
 
                 }
             } else if (promptSection) {
@@ -3303,18 +3306,18 @@
         
         // Pro歌詞生成機能
         async function generateProLyrics() {
-            // 認証チェック
-            if (!authCheckComplete || !supabaseClient) {
-                alert('認証システムの初期化中です。しばらくお待ちください。');
-                return;
-            }
+            // 認証チェック（一時的に無効化）
+            // if (!authCheckComplete || !supabaseClient) {
+            //     alert('認証システムの初期化中です。しばらくお待ちください。');
+            //     return;
+            // }
             
-            // 使用制限チェック
-            const canGenerate = await checkLyricGenerationLimit();
-            if (!canGenerate) {
-                showUsageLimitModal('lyrics');
-                return;
-            }
+            // 使用制限チェック（一時的に無効化）
+            // const canGenerate = await checkLyricGenerationLimit();
+            // if (!canGenerate) {
+            //     showUsageLimitModal('lyrics');
+            //     return;
+            // }
             
             const output = document.getElementById('proLyricsOutput');
             const evaluation = document.getElementById('proLyricsEvaluation');
@@ -3346,7 +3349,7 @@
                 animateProScore('proMusicalScore', scores.musical);
                 
                 // 使用回数を増やす
-                await incrementUsageCount('lyrics');
+                // await incrementUsageCount('lyrics'); // 一時的に無効化
             }, 3000);
         }
         
@@ -4200,8 +4203,8 @@
                     return false;
                 }
                 
-                // 使用状況を更新表示
-                updateUsageDisplay();
+                // 使用状況を更新表示（一時的に無効化）
+                // updateUsageDisplay();
                 return true;
             } catch (error) {
                 console.error('Increment usage count error:', error);
