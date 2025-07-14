@@ -20,10 +20,22 @@
     <!-- Configuration -->
     <script src="config.js"></script>
     
+    <!-- 即座にページを表示 -->
+    <script>
+        // ページの表示を強制
+        document.documentElement.style.display = 'block';
+        if (document.body) {
+            document.body.style.display = 'block';
+            document.body.style.visibility = 'visible';
+            document.body.style.opacity = '1';
+        }
+        console.log('Page forced to display');
+    </script>
+    
     <style>
-        /* 認証チェック中は全体を非表示 */
+        /* 認証チェック中は全体を非表示（一時的に無効化） */
         body.auth-checking {
-            display: none !important;
+            /* display: none !important; */
         }
         
         /* ローディング画面 */
@@ -1098,7 +1110,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
     <!-- 認証コンテナ -->
     <div id="auth-container"></div>
     <div id="user-container"></div>
