@@ -1263,7 +1263,15 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-600 mb-2">主要テーマ</label>
-                                <input type="text" id="pro-theme" placeholder="例：恋愛、友情、成長..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <select id="pro-theme" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option>希望</option>
+                                    <option>恋愛</option>
+                                    <option>友情</option>
+                                    <option>成長</option>
+                                    <option>故郷</option>
+                                    <option>別れ</option>
+                                    <option>自然</option>
+                                </select>
                             </div>
                             
                             <div>
@@ -1286,20 +1294,21 @@
                                 <select id="pro-emotion" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                                     <option>喜び</option>
                                     <option>悲しみ</option>
-                                    <option>希望</option>
-                                    <option>郷愁</option>
-                                    <option>愛情</option>
-                                    <option>憧れ</option>
+                                    <option>怒り</option>
+                                    <option>平和</option>
+                                    <option>興奮</option>
                                     <option>不安</option>
+                                    <option>希望</option>
+                                    <option>愛情</option>
                                 </select>
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-600 mb-2">感情の強度</label>
-                                <input type="range" id="pro-emotion-intensity" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <input type="range" id="pro-emotion-intensity" min="0" max="100" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                                 <div class="flex justify-between text-xs text-gray-500 mt-1">
-                                    <span>穏やか</span>
-                                    <span>強烈</span>
+                                    <span>穏やか (0%)</span>
+                                    <span>強烈 (100%)</span>
                                 </div>
                             </div>
                             
@@ -3487,6 +3496,14 @@
                     '故郷': {
                         keywords: ['懷念', '回家', '家人', '記憶', '溫暖', '安寧', '根源'],
                         imagery: ['鄉村', '母親', '家', '節慶', '香味', '聲音', '風景']
+                    },
+                    '別れ': {
+                        keywords: ['離別', '思念', '淚水', '痛苦', '記憶', '時間', '治愈'],
+                        imagery: ['秋天', '落葉', '雨', '車站', '窗戶', '照片', '信件']
+                    },
+                    '自然': {
+                        keywords: ['大自然', '生命', '和諧', '美麗', '寧靜', '呼吸', '感動'],
+                        imagery: ['山', '海', '樹', '花', '鳥', '雲', '陽光']
                     }
                 },
                 'chinese': {
@@ -3509,6 +3526,14 @@
                     '故郷': {
                         keywords: ['怀念', '回家', '家人', '记忆', '温暖', '安宁', '根源'],
                         imagery: ['乡村', '母亲', '家', '节庆', '香味', '声音', '风景']
+                    },
+                    '別れ': {
+                        keywords: ['离别', '思念', '泪水', '痛苦', '记忆', '时间', '治愈'],
+                        imagery: ['秋天', '落叶', '雨', '车站', '窗户', '照片', '信件']
+                    },
+                    '自然': {
+                        keywords: ['大自然', '生命', '和谐', '美丽', '宁静', '呼吸', '感动'],
+                        imagery: ['山', '海', '树', '花', '鸟', '云', '阳光']
                     }
                 },
                 'japanese': {
@@ -3531,6 +3556,14 @@
                     '故郷': {
                         keywords: ['懐かしい', '帰る', '家族', '記憶', '温かい', '安らぎ', '原点'],
                         imagery: ['田舎', '母', '家', '祭り', '匂い', '声', '景色']
+                    },
+                    '別れ': {
+                        keywords: ['別れ', '想い', '涙', '痛み', '記憶', '時間', '癒し'],
+                        imagery: ['秋', '落葉', '雨', '駅', '窓', '写真', '手紙']
+                    },
+                    '自然': {
+                        keywords: ['自然', '生命', '調和', '美しい', '静寂', '呼吸', '感動'],
+                        imagery: ['山', '海', '木', '花', '鳥', '雲', '陽光']
                     }
                 },
                 'english': {
@@ -3553,10 +3586,18 @@
                     '故郷': {
                         keywords: ['nostalgic', 'return', 'family', 'memory', 'warm', 'peace', 'origin'],
                         imagery: ['countryside', 'mother', 'home', 'festival', 'scent', 'voice', 'scenery']
+                    },
+                    '別れ': {
+                        keywords: ['farewell', 'feelings', 'tears', 'pain', 'memory', 'time', 'healing'],
+                        imagery: ['autumn', 'leaves', 'rain', 'station', 'window', 'photo', 'letter']
+                    },
+                    '自然': {
+                        keywords: ['nature', 'life', 'harmony', 'beautiful', 'silence', 'breath', 'moved'],
+                        imagery: ['mountain', 'sea', 'tree', 'flower', 'bird', 'cloud', 'sunlight']
                     }
                 }
             };
-            
+
             // 多言語対応のジャンル別スタイル調整
             const genreStyles = {
                 'cantonese': {
@@ -3588,39 +3629,43 @@
                     'ジャズ': { rhythm: 'swing', language: 'sophisticated' }
                 }
             };
-            
+
             // 多言語対応の感情別表現調整
             const emotionExpressions = {
                 'cantonese': {
-                    '喜び': ['閃亮', '跳躍', '舞蹈', '歌唱', '歡笑'],
-                    '悲しみ': ['眼淚', '雨水', '陰影', '寂靜', '離別'],
-                    '怒り': ['燃燒', '呐喊', '風暴', '雷電', '戰鬥'],
-                    '平和': ['平靜', '安靜', '溫柔', '擁抱', '治癒'],
-                    '興奮': ['奔跑', '飛翔', '爆發', '熱烈', '躍動']
+                    '喜び': ['閃亮', '跳躍', '舞蹈', '歌唱', '歡笑', '慶祝', '興奮', '快樂'],
+                    '悲しみ': ['眼淚', '雨水', '陰影', '寂靜', '離別', '哀傷', '痛苦', '憂鬱'],
+                    '怒り': ['燃燒', '呐喊', '風暴', '雷電', '戰鬥', '激烈', '爆發', '憤怒'],
+                    '平和': ['平靜', '安靜', '溫柔', '擁抱', '治癒', '和諧', '寧靜', '祥和'],
+                    '興奮': ['奔跑', '飛翔', '爆發', '熱烈', '躍動', '激情', '動感', '活力'],
+                    '不安': ['搖擺', '顫抖', '迷茫', '困惑', '猶豫', '不確定', '焦慮', '擔心']
                 },
                 'chinese': {
-                    '喜び': ['闪亮', '跳跃', '舞蹈', '歌唱', '欢笑'],
-                    '悲しみ': ['眼泪', '雨水', '阴影', '寂静', '离别'],
-                    '怒り': ['燃烧', '呐喊', '风暴', '雷电', '战斗'],
-                    '平和': ['平静', '安静', '温柔', '拥抱', '治愈'],
-                    '興奮': ['奔跑', '飞翔', '爆发', '热烈', '跃动']
+                    '喜び': ['闪亮', '跳跃', '舞蹈', '歌唱', '欢笑', '庆祝', '兴奋', '快乐'],
+                    '悲しみ': ['眼泪', '雨水', '阴影', '寂静', '离别', '哀伤', '痛苦', '忧郁'],
+                    '怒り': ['燃烧', '呐喊', '风暴', '雷电', '战斗', '激烈', '爆发', '愤怒'],
+                    '平和': ['平静', '安静', '温柔', '拥抱', '治愈', '和谐', '宁静', '祥和'],
+                    '興奮': ['奔跑', '飞翔', '爆发', '热烈', '跃动', '激情', '动感', '活力'],
+                    '不安': ['摇摆', '颤抖', '迷茫', '困惑', '犹豫', '不确定', '焦虑', '担心']
                 },
                 'japanese': {
-                    '喜び': ['輝く', '弾む', '踊る', '歌う', '笑う'],
-                    '悲しみ': ['涙', '雨', '影', '静寂', '別れ'],
-                    '怒り': ['燃える', '叫ぶ', '嵐', '雷', '戦う'],
-                    '平和': ['穏やか', '静か', '優しい', '包む', '癒す'],
-                    '興奮': ['駆ける', '飛ぶ', '爆発', '熱い', '躍動']
+                    '喜び': ['輝く', '弾む', '踊る', '歌う', '笑う', '祝う', '躍る', '楽しい'],
+                    '悲しみ': ['涙', '雨', '影', '静寂', '別れ', '哀しい', '痛い', '憂い'],
+                    '怒り': ['燃える', '叫ぶ', '嵐', '雷', '戦う', '激しい', '爆発', '怒る'],
+                    '平和': ['穏やか', '静か', '優しい', '包む', '癒す', '和む', '安らぐ', '平和'],
+                    '興奮': ['駆ける', '飛ぶ', '爆発', '熱い', '躍動', '情熱', '動く', '活気'],
+                    '不安': ['揺れる', '震える', '迷う', '惑う', '躊躇', '不安', '心配', '恐れ']
                 },
                 'english': {
-                    '喜び': ['shine', 'bounce', 'dance', 'sing', 'laugh'],
-                    '悲しみ': ['tears', 'rain', 'shadow', 'silence', 'farewell'],
-                    '怒り': ['burn', 'shout', 'storm', 'thunder', 'fight'],
-                    '平和': ['calm', 'quiet', 'gentle', 'embrace', 'heal'],
-                    '興奮': ['run', 'fly', 'explode', 'hot', 'dynamic']
+                    '喜び': ['shine', 'bounce', 'dance', 'sing', 'laugh', 'celebrate', 'excited', 'happy'],
+                    '悲しみ': ['tears', 'rain', 'shadow', 'silence', 'farewell', 'sad', 'pain', 'melancholy'],
+                    '怒り': ['burn', 'shout', 'storm', 'thunder', 'fight', 'intense', 'explode', 'angry'],
+                    '平和': ['calm', 'quiet', 'gentle', 'embrace', 'heal', 'harmony', 'peaceful', 'serene'],
+                    '興奮': ['run', 'fly', 'explode', 'hot', 'dynamic', 'passion', 'energetic', 'vibrant'],
+                    '不安': ['sway', 'tremble', 'lost', 'confused', 'hesitate', 'uncertain', 'anxious', 'worried']
                 }
             };
-            
+
             // 選択された言語に基づいてテンプレートを取得
             const langTemplates = themeTemplates[selectedPromptLanguage] || themeTemplates['japanese'];
             const template = langTemplates[params.theme] || langTemplates['希望'];
@@ -3628,7 +3673,7 @@
             const style = langGenreStyles[params.genre] || langGenreStyles['ポップス'];
             const langEmotionExpressions = emotionExpressions[selectedPromptLanguage] || emotionExpressions['japanese'];
             const expressions = langEmotionExpressions[params.emotion] || langEmotionExpressions['喜び'];
-            
+
             // 構成を決定
             let structure = [];
             if (params.introInclude) structure.push('Intro');
@@ -3639,7 +3684,7 @@
             if (params.bridgeInclude) structure.push('Bridge');
             if (params.chorusCount > 0) structure.push('Final Chorus');
             if (params.outroInclude) structure.push('Outro');
-            
+
             // 多言語対応の表示テキスト
             const displayTexts = {
                 'cantonese': {
@@ -3683,9 +3728,9 @@
                     metaphor: 'Metaphor Usage'
                 }
             };
-            
+
             const currentTexts = displayTexts[selectedPromptLanguage] || displayTexts['japanese'];
-            
+
             // 歌詞生成
             let lyricsHTML = `
                 <div class="space-y-8">
@@ -3696,11 +3741,11 @@
                     </div>
                     <div class="space-y-6">
             `;
-            
+
             structure.forEach((section, index) => {
                 const color = getSectionColor(section);
                 const content = generateSectionContent(section, template, expressions, params);
-                
+
                 lyricsHTML += `
                     <div class="bg-${color}-50 border-l-4 border-${color}-500 p-4 rounded">
                         <h4 class="font-semibold text-${color}-800 mb-2">[${section}]</h4>
@@ -3708,12 +3753,12 @@
                     </div>
                 `;
             });
-            
+
             lyricsHTML += `
                     </div>
                 </div>
             `;
-            
+
             return lyricsHTML;
         }
         
@@ -3751,28 +3796,39 @@
         
         // Intro用歌詞生成（多言語対応）
         function generateIntroContent(keywords, imagery, expressions, intensity) {
+            function getRandomElement(array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+            
+            const keyword1 = getRandomElement(keywords);
+            const keyword2 = getRandomElement(keywords.filter(k => k !== keyword1));
+            const img1 = getRandomElement(imagery);
+            const img2 = getRandomElement(imagery.filter(i => i !== img1));
+            const expr1 = getRandomElement(expressions);
+            const expr2 = getRandomElement(expressions.filter(e => e !== expr1));
+            
             let lines = [];
             
             if (selectedPromptLanguage === 'cantonese') {
                 lines = [
-                    `${imagery[0]}中${expressions[0]} ${keywords[0]}的旋律`,
-                    `${imagery[1]}在${expressions[1]} 向${keywords[1]}${expressions[2]}`
+                    `${img1}中${expr1} ${keyword1}的旋律`,
+                    `${img2}在${expr2} 向${keyword2}${expr1}`
                 ];
             } else if (selectedPromptLanguage === 'chinese') {
                 lines = [
-                    `${imagery[0]}中${expressions[0]} ${keywords[0]}的旋律`,
-                    `${imagery[1]}在${expressions[1]} 向${keywords[1]}${expressions[2]}`
+                    `${img1}中${expr1} ${keyword1}的旋律`,
+                    `${img2}在${expr2} 向${keyword2}${expr1}`
                 ];
             } else if (selectedPromptLanguage === 'english') {
                 lines = [
-                    `In the ${imagery[0]} ${keywords[0]} ${expressions[0]}`,
-                    `${imagery[1]} ${expressions[1]} towards ${keywords[1]} ${expressions[2]}`
+                    `In the ${img1} ${keyword1} ${expr1}`,
+                    `${img2} ${expr2} towards ${keyword2} ${expr1}`
                 ];
             } else {
                 // Japanese (default)
                 lines = [
-                    `${imagery[0]}に${expressions[0]} ${keywords[0]}の調べ`,
-                    `${imagery[1]}が${expressions[1]}て ${keywords[1]}に${expressions[2]}`
+                    `${img1}に${expr1} ${keyword1}の調べ`,
+                    `${img2}が${expr2}て ${keyword2}に${expr1}`
                 ];
             }
             
@@ -3782,39 +3838,83 @@
         // Verse用歌詞生成（多言語対応）
         function generateVerseContent(keywords, imagery, expressions, params) {
             const lines = [];
-            const lineCount = params.languageLevel === '上級' ? 8 : 6;
+            const lineCount = params.languageLevel === '上級' ? 8 : params.languageLevel === '中級' ? 6 : 4;
+            const intensity = parseInt(params.emotionIntensity) || 50;
+            
+            // パラメータに基づいてランダムに要素を選択
+            function getRandomElement(array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+            
+            // 感情の強度に応じて表現を調整
+            function adjustExpression(expr, intensity) {
+                if (intensity > 80) {
+                    if (selectedPromptLanguage === 'japanese') {
+                        return expr + 'し続ける';
+                    } else if (selectedPromptLanguage === 'chinese') {
+                        return expr + '不停';
+                    } else if (selectedPromptLanguage === 'cantonese') {
+                        return expr + '唔停';
+                    } else {
+                        return expr + ' continuously';
+                    }
+                } else if (intensity < 30) {
+                    if (selectedPromptLanguage === 'japanese') {
+                        return 'そっと' + expr;
+                    } else if (selectedPromptLanguage === 'chinese') {
+                        return '轻轻' + expr;
+                    } else if (selectedPromptLanguage === 'cantonese') {
+                        return '輕輕' + expr;
+                    } else {
+                        return 'gently ' + expr;
+                    }
+                }
+                return expr;
+            }
             
             for (let i = 0; i < lineCount; i++) {
-                const keyword = keywords[i % keywords.length];
-                const img = imagery[i % imagery.length];
-                const expr = expressions[i % expressions.length];
+                const keyword = getRandomElement(keywords);
+                const img = getRandomElement(imagery);
+                const expr = adjustExpression(getRandomElement(expressions), intensity);
                 
                 let line = '';
                 if (selectedPromptLanguage === 'cantonese') {
-                    if (i % 2 === 0) {
-                        line = `${img}的彼方 ${keyword}在${expr}`;
-                    } else {
-                        line = `${keyword}${expr}著 向${img}前進`;
-                    }
+                    const patterns = [
+                        `${img}的彼方 ${keyword}在${expr}`,
+                        `${keyword}${expr}著 向${img}前進`,
+                        `在${img}中 ${keyword}${expr}緊`,
+                        `${keyword}同${img} 一齊${expr}`,
+                        `為咗${keyword} ${img}都${expr}`
+                    ];
+                    line = patterns[i % patterns.length];
                 } else if (selectedPromptLanguage === 'chinese') {
-                    if (i % 2 === 0) {
-                        line = `${img}的彼方 ${keyword}在${expr}`;
-                    } else {
-                        line = `${keyword}${expr}着 向${img}前进`;
-                    }
+                    const patterns = [
+                        `${img}的彼方 ${keyword}在${expr}`,
+                        `${keyword}${expr}着 向${img}前进`,
+                        `在${img}中 ${keyword}${expr}着`,
+                        `${keyword}与${img} 一起${expr}`,
+                        `为了${keyword} ${img}都${expr}`
+                    ];
+                    line = patterns[i % patterns.length];
                 } else if (selectedPromptLanguage === 'english') {
-                    if (i % 2 === 0) {
-                        line = `Beyond the ${img} ${keyword} ${expr}`;
-                    } else {
-                        line = `${expr} the ${keyword} towards ${img}`;
-                    }
+                    const patterns = [
+                        `Beyond the ${img} ${keyword} ${expr}`,
+                        `${expr} the ${keyword} towards ${img}`,
+                        `In the ${img} ${keyword} ${expr}`,
+                        `${keyword} and ${img} ${expr} together`,
+                        `For ${keyword} even ${img} ${expr}`
+                    ];
+                    line = patterns[i % patterns.length];
                 } else {
                     // Japanese (default)
-                    if (i % 2 === 0) {
-                        line = `${img}の向こうに ${keyword}が${expr}`;
-                    } else {
-                        line = `${keyword}を${expr}て ${img}へと向かう`;
-                    }
+                    const patterns = [
+                        `${img}の向こうに ${keyword}が${expr}`,
+                        `${keyword}を${expr}て ${img}へと向かう`,
+                        `${img}の中で ${keyword}は${expr}`,
+                        `${keyword}と${img} 共に${expr}`,
+                        `${keyword}のために ${img}も${expr}`
+                    ];
+                    line = patterns[i % patterns.length];
                 }
                 
                 lines.push(line);
@@ -3827,59 +3927,87 @@
         function generateChorusContent(keywords, expressions, params) {
             const theme = params.theme;
             const emotion = params.emotion;
-            const intensity = parseInt(params.emotionIntensity);
+            const intensity = parseInt(params.emotionIntensity) || 50;
+            
+            // パラメータに基づいてランダムに要素を選択
+            function getRandomElement(array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+            
+            const keyword1 = getRandomElement(keywords);
+            const keyword2 = getRandomElement(keywords.filter(k => k !== keyword1));
+            const keyword3 = getRandomElement(keywords.filter(k => k !== keyword1 && k !== keyword2));
+            const expr1 = getRandomElement(expressions);
+            const expr2 = getRandomElement(expressions.filter(e => e !== expr1));
+            const expr3 = getRandomElement(expressions.filter(e => e !== expr1 && e !== expr2));
             
             let lines = [];
             
             if (selectedPromptLanguage === 'cantonese') {
-                lines = [
-                    `${keywords[0]}在${expressions[0]} 心中${expressions[1]}著`,
-                    `無論什麼困難來臨 都不會${expressions[2]}`,
-                    `懷著${theme} ${keywords[1]}${expressions[3]}`,
-                    `將這${keywords[2]}融入歌聲 向天空${expressions[4]}`
+                const baseLines = [
+                    `${keyword1}在${expr1} 心中${expr2}著`,
+                    `無論什麼困難來臨 都不會${expr3}`,
+                    `懷著${theme} ${keyword2}${expr1}`,
+                    `將這${keyword3}融入歌聲 向天空${expr2}`
                 ];
                 
                 if (intensity > 70) {
-                    lines.push(`想要傳達給全世界 這${emotion}的旋律`);
-                    lines.push(`因為有${keywords[3]} 我能夠${expressions[0]}`);
+                    baseLines.push(`想要傳達給全世界 這${emotion}的旋律`);
+                    baseLines.push(`因為有${keyword1} 我能夠${expr1}`);
+                } else if (intensity < 30) {
+                    baseLines.push(`輕輕感受 ${keyword2}的溫柔`);
                 }
+                
+                lines = baseLines;
             } else if (selectedPromptLanguage === 'chinese') {
-                lines = [
-                    `${keywords[0]}在${expressions[0]} 心中${expressions[1]}着`,
-                    `无论什么困难来临 都不会${expressions[2]}`,
-                    `怀着${theme} ${keywords[1]}${expressions[3]}`,
-                    `将这${keywords[2]}融入歌声 向天空${expressions[4]}`
+                const baseLines = [
+                    `${keyword1}在${expr1} 心中${expr2}着`,
+                    `无论什么困难来临 都不会${expr3}`,
+                    `怀着${theme} ${keyword2}${expr1}`,
+                    `将这${keyword3}融入歌声 向天空${expr2}`
                 ];
                 
                 if (intensity > 70) {
-                    lines.push(`想要传达给全世界 这${emotion}的旋律`);
-                    lines.push(`因为有${keywords[3]} 我能够${expressions[0]}`);
+                    baseLines.push(`想要传达给全世界 这${emotion}的旋律`);
+                    baseLines.push(`因为有${keyword1} 我能够${expr1}`);
+                } else if (intensity < 30) {
+                    baseLines.push(`轻轻感受 ${keyword2}的温柔`);
                 }
+                
+                lines = baseLines;
             } else if (selectedPromptLanguage === 'english') {
-                lines = [
-                    `${keywords[0]} ${expressions[0]} in my heart ${expressions[1]}`,
-                    `No matter what difficulties come, I won't ${expressions[2]}`,
-                    `With ${theme} in my chest, ${expressions[3]} the ${keywords[1]}`,
-                    `Put this ${keywords[2]} into song and ${expressions[4]} to the sky`
+                const baseLines = [
+                    `${keyword1} ${expr1} in my heart ${expr2}`,
+                    `No matter what difficulties come, I won't ${expr3}`,
+                    `With ${theme} in my chest, ${expr1} the ${keyword2}`,
+                    `Put this ${keyword3} into song and ${expr2} to the sky`
                 ];
                 
                 if (intensity > 70) {
-                    lines.push(`Want to reach the whole world with this melody of ${emotion}`);
-                    lines.push(`Because I have ${keywords[3]}, I can ${expressions[0]}`);
+                    baseLines.push(`Want to reach the whole world with this melody of ${emotion}`);
+                    baseLines.push(`Because I have ${keyword1}, I can ${expr1}`);
+                } else if (intensity < 30) {
+                    baseLines.push(`Gently feel the tenderness of ${keyword2}`);
                 }
+                
+                lines = baseLines;
             } else {
                 // Japanese (default)
-                lines = [
-                    `${keywords[0]}は${expressions[0]} 心に${expressions[1]}て`,
-                    `どんな困難が来ても ${expressions[2]}ことはない`,
-                    `${theme}を胸に ${keywords[1]}を${expressions[3]}`,
-                    `この${keywords[2]}を歌に込めて 空に${expressions[4]}よう`
+                const baseLines = [
+                    `${keyword1}は${expr1} 心に${expr2}て`,
+                    `どんな困難が来ても ${expr3}ことはない`,
+                    `${theme}を胸に ${keyword2}を${expr1}`,
+                    `この${keyword3}を歌に込めて 空に${expr2}よう`
                 ];
                 
                 if (intensity > 70) {
-                    lines.push(`世界中に届けたい この${emotion}の調べを`);
-                    lines.push(`${keywords[3]}があるから 僕は${expressions[0]}なれる`);
+                    baseLines.push(`世界中に届けたい この${emotion}の調べを`);
+                    baseLines.push(`${keyword1}があるから 僕は${expr1}なれる`);
+                } else if (intensity < 30) {
+                    baseLines.push(`そっと感じる ${keyword2}の優しさ`);
                 }
+                
+                lines = baseLines;
             }
             
             return lines.join('<br>');
@@ -4578,14 +4706,4 @@
                 <h3 class="text-xl font-bold text-white mb-3">
                     <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>使用のコツ
                 </h3>
-                <ul class="text-gray-300 space-y-2">
-                    <li>• <strong>プロンプト作成</strong>: 複数の要素を組み合わせることで、より具体的で魅力的な楽曲を生成できます</li>
-                    <li>• <strong>Pro歌詞システム</strong>: パラメータを調整して何度も生成し、最適な歌詞を見つけましょう</li>
-                    <li>• <strong>文学作品参照</strong>: 好きな詩や小説を参考にすることで、独自のスタイルを作れます</li>
-                    <li>• <strong>多言語活用</strong>: 同じテーマでも言語によって異なる表現が楽しめます</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+                <ul class="text-gray-3
