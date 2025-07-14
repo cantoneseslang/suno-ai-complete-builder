@@ -77,6 +77,25 @@
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
         
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
         .btn-google {
             background: white;
             color: #374151;
@@ -130,6 +149,7 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
         
         .link:hover {
@@ -181,6 +201,31 @@
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
+        
+        .tab-container {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #64748b;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -191,10 +236,10 @@
         </div>
         
         <!-- Title -->
-        <h1 class="text-2xl font-bold text-center text-gray-800 mb-2" id="auth-title">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">
             SUNO AI Complete Builder
         </h1>
-        <p class="text-center text-gray-600 mb-8" id="auth-subtitle">
+        <p class="text-center text-gray-600 mb-8">
             Everyone Can Be a Creator
         </p>
         
@@ -202,43 +247,77 @@
         <div id="error-message" class="error-message"></div>
         <div id="success-message" class="success-message"></div>
         
-        <!-- Auth Form -->
-        <div id="auth-form">
-            <!-- Email/Password Form -->
-            <form id="email-form" class="space-y-4">
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab active" id="login-tab" onclick="switchTab('login')">
+                ログイン
+            </div>
+            <div class="tab" id="signup-tab" onclick="switchTab('signup')">
+                新規登録
+            </div>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="login-form">
+            <form id="login-email-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">メールアドレス</label>
-                    <input type="email" id="email" class="input-field" placeholder="example@example.com" required>
+                    <input type="email" id="login-email" class="input-field" placeholder="example@example.com" required>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">パスワード</label>
-                    <input type="password" id="password" class="input-field" placeholder="••••••••" required>
+                    <input type="password" id="login-password" class="input-field" placeholder="••••••••" required>
                 </div>
                 
-                <button type="submit" id="auth-btn" class="btn-primary">
-                    ログイン / 新規登録
+                <button type="submit" id="login-btn" class="btn-primary">
+                    ログイン
                 </button>
             </form>
-            
-            <div class="divider">
-                <span>または</span>
-            </div>
-            
-            <!-- Google Sign In -->
-            <button id="google-signin-btn" class="btn-google" style="display: none;">
-                <i class="fab fa-google"></i>
-                Google でログイン
-            </button>
-            
-            <div class="text-center text-sm text-gray-600 mt-6">
-                ログインすることで利用規約に同意したものとみなされます
-            </div>
+        </div>
+        
+        <!-- Signup Form -->
+        <div id="signup-form" style="display: none;">
+            <form id="signup-email-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">メールアドレス</label>
+                    <input type="email" id="signup-email" class="input-field" placeholder="example@example.com" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">パスワード</label>
+                    <input type="password" id="signup-password" class="input-field" placeholder="6文字以上" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">パスワード確認</label>
+                    <input type="password" id="signup-confirm-password" class="input-field" placeholder="パスワードを再入力" required>
+                </div>
+                
+                <button type="submit" id="signup-btn" class="btn-primary">
+                    新規登録
+                </button>
+            </form>
+        </div>
+        
+        <div class="divider">
+            <span>または</span>
+        </div>
+        
+        <!-- Google Sign In -->
+        <button id="google-signin-btn" class="btn-google">
+            <i class="fab fa-google"></i>
+            Google でログイン
+        </button>
+        
+        <div class="text-center text-sm text-gray-600 mt-6">
+            ログインすることで利用規約に同意したものとみなされます
         </div>
     </div>
 
     <script>
         let supabaseClient = null;
+        let currentMode = 'login';
         
         // Initialize Supabase
         function initSupabase() {
@@ -254,11 +333,36 @@
             return true;
         }
         
+        // Switch between login and signup tabs
+        function switchTab(mode) {
+            currentMode = mode;
+            
+            // Update tab appearance
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('signup-tab').classList.remove('active');
+            document.getElementById(mode + '-tab').classList.add('active');
+            
+            // Show/hide forms
+            if (mode === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('signup-form').style.display = 'none';
+            } else {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('signup-form').style.display = 'block';
+            }
+            
+            // Clear messages
+            hideMessages();
+        }
+        
         // Show error message
         function showError(message) {
             const errorEl = document.getElementById('error-message');
             errorEl.textContent = message;
             errorEl.style.display = 'block';
+            
+            // Hide success message
+            document.getElementById('success-message').style.display = 'none';
             
             // Hide after 5 seconds
             setTimeout(() => {
@@ -272,10 +376,19 @@
             successEl.textContent = message;
             successEl.style.display = 'block';
             
+            // Hide error message
+            document.getElementById('error-message').style.display = 'none';
+            
             // Hide after 3 seconds
             setTimeout(() => {
                 successEl.style.display = 'none';
             }, 3000);
+        }
+        
+        // Hide all messages
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
         }
         
         // Google Sign In
@@ -295,44 +408,49 @@
             }
         }
         
-        // Email/Password Auth (Auto Sign Up/In)
-        async function authenticateWithEmail(email, password) {
+        // Email/Password Sign In
+        async function signInWithEmail(email, password) {
             try {
-                // Try to sign in first
-                const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
                 
-                if (signInError && signInError.message.includes('Invalid login credentials')) {
-                    // If sign in fails, try to sign up
-                    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
-                        email: email,
-                        password: password
-                    });
-                    
-                    if (signUpError) throw signUpError;
-                    
-                    if (signUpData.user && !signUpData.user.email_confirmed_at) {
-                        showSuccess('確認メールを送信しました。メールを確認してアカウントを有効化してください。');
-                        return;
-                    } else {
-                        showSuccess('新規アカウントが作成されました！');
-                    }
-                } else if (signInError) {
-                    throw signInError;
-                } else {
-                    showSuccess('ログインしました！');
-                }
+                if (error) throw error;
                 
-                // Redirect to main page
+                showSuccess('ログインしました！リダイレクトしています...');
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 1500);
                 
             } catch (error) {
-                console.error('Auth error:', error);
-                showError('認証エラー: ' + error.message);
+                console.error('Sign in error:', error);
+                showError('ログインエラー: ' + error.message);
+            }
+        }
+        
+        // Email/Password Sign Up
+        async function signUpWithEmail(email, password) {
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                if (data.user && !data.user.email_confirmed_at) {
+                    showSuccess('確認メールを送信しました。メールを確認してアカウントを有効化してください。');
+                } else {
+                    showSuccess('アカウントが作成されました！リダイレクトしています...');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                }
+                
+            } catch (error) {
+                console.error('Sign up error:', error);
+                showError('登録エラー: ' + error.message);
             }
         }
         
@@ -360,26 +478,46 @@
                 }
             });
             
-            // Email form
-            document.getElementById('email-form').addEventListener('submit', async (e) => {
+            // Login form
+            document.getElementById('login-email-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                const btn = document.getElementById('login-btn');
+                setLoading(btn, true);
+                
+                await signInWithEmail(email, password);
+                
+                setLoading(btn, false);
+            });
+            
+            // Signup form
+            document.getElementById('signup-email-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('signup-confirm-password').value;
+                
+                if (password !== confirmPassword) {
+                    showError('パスワードが一致しません');
+                    return;
+                }
                 
                 if (password.length < 6) {
                     showError('パスワードは6文字以上で入力してください');
                     return;
                 }
                 
-                const btn = document.getElementById('auth-btn');
+                const btn = document.getElementById('signup-btn');
                 setLoading(btn, true);
                 
-                await authenticateWithEmail(email, password);
+                await signUpWithEmail(email, password);
                 
                 setLoading(btn, false);
             });
             
-            // Google Sign In button (hidden for now)
+            // Google Sign In button
             document.getElementById('google-signin-btn').addEventListener('click', signInWithGoogle);
         });
     </script>
