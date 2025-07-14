@@ -67,15 +67,50 @@
         let authCheckComplete = false;
         let supabaseClient = null;
         
+        // グローバルエラーハンドリング
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            // エラーが発生してもページを表示
+            if (document.body.style.display === 'none') {
+                document.body.style.display = 'block';
+            }
+        });
+        
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
-            // 一時的に認証チェックを無効化して、メインコンテンツを表示
-            console.log('Authentication temporarily disabled for testing');
-            document.body.style.display = 'block';
-            
-            // 認証チェックは後で有効化
-            // showAuthLoading();
-            // initializeAuth();
+            try {
+                // 一時的に認証チェックを無効化して、メインコンテンツを表示
+                console.log('Authentication temporarily disabled for testing');
+                
+                // 認証完了フラグを手動で設定
+                authCheckComplete = true;
+                
+                // Supabaseクライアントを初期化（エラー回避のため）
+                try {
+                    if (typeof window.supabase !== 'undefined' && window.SUNO_CONFIG) {
+                        supabaseClient = window.supabase.createClient(
+                            window.SUNO_CONFIG.supabase.url,
+                            window.SUNO_CONFIG.supabase.anonKey
+                        );
+                        console.log('Supabase client initialized');
+                    }
+                } catch (error) {
+                    console.log('Supabase initialization skipped:', error);
+                }
+                
+                // メインコンテンツを表示
+                document.body.style.display = 'block';
+                console.log('Page content displayed');
+                
+                // 認証チェックは後で有効化
+                // showAuthLoading();
+                // initializeAuth();
+                
+            } catch (error) {
+                console.error('DOMContentLoaded error:', error);
+                // エラーが発生してもページを表示
+                document.body.style.display = 'block';
+            }
         });
         
         // ローディング画面表示
