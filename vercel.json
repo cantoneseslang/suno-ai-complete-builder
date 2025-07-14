@@ -15,18 +15,11 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "redirects": [
     {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/suno-prompter.html",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/suno-prompter.html",
+      "destination": "/",
+      "permanent": false
     }
   ],
   "headers": [
