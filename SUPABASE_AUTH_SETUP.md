@@ -1,102 +1,176 @@
-# 🔐 Supabase認証設定ガイド
+# Supabase認証設定ガイド
 
-## 📋 現在の状況
+## 🚨 緊急対応：メール確認リンクエラー修正
 
-- **メール/パスワード認証**: ✅ 有効
-- **Google OAuth認証**: ❌ 設定が必要
-
-## 🛠️ Google OAuth設定手順
-
-### 1. Google Cloud Console設定
-
-1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
-2. 新しいプロジェクトを作成または既存プロジェクトを選択
-3. 「APIs & Services」→「Credentials」に移動
-4. 「Create Credentials」→「OAuth 2.0 Client IDs」を選択
-5. Application type: **Web application**
-6. Name: `SUNO AI Complete Builder`
-7. Authorized redirect URIs に以下を追加:
-   ```
-   https://ncarwqyhpohybnignsxq.supabase.co/auth/v1/callback
-   ```
-
-### 2. Supabase設定
-
-1. [Supabase Dashboard](https://supabase.com/dashboard) にアクセス
-2. プロジェクト `suno-ai-complete-builder` を選択
-3. 左サイドバーから「Authentication」→「Providers」に移動
-4. 「Google」プロバイダーを選択
-5. 以下の情報を入力:
-   - **Client ID**: Google Cloud Consoleで取得したClient ID
-   - **Client Secret**: Google Cloud Consoleで取得したClient Secret
-6. 「Save」をクリック
-
-### 3. 設定完了後
-
-Google OAuth設定完了後、以下のファイルを更新:
-
-#### config.js
-```javascript
-auth: {
-  enableEmailAuth: true,
-  enableGoogleAuth: true,  // ← これをtrueに変更
-  enableSignUp: true,
-  requireEmailConfirmation: false
-}
+現在、承認メールのリンクが `localhost:3000` に設定されているため、以下のエラーが発生しています：
+```
+http://localhost:3000/#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired
 ```
 
-#### login.html
-```javascript
-// Google Sign In buttonの表示を有効化
-document.getElementById('google-signin-btn').style.display = 'block';
+### 即座に修正が必要な設定
+
+1. **Supabase管理画面にアクセス**
+   - https://supabase.com/dashboard にログイン
+   - プロジェクト `suno-ai-complete-builder` を選択
+
+2. **Authentication設定を開く**
+   - 左サイドバーから「Authentication」をクリック
+   - 「Settings」タブを選択
+
+3. **Site URL設定を修正**
+   ```
+   Site URL: https://suno-ai-complete-builder.vercel.app
+   ```
+
+4. **Redirect URLs設定を追加**
+   ```
+   https://suno-ai-complete-builder.vercel.app/**
+   https://suno-ai-complete-builder.vercel.app/login.html
+   https://suno-ai-complete-builder.vercel.app/auth-callback
+   ```
+
+5. **Email Templates設定を確認**
+   - 「Email Templates」タブを選択
+   - 「Confirm signup」テンプレートを編集
+   - リダイレクトURLを以下に変更：
+   ```
+   https://suno-ai-complete-builder.vercel.app/auth-callback?token_hash={{ .TokenHash }}&type=signup
+   ```
+
+## 📧 メール認証システム設定手順
+
+### 1. 基本認証設定
+
+1. **Supabase Dashboard** (https://supabase.com/dashboard) にアクセス
+2. プロジェクト `ncarwqyhpohybnignsxq` を選択
+3. 左サイドバーから **Authentication** → **Settings** を選択
+
+### 2. Site URL設定
+
+**Site URL** を以下に設定：
+```
+https://suno-ai-complete-builder.vercel.app
 ```
 
-## 🎯 現在の認証フロー
+### 3. Redirect URLs設定
 
-### メール/パスワード認証
-1. ユーザーがメールアドレスとパスワードを入力
-2. 既存ユーザー → ログイン
-3. 新規ユーザー → 自動アカウント作成
-4. メインページにリダイレクト
+**Redirect URLs** に以下を追加：
+```
+https://suno-ai-complete-builder.vercel.app/**
+https://suno-ai-complete-builder.vercel.app/login.html
+https://suno-ai-complete-builder.vercel.app/auth-callback
+https://suno-ai-complete-builder-git-main-kirii.vercel.app/**
+```
 
-### エラーハンドリング
-- 無効なメールアドレス
-- パスワードが短すぎる（6文字未満）
-- ネットワークエラー
-- Supabase接続エラー
+### 4. Email Auth設定
 
-## 📊 プロジェクト情報
+1. **Email** タブで以下を確認：
+   - ✅ Enable email confirmations: **ON**
+   - ✅ Enable email change confirmations: **ON** 
+   - ✅ Secure email change: **ON**
 
-- **プロジェクトID**: ncarwqyhpohybnignsxq
-- **URL**: https://ncarwqyhpohybnignsxq.supabase.co
-- **リージョン**: ap-southeast-1
-- **データベース**: PostgreSQL 17.4.1.054
+### 5. Email Templates設定
 
-## 🔧 トラブルシューティング
+**Email Templates** タブで以下のテンプレートを設定：
 
-### よくあるエラー
+#### Confirm signup テンプレート
+```html
+<h2>アカウント確認</h2>
+<p>Suno AI Complete Builderへようこそ！</p>
+<p>以下のリンクをクリックしてアカウントを確認してください：</p>
+<p><a href="https://suno-ai-complete-builder.vercel.app/auth-callback?token_hash={{ .TokenHash }}&type=signup">アカウントを確認する</a></p>
+```
 
-1. **"Unsupported provider"**
-   - Google OAuthが有効になっていない
-   - 上記設定手順を完了してください
+#### Reset password テンプレート
+```html
+<h2>パスワードリセット</h2>
+<p>パスワードリセットのリクエストを受け付けました。</p>
+<p>以下のリンクをクリックして新しいパスワードを設定してください：</p>
+<p><a href="https://suno-ai-complete-builder.vercel.app/auth-callback?token_hash={{ .TokenHash }}&type=recovery">パスワードをリセットする</a></p>
+```
 
-2. **"Invalid login credentials"**
-   - メール/パスワードが間違っている
-   - 新規ユーザーの場合は自動的にアカウント作成されます
+### 6. Google OAuth設定（オプション）
 
-3. **"User already registered"**
-   - 既存のメールアドレスでサインアップを試行
-   - ログインを試してください
+1. **Providers** タブを選択
+2. **Google** を有効化
+3. **Google OAuth設定**：
+   - Client ID: `YOUR_GOOGLE_CLIENT_ID`
+   - Client Secret: `YOUR_GOOGLE_CLIENT_SECRET`
+   - Redirect URL: `https://ncarwqyhpohybnignsxq.supabase.co/auth/v1/callback`
 
-## 📝 次のステップ
+## 🔧 認証コールバック処理
 
-1. ✅ メール認証でのテストユーザー作成
-2. ⏳ Google OAuth設定（手動で行う必要があります）
-3. ⏳ メール確認機能の有効化
-4. ⏳ パスワードリセット機能の追加
-5. ⏳ プロフィール管理機能の追加
+`auth-callback.html` ファイルを作成して、メール確認後の処理を行います：
 
----
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認証処理中... - Suno AI Complete Builder</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <div style="text-align: center; padding: 50px;">
+        <h2>認証処理中...</h2>
+        <p>少々お待ちください</p>
+    </div>
+    
+    <script>
+        // URLパラメータから認証情報を取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenHash = urlParams.get('token_hash');
+        const type = urlParams.get('type');
+        
+        if (tokenHash && type) {
+            // Supabaseクライアント初期化
+            const supabase = window.supabase.createClient(
+                window.SUNO_CONFIG.supabase.url,
+                window.SUNO_CONFIG.supabase.anonKey
+            );
+            
+            // セッション確認
+            supabase.auth.verifyOtp({
+                token_hash: tokenHash,
+                type: type
+            }).then(({ data, error }) => {
+                if (error) {
+                    console.error('Auth verification error:', error);
+                    window.location.href = '/login.html?error=verification_failed';
+                } else {
+                    console.log('Auth verification successful');
+                    window.location.href = '/';
+                }
+            });
+        } else {
+            // パラメータが不正な場合はログインページへ
+            window.location.href = '/login.html?error=invalid_link';
+        }
+    </script>
+</body>
+</html>
+```
 
-**更新日**: 2025年7月14日  
-**ステータス**: メール認証のみ利用可能
+## ⚠️ 重要な注意事項
+
+1. **Site URLは必ず本番URLに設定**してください
+2. **Redirect URLsには本番URLのみ**を含めてください
+3. **Email Templatesのリンクも本番URL**に設定してください
+4. 設定変更後は**必ずテスト**を行ってください
+
+## 🔍 トラブルシューティング
+
+### メール確認リンクがlocalhostに飛ぶ場合
+- Site URLとRedirect URLsを確認
+- Email Templatesのリンクを確認
+- Supabaseの設定を保存後、数分待つ
+
+### メール確認後にエラーが出る場合
+- `auth-callback.html`が正しく配置されているか確認
+- URLパラメータが正しく渡されているか確認
+
+### Google OAuth設定でエラーが出る場合
+- Google Cloud Consoleでの設定を確認
+- Redirect URIが正しく設定されているか確認

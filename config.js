@@ -52,7 +52,7 @@ const config = {
     enableEmailAuth: true,
     enableGoogleAuth: false, // Temporarily disabled until OAuth is configured
     enableSignUp: true,
-    requireEmailConfirmation: false // Set to true in production
+    requireEmailConfirmation: true // メール確認を有効化
   }
 };
 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認証処理中... - Suno AI Complete Builder</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    
+    <style>
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-600 to-blue-600 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+        <div id="loading-state" class="text-center">
+            <div class="loading-spinner"></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">認証処理中...</h2>
+            <p class="text-gray-600">メール確認を処理しています。少々お待ちください。</p>
+        </div>
+        
+        <div id="success-state" class="text-center hidden">
+            <div class="text-green-500 text-6xl mb-4">✓</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">認証完了！</h2>
+            <p class="text-gray-600 mb-6">メール確認が完了しました。メインページにリダイレクトします...</p>
+        </div>
+        
+        <div id="error-state" class="text-center hidden">
+            <div class="text-red-500 text-6xl mb-4">✗</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">認証エラー</h2>
+            <p class="text-gray-600 mb-6">メール確認に失敗しました。リンクが無効または期限切れの可能性があります。</p>
+            <button onclick="window.location.href='/login.html'" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                ログインページに戻る
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        async function handleAuthCallback() {
+            try {
+                // URLパラメータから認証情報を取得
+                const urlParams = new URLSearchParams(window.location.search);
+                const tokenHash = urlParams.get('token_hash');
+                const type = urlParams.get('type');
+                const accessToken = urlParams.get('access_token');
+                const refreshToken = urlParams.get('refresh_token');
+                
+                console.log('Auth callback params:', { tokenHash, type, accessToken, refreshToken });
+                
+                // 設定の読み込み待ち
+                if (!window.SUNO_CONFIG) {
+                    setTimeout(handleAuthCallback, 100);
+                    return;
+                }
+                
+                // Supabaseクライアント初期化
+                const supabase = window.supabase.createClient(
+                    window.SUNO_CONFIG.supabase.url,
+                    window.SUNO_CONFIG.supabase.anonKey
+                );
+                
+                let authResult;
+                
+                if (tokenHash && type) {
+                    // メール確認の場合
+                    console.log('Processing email verification...');
+                    authResult = await supabase.auth.verifyOtp({
+                        token_hash: tokenHash,
+                        type: type
+                    });
+                } else if (accessToken && refreshToken) {
+                    // OAuth認証の場合
+                    console.log('Processing OAuth authentication...');
+                    authResult = await supabase.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken
+                    });
+                } else {
+                    // URLハッシュからの認証情報取得を試行
+                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                    const hashAccessToken = hashParams.get('access_token');
+                    const hashRefreshToken = hashParams.get('refresh_token');
+                    
+                    if (hashAccessToken && hashRefreshToken) {
+                        console.log('Processing hash-based authentication...');
+                        authResult = await supabase.auth.setSession({
+                            access_token: hashAccessToken,
+                            refresh_token: hashRefreshToken
+                        });
+                    } else {
+                        throw new Error('認証パラメータが見つかりません');
+                    }
+                }
+                
+                const { data, error } = authResult;
+                
+                if (error) {
+                    console.error('Auth verification error:', error);
+                    showErrorState();
+                    return;
+                }
+                
+                if (data?.user) {
+                    console.log('Auth verification successful:', data.user.email);
+                    showSuccessState();
+                    
+                    // 2秒後にメインページにリダイレクト
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    console.error('No user data received');
+                    showErrorState();
+                }
+                
+            } catch (error) {
+                console.error('Auth callback error:', error);
+                showErrorState();
+            }
+        }
+        
+        function showSuccessState() {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            document.getElementById('success-state').classList.remove('hidden');
+        }
+        
+        function showErrorState() {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('success-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+        
+        // ページ読み込み時に認証処理を開始
+        document.addEventListener('DOMContentLoaded', handleAuthCallback);
+    </script>
+</body>
+</html> 
