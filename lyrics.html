@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI歌詞作成システム Pro - 最適化レイアウト版</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .section-separator {
+            border-top: 2px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+        .lyrics-output {
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
+            border-left: 4px solid #667eea;
+        }
+        .structure-part {
+            border-left: 3px solid #10b981;
+            background: #f0fdf4;
+        }
+        .animate-pulse-soft {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .8; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">
+                    <i class="fas fa-music mr-3"></i>AI歌詞作成システム Pro
+                </h1>
+                <p class="text-xl opacity-90">心に響く深い歌詞を生成する包括的AIシステム</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        
+        <!-- 歌詞生成パラメータ（最優先・トップ配置） -->
+        <section class="mb-12">
+            <div class="bg-white rounded-lg card-shadow p-8 hover-scale transition-transform duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-sliders-h text-blue-600 mr-3"></i>歌詞生成パラメータ
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 基本設定 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">基本設定</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">音楽ジャンル</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>ポップス</option>
+                                <option>バラード</option>
+                                <option>ロック</option>
+                                <option>フォーク</option>
+                                <option>R&B</option>
+                                <option>カントリー</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">主要テーマ</label>
+                            <input type="text" placeholder="例：恋愛、友情、成長..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">対象年齢層</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>全年齢</option>
+                                <option>10代</option>
+                                <option>20代</option>
+                                <option>30代以上</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 感情設定 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-700 border-b-2 border-green-200 pb-2">感情設定</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">主要感情</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option>喜び</option>
+                                <option>悲しみ</option>
+                                <option>希望</option>
+                                <option>郷愁</option>
+                                <option>愛情</option>
+                                <option>憧れ</option>
+                                <option>不安</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">感情の強度</label>
+                            <input type="range" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>穏やか</span>
+                                <span>強烈</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">感情の変化</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option>一定</option>
+                                <option>徐々に上昇</option>
+                                <option>徐々に下降</option>
+                                <option>起伏あり</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 言語・表現設定 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-700 border-b-2 border-purple-200 pb-2">言語・表現設定</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">言語レベル</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option>日常語</option>
+                                <option>詩的表現</option>
+                                <option>格調高い</option>
+                                <option>現代的</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">比喩の使用度</label>
+                            <input type="range" min="1" max="10" value="6" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>直接的</span>
+                                <span>比喩的</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">韻律パターン</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option>自然な流れ</option>
+                                <option>定型韻律</option>
+                                <option>自由詩</option>
+                                <option>伝統的</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 追加設定 -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">キーワード・フレーズ</label>
+                        <textarea placeholder="含めたい特定の言葉やフレーズを入力..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">避けたい表現</label>
+                        <textarea placeholder="使用を避けたい表現を入力..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent h-24"></textarea>
+                    </div>
+                </div>
+                
+                <!-- 生成ボタン -->
+                <div class="mt-8 text-center">
+                    <button onclick="generateLyrics()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-magic mr-2"></i>歌詞を生成する
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 生成された歌詞表示エリア -->
+        <section class="mb-12">
+            <div class="bg-white rounded-lg card-shadow p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-file-alt text-green-600 mr-3"></i>生成された歌詞
+                </h2>
+                
+                <div id="lyricsOutput" class="lyrics-output p-6 rounded-lg min-h-96">
+                    <div class="text-center text-gray-500 animate-pulse-soft">
+                        <i class="fas fa-music text-4xl mb-4"></i>
+                        <p class="text-lg">上記のパラメータを設定して「歌詞を生成する」ボタンを押してください</p>
+                    </div>
+                </div>
+                
+                <!-- 歌詞評価表示 -->
+                <div id="lyricsEvaluation" class="mt-6 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">歌詞品質評価</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600" id="emotionScore">85</div>
+                            <div class="text-sm text-gray-600">感情的インパクト</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600" id="languageScore">92</div>
+                            <div class="text-sm text-gray-600">言語的美しさ</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600" id="originalityScore">78</div>
+                            <div class="text-sm text-gray-600">独創性</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600" id="musicalScore">89</div>
+                            <div class="text-sm text-gray-600">音楽的適合性</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="section-separator"></div>
+        
+        <!-- 曲構成設定（生成後の調整用） -->
+        <section class="mb-12">
+            <div class="bg-white rounded-lg card-shadow p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-list-ol text-orange-600 mr-3"></i>曲構成設定
+                </h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-4">現在の構成（一般的なポップス構成がデフォルト設定されています）</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Intro（イントロ）</span>
+                                    <span class="text-sm text-gray-500">8小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">楽曲の導入部分</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Verse 1（ヴァース1）</span>
+                                    <span class="text-sm text-gray-500">16小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">物語の設定・導入</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Chorus（コーラス・サビ）</span>
+                                    <span class="text-sm text-gray-500">16小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">楽曲の中心メッセージ</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Verse 2（ヴァース2）</span>
+                                    <span class="text-sm text-gray-500">16小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">物語の展開・発展</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Chorus（コーラス・サビ）</span>
+                                    <span class="text-sm text-gray-500">16小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">メッセージの強調</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Bridge（ブリッジ）</span>
+                                    <span class="text-sm text-gray-500">8小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">転換・変化部分</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Chorus（最終サビ）</span>
+                                    <span class="text-sm text-gray-500">16小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">クライマックス</p>
+                            </div>
+                            
+                            <div class="structure-part p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Outro（アウトロ）</span>
+                                    <span class="text-sm text-gray-500">8小節</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">楽曲の終結</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 構成カスタマイズ -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">構成カスタマイズ</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">構成テンプレート</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option>標準ポップス</option>
+                                <option>バラード構成</option>
+                                <option>ロック構成</option>
+                                <option>フォーク構成</option>
+                                <option>カスタム</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">追加要素</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option>なし</option>
+                                <option>Guitar Solo</option>
+                                <option>Piano Solo</option>
+                                <option>Instrumental</option>
+                                <option>Break</option>
+                                <option>Crescendo</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">終了方法</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option>通常終了</option>
+                                <option>Fade Out</option>
+                                <option>突然終了</option>
+                                <option>リピート</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button onclick="applyStructureChanges()" class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors duration-300">
+                            <i class="fas fa-sync-alt mr-2"></i>構成を適用して歌詞を再生成
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="section-separator"></div>
+        
+        <!-- 文学作品参照機能 -->
+        <section class="mb-12">
+            <div class="bg-white rounded-lg card-shadow p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-book text-indigo-600 mr-3"></i>文学作品参照機能
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- URL入力 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 transition-colors">
+                        <i class="fas fa-link text-3xl text-indigo-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">URL入力</h3>
+                        <p class="text-sm text-gray-600 mb-4">青空文庫、詩のサイトなどから直接参照</p>
+                        <input type="url" placeholder="https://www.aozora.gr.jp/..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-3">
+                        <button onclick="analyzeURL()" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-search mr-2"></i>分析開始
+                        </button>
+                    </div>
+                    
+                    <!-- ファイルアップロード -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+                        <i class="fas fa-upload text-3xl text-green-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">ファイルアップロード</h3>
+                        <p class="text-sm text-gray-600 mb-4">PDF、Word、テキストファイルを直接アップロード</p>
+                        <input type="file" accept=".txt,.pdf,.docx" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent mb-3">
+                        <button onclick="analyzeFile()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-file-alt mr-2"></i>ファイル分析
+                        </button>
+                    </div>
+                    
+                    <!-- 作品検索 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
+                        <i class="fas fa-search text-3xl text-purple-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">作品検索</h3>
+                        <p class="text-sm text-gray-600 mb-4">作品名・作者名で検索</p>
+                        <input type="text" placeholder="作品名・作者名..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-3">
+                        <button onclick="searchWork()" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-search mr-2"></i>検索
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 分析結果表示 -->
+                <div id="literaryAnalysis" class="mt-8 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">文学的要素分析結果</h3>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-2">文体特徴</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 古典的で格調高い</li>
+                                    <li>• 叙情的な表現</li>
+                                    <li>• 簡潔で印象的</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-2">表現技法</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 季節の比喩</li>
+                                    <li>• 感覚的描写</li>
+                                    <li>• 象徴的表現</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-2">語彙特性</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 詩的語彙多用</li>
+                                    <li>• 情緒的表現豊富</li>
+                                    <li>• 韻律的配慮</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 text-center">
+                            <button onclick="applyLiteraryElements()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-magic mr-2"></i>この要素を歌詞に適用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 使用ガイド -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-3"></i>使用ガイド
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">基本的な使用手順</h3>
+                        <ol class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">1</span>
+                                歌詞生成パラメータを設定
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">2</span>
+                                「歌詞を生成する」ボタンを押す
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">3</span>
+                                生成された歌詞を確認・評価
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">4</span>
+                                必要に応じて曲構成を調整
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">5</span>
+                                文学作品参照で表現を豊かに
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">より良い歌詞のコツ</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                具体的なテーマやシチュエーションを設定
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                感情の強度と変化を細かく調整
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                ジャンルに応じた言語レベルを選択
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                文学作品参照で独創的な表現を追加
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                曲構成を音楽ジャンルに合わせて調整
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // 歌詞生成機能
+        function generateLyrics() {
+            const output = document.getElementById('lyricsOutput');
+            const evaluation = document.getElementById('lyricsEvaluation');
+            
+            // ローディング表示
+            output.innerHTML = `
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg text-gray-600">AI が歌詞を生成中...</p>
+                </div>
+            `;
+            
+            // 3秒後に生成結果を表示（実際の実装では API 呼び出し）
+            setTimeout(() => {
+                output.innerHTML = `
+                    <div class="space-y-8">
+                        <div class="text-center">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">生成された歌詞</h3>
+                            <p class="text-gray-600">テーマ: 恋愛・希望 | ジャンル: ポップス</p>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                                <h4 class="font-semibold text-green-800 mb-2">[Intro]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    静かな夜に響く メロディー<br>
+                                    君の声が聞こえる気がして
+                                </p>
+                            </div>
+                            
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                <h4 class="font-semibold text-blue-800 mb-2">[Verse 1]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    桜咲く季節に出会った<br>
+                                    君の笑顔 忘れられない<br>
+                                    風に舞う花びらのように<br>
+                                    心も軽やか 踊っている
+                                </p>
+                            </div>
+                            
+                            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                                <h4 class="font-semibold text-purple-800 mb-2">[Chorus]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    愛してる この気持ち<br>
+                                    空に向かって叫びたい<br>
+                                    君がいるから 生きていける<br>
+                                    永遠に続く この想い
+                                </p>
+                            </div>
+                            
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                <h4 class="font-semibold text-blue-800 mb-2">[Verse 2]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    時に雲に隠れる太陽<br>
+                                    不安な気持ちが頭をよぎる<br>
+                                    でも君の手を握りしめて<br>
+                                    一緒に歩いていこう
+                                </p>
+                            </div>
+                            
+                            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                                <h4 class="font-semibold text-purple-800 mb-2">[Chorus]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    愛してる この気持ち<br>
+                                    空に向かって叫びたい<br>
+                                    君がいるから 生きていける<br>
+                                    永遠に続く この想い
+                                </p>
+                            </div>
+                            
+                            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+                                <h4 class="font-semibold text-orange-800 mb-2">[Bridge]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    星座を見上げて誓った<br>
+                                    どんな困難も乗り越えて<br>
+                                    二人で築いていこう 未来を
+                                </p>
+                            </div>
+                            
+                            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                                <h4 class="font-semibold text-purple-800 mb-2">[Final Chorus]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    愛してる この気持ち<br>
+                                    空に向かって叫びたい<br>
+                                    君がいるから 生きていける<br>
+                                    永遠に続く この想い<br>
+                                    ずっと ずっと 君と共に
+                                </p>
+                            </div>
+                            
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                                <h4 class="font-semibold text-green-800 mb-2">[Outro]</h4>
+                                <p class="text-gray-700 leading-relaxed">
+                                    静かな夜に響く メロディー<br>
+                                    君の声が聞こえる 今も
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                evaluation.classList.remove('hidden');
+                
+                // スコアのアニメーション
+                animateScore('emotionScore', 85);
+                animateScore('languageScore', 92);
+                animateScore('originalityScore', 78);
+                animateScore('musicalScore', 89);
+            }, 3000);
+        }
+        
+        // スコアアニメーション
+        function animateScore(elementId, targetScore) {
+            const element = document.getElementById(elementId);
+            let currentScore = 0;
+            const increment = targetScore / 30;
+            
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(currentScore);
+            }, 50);
+        }
+        
+        // 構成変更適用
+        function applyStructureChanges() {
+            alert('構成変更が適用され、歌詞が再生成されました！');
+            generateLyrics();
+        }
+        
+        // URL分析
+        function analyzeURL() {
+            const analysis = document.getElementById('literaryAnalysis');
+            analysis.classList.remove('hidden');
+            alert('URL から文学的要素が分析されました！');
+        }
+        
+        // ファイル分析
+        function analyzeFile() {
+            const analysis = document.getElementById('literaryAnalysis');
+            analysis.classList.remove('hidden');
+            alert('ファイルから文学的要素が分析されました！');
+        }
+        
+        // 作品検索
+        function searchWork() {
+            const analysis = document.getElementById('literaryAnalysis');
+            analysis.classList.remove('hidden');
+            alert('作品が検索され、文学的要素が分析されました！');
+        }
+        
+        // 文学的要素適用
+        function applyLiteraryElements() {
+            alert('文学的要素が歌詞生成パラメータに適用されました！');
+        }
+        
+        // 初期設定
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI歌詞作成システム Pro が起動しました');
+        });
+    </script>
+</body>
+</html>

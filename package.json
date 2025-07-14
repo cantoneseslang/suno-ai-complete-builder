@@ -1,0 +1,37 @@
+{
+  "name": "suno-ai-complete-builder",
+  "version": "2025.1.2",
+  "description": "包括的AI音楽制作システム - プロンプト作成から高度な歌詞生成まで",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'No build process needed for static site'",
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "suno",
+    "ai",
+    "music",
+    "lyrics",
+    "generator",
+    "prompt",
+    "multilingual",
+    "japanese",
+    "chinese",
+    "english",
+    "cantonese"
+  ],
+  "author": "Suno AI Complete Builder Team",
+  "license": "MIT",
+  "homepage": "https://suno-ai-complete-builder.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/suno-ai-complete-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/suno-ai-complete-builder/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+} 

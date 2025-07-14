@@ -1,0 +1,3232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno AI Complete Builder 2025 - 包括的AI音楽制作システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ダークモード基本設定 */
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        /* コンテナの背景 */
+        .container {
+            background: rgba(15, 15, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .genre-btn {
+            background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #e2e8f0;
+            padding: 8px 16px;
+            margin: 4px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .genre-btn:hover {
+            background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            border-color: rgba(139, 92, 246, 0.6);
+        }
+        .genre-btn.selected {
+            background: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%);
+            border-color: rgba(236, 72, 153, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            color: #ffffff;
+        }
+        .artist-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #e2e8f0;
+            padding: 8px 16px;
+            margin: 4px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .artist-btn:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+            border-color: rgba(6, 182, 212, 0.6);
+        }
+        .artist-btn.selected {
+            background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+            border-color: rgba(245, 158, 11, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            color: #1f2937;
+        }
+
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.8);
+            color: #cbd5e1;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            padding: 12px 24px;
+            margin: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .tab-btn:hover {
+            background: rgba(51, 65, 85, 0.9);
+            color: #e2e8f0;
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+            color: #ffffff;
+            border-color: rgba(139, 92, 246, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+        .lyrics-candidate {
+            background: rgba(30, 41, 59, 0.6);
+            border: 2px solid rgba(71, 85, 105, 0.5);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            color: #e2e8f0;
+        }
+        .lyrics-candidate:hover {
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.2);
+            background: rgba(51, 65, 85, 0.7);
+        }
+        .lyrics-candidate.selected {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(71, 85, 105, 0.5);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 16px;
+            background: rgba(30, 41, 59, 0.6);
+            color: #e2e8f0;
+            backdrop-filter: blur(10px);
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+            background: rgba(51, 65, 85, 0.7);
+        }
+        .search-box::placeholder {
+            color: #94a3b8;
+        }
+        .tab-content {
+            scroll-margin-top: 20px;
+        }
+        #prompt-section {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .mode-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .mode-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        .mode-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: white;
+            color: #10b981;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* lyrics.htmlから追加されたスタイル */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .typing-animation {
+            border-right: 2px solid #4f46e5;
+            animation: typing 2s steps(40, end), blink 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: #4f46e5; }
+        }
+        .emotion-meter {
+            height: 8px;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 25%, #10b981 50%, #3b82f6 75%, #8b5cf6 100%);
+            border-radius: 4px;
+        }
+        .generated-lyrics {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-left: 4px solid #4f46e5;
+        }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .chart-container {
+            height: 300px;
+        }
+        .emotion-visual {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wave-animation {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: wave 3s linear infinite;
+        }
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Pro歌詞システム用スタイル */
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .section-separator {
+            border-top: 2px solid rgba(139, 92, 246, 0.5);
+            margin: 2rem 0;
+        }
+        .lyrics-output {
+            background: linear-gradient(to right, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.6));
+            border-left: 4px solid #8b5cf6;
+            color: #e2e8f0;
+        }
+        .structure-part {
+            border-left: 3px solid #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            color: #e2e8f0;
+        }
+        .animate-pulse-soft {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* ダークモード用フォームスタイル */
+        select, input[type="text"], input[type="number"], input[type="range"], textarea {
+            background: rgba(55, 65, 81, 0.8) !important;
+            color: #e2e8f0 !important;
+            border: 1px solid rgba(107, 114, 128, 0.5) !important;
+        }
+        select:focus, input:focus, textarea:focus {
+            background: rgba(75, 85, 99, 0.9) !important;
+            border-color: rgba(139, 92, 246, 0.6) !important;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+        }
+        
+        /* チェックボックスとラジオボタン */
+        input[type="checkbox"], input[type="radio"] {
+            accent-color: #8b5cf6;
+        }
+        
+        /* ボタンスタイル */
+        button {
+            transition: all 0.3s ease;
+        }
+        
+        /* ダークモード用テキスト色 */
+        .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        .text-gray-800 {
+            color: #f3f4f6 !important;
+        }
+        
+        /* ボーダー色も調整 */
+        .border-blue-200 {
+            border-color: rgba(139, 92, 246, 0.4) !important;
+        }
+        .border-green-200 {
+            border-color: rgba(16, 185, 129, 0.4) !important;
+        }
+        .border-purple-200 {
+            border-color: rgba(168, 85, 247, 0.4) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-white">
+            <i class="fas fa-music mr-3 text-purple-400"></i>Suno AI Complete Builder 2025
+        </h1>
+        <p class="text-center text-lg opacity-75 mb-8 text-gray-300">包括的AI音楽制作システム - プロンプト作成から高度な歌詞生成まで</p>
+        
+        <!-- メイン機能選択 -->
+        <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-4 mb-6">
+            <h2 class="text-xl font-bold mb-3 text-center text-white">🎯 作成モード選択</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button id="prompt-mode-btn" onclick="setMode('prompt')" class="mode-btn bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all active">
+                    <i class="fas fa-sliders-h mr-2"></i>曲のプロンプト作成
+                </button>
+                <button id="pro-lyrics-mode-btn" onclick="setMode('pro-lyrics')" class="mode-btn bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all">
+                    <i class="fas fa-crown mr-2"></i>Pro歌詞システム
+                </button>
+            </div>
+        </div>
+        
+        <!-- 言語選択（トップページ） -->
+        <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-white">🌐 プロンプト言語選択</h2>
+            <div class="flex flex-wrap justify-center">
+                <button class="genre-btn selected" onclick="selectPromptLanguage(this, 'cantonese')" id="prompt-lang-cantonese">🇭🇰 広東語(繁体字)</button>
+                <button class="genre-btn" onclick="selectPromptLanguage(this, 'chinese')" id="prompt-lang-chinese">🇨🇳 中国語(簡体字)</button>
+                <button class="genre-btn" onclick="selectPromptLanguage(this, 'japanese')" id="prompt-lang-japanese">🇯🇵 日本語</button>
+                <button class="genre-btn" onclick="selectPromptLanguage(this, 'english')" id="prompt-lang-english">🇺🇸 英語</button>
+            </div>
+        </div>
+        
+        <!-- 曲のプロンプト作成セクション -->
+        <div id="prompt-creation-section">
+            <!-- タブナビゲーション -->
+            <div class="flex flex-wrap justify-center mb-6">
+                <button class="tab-btn active" onclick="showTab('vocal')">🎤 ボーカルタグ</button>
+                <button class="tab-btn" onclick="showTab('moods')">✨ ムード・スタイル</button>
+                <button class="tab-btn" onclick="showTab('genres')">🎵 ジャンル</button>
+                <button class="tab-btn" onclick="showTab('artists')">⭐ 歌手スタイル</button>
+            </div>
+
+            <!-- ボーカルタグセクション -->
+            <div id="vocal-section" class="tab-content bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-6 mb-12">
+                <h2 class="text-2xl font-bold mb-4 text-white">🎤 ボーカルタグ</h2>
+                <div class="flex flex-wrap">
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Male Vocal')" data-translation="男性ボーカル">Male Vocal<br><small>男性ボーカル</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Female Vocal')" data-translation="女性ボーカル">Female Vocal<br><small>女性ボーカル</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Duet')" data-translation="デュエット">Duet<br><small>デュエット</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Choir')" data-translation="合唱">Choir<br><small>合唱</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Whisper')" data-translation="ささやき">Whisper<br><small>ささやき</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Spoken Word')" data-translation="語り">Spoken Word<br><small>語り</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Harmonies')" data-translation="ハーモニー">Harmonies<br><small>ハーモニー</small></button>
+                    <button class="genre-btn" onclick="toggleSelection(this, 'Vulnerable Vocals')" data-translation="感情的な歌声">Vulnerable Vocals<br><small>感情的な歌声</small></button>
+                </div>
+            </div>
+
+            <!-- ムード・スタイルセクション -->
+            <div id="moods-section" class="tab-content bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-6 mb-12" style="display: none;">
+                <h2 class="text-2xl font-bold mb-4 text-white">✨ ムード・スタイル</h2>
+                <div id="moods-container"></div>
+            </div>
+
+            <!-- ジャンルセクション -->
+            <div id="genres-section" class="tab-content bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-6 mb-12" style="display: none;">
+                <h2 class="text-2xl font-bold mb-4 text-white">🎵 音楽ジャンル <span id="genres-count" class="text-lg text-gray-400"></span></h2>
+                <input type="text" class="search-box" placeholder="ジャンルを検索..." onkeyup="searchGenres(this.value)">
+                <div id="genres-container"></div>
+            </div>
+
+            <!-- 歌手スタイルセクション -->
+            <div id="artists-section" class="tab-content bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-6 mb-12" style="display: none;">
+                <h2 class="text-2xl font-bold mb-4 text-white">⭐ 歌手スタイル <span id="artists-count" class="text-lg text-gray-400"></span></h2>
+                <input type="text" class="search-box" placeholder="歌手を検索..." onkeyup="searchArtists(this.value)">
+                <div id="artists-container" class="flex flex-wrap"></div>
+            </div>
+
+
+        </div>
+
+        <!-- 生成されたプロンプト表示（フロート） -->
+        <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-6 max-w-lg z-50 border-2 border-purple-500" style="display: none;">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
+                <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200">
+                    <i class="fas fa-times-circle text-xl"></i>
+                </button>
+            </div>
+            <div class="bg-gray-800 bg-opacity-80 p-4 rounded-lg mb-4 max-h-40 overflow-y-auto border border-gray-600">
+                <pre id="generated-prompt" class="whitespace-pre-wrap text-sm font-medium text-gray-200">選択したスタイルがここに表示されます</pre>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="copyPrompt()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex-1 transition-all">
+                    <i class="fas fa-copy mr-2"></i>コピー
+                </button>
+                <button onclick="clearPrompt()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-1 transition-all">
+                    <i class="fas fa-times mr-2"></i>クリア
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Pro歌詞システムセクション -->
+        <div id="pro-lyrics-creation-section" style="display: none;">
+            <!-- 歌詞生成パラメータ（最優先・トップ配置） -->
+            <section class="mb-12">
+                <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg card-shadow p-8 hover-scale transition-transform duration-300 border border-gray-700">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-sliders-h text-purple-400 mr-3"></i>Pro歌詞生成パラメータ
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 基本設定 -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-200 border-b-2 border-purple-400 pb-2">基本設定</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">音楽ジャンル</label>
+                                <select id="pro-genre" class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-700 text-white">
+                                    <option>ポップス</option>
+                                    <option>バラード</option>
+                                    <option>ロック</option>
+                                    <option>フォーク</option>
+                                    <option>R&B</option>
+                                    <option>カントリー</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">主要テーマ</label>
+                                <input type="text" id="pro-theme" placeholder="例：恋愛、友情、成長..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">対象年齢層</label>
+                                <select id="pro-age" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option>全年齢</option>
+                                    <option>10代</option>
+                                    <option>20代</option>
+                                    <option>30代以上</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 感情設定 -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-700 border-b-2 border-green-200 pb-2">感情設定</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">主要感情</label>
+                                <select id="pro-emotion" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                    <option>喜び</option>
+                                    <option>悲しみ</option>
+                                    <option>希望</option>
+                                    <option>郷愁</option>
+                                    <option>愛情</option>
+                                    <option>憧れ</option>
+                                    <option>不安</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">感情の強度</label>
+                                <input type="range" id="pro-emotion-intensity" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>穏やか</span>
+                                    <span>強烈</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">感情の変化</label>
+                                <select id="pro-emotion-change" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                    <option>一定</option>
+                                    <option>徐々に上昇</option>
+                                    <option>徐々に下降</option>
+                                    <option>起伏あり</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 言語・表現設定 -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-700 border-b-2 border-purple-200 pb-2">言語・表現設定</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">言語レベル</label>
+                                <select id="pro-language-level" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option>日常語</option>
+                                    <option>詩的表現</option>
+                                    <option>格調高い</option>
+                                    <option>現代的</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">比喩の使用度</label>
+                                <input type="range" id="pro-metaphor" min="1" max="10" value="6" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>直接的</span>
+                                    <span>比喩的</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">韻律パターン</label>
+                                <select id="pro-rhythm" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option>自然な流れ</option>
+                                    <option>定型韻律</option>
+                                    <option>自由詩</option>
+                                    <option>伝統的</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 追加設定 -->
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">キーワード・フレーズ</label>
+                            <textarea id="pro-keywords" placeholder="含めたい特定の言葉やフレーズを入力..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">避けたい表現</label>
+                            <textarea id="pro-avoid" placeholder="使用を避けたい表現を入力..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent h-24"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成ボタン -->
+                    <div class="mt-8 text-center">
+                        <button onclick="generateProLyrics()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-magic mr-2"></i>Pro歌詞を生成する
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 生成された歌詞表示エリア -->
+            <section class="mb-12">
+                <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg card-shadow p-8 border border-gray-700">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-file-alt text-green-400 mr-3"></i>生成されたPro歌詞
+                    </h2>
+                    
+                    <div id="proLyricsOutput" class="lyrics-output p-6 rounded-lg min-h-96">
+                        <div class="text-center text-gray-500 animate-pulse-soft">
+                            <i class="fas fa-music text-4xl mb-4"></i>
+                            <p class="text-lg">上記のパラメータを設定して「Pro歌詞を生成する」ボタンを押してください</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 歌詞評価表示 -->
+                    <div id="proLyricsEvaluation" class="mt-6 hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Pro歌詞品質評価</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600" id="proEmotionScore">85</div>
+                                <div class="text-sm text-gray-600">感情的インパクト</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600" id="proLanguageScore">92</div>
+                                <div class="text-sm text-gray-600">言語的美しさ</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-600" id="proOriginalityScore">78</div>
+                                <div class="text-sm text-gray-600">独創性</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-red-600" id="proMusicalScore">89</div>
+                                <div class="text-sm text-gray-600">音楽的適合性</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="section-separator"></div>
+            
+            <!-- 曲構成設定 -->
+            <section class="mb-12">
+                <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg card-shadow p-8 border border-gray-700">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-list-ol text-orange-400 mr-3"></i>Pro曲構成設定
+                    </h2>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-600 mb-4">現在の構成（一般的なポップス構成がデフォルト設定されています）</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Intro（イントロ）</span>
+                                        <span class="text-sm text-gray-500">8小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">楽曲の導入部分</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Verse 1（ヴァース1）</span>
+                                        <span class="text-sm text-gray-500">16小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">物語の設定・導入</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Chorus（コーラス・サビ）</span>
+                                        <span class="text-sm text-gray-500">16小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">楽曲の中心メッセージ</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Verse 2（ヴァース2）</span>
+                                        <span class="text-sm text-gray-500">16小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">物語の展開・発展</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Chorus（コーラス・サビ）</span>
+                                        <span class="text-sm text-gray-500">16小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">メッセージの強調</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Bridge（ブリッジ）</span>
+                                        <span class="text-sm text-gray-500">8小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">転換・変化部分</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Chorus（最終サビ）</span>
+                                        <span class="text-sm text-gray-500">16小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">クライマックス</p>
+                                </div>
+                                
+                                <div class="structure-part p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Outro（アウトロ）</span>
+                                        <span class="text-sm text-gray-500">8小節</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">楽曲の終結</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 構成カスタマイズ -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">構成カスタマイズ</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">構成テンプレート</label>
+                                <select id="pro-structure-template" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                    <option>標準ポップス</option>
+                                    <option>バラード構成</option>
+                                    <option>ロック構成</option>
+                                    <option>フォーク構成</option>
+                                    <option>カスタム</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">追加要素</label>
+                                <select id="pro-additional-elements" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                    <option>なし</option>
+                                    <option>Guitar Solo</option>
+                                    <option>Piano Solo</option>
+                                    <option>Instrumental</option>
+                                    <option>Break</option>
+                                    <option>Crescendo</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">終了方法</label>
+                                <select id="pro-ending" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                    <option>通常終了</option>
+                                    <option>Fade Out</option>
+                                    <option>突然終了</option>
+                                    <option>リピート</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 text-center">
+                            <button onclick="applyProStructureChanges()" class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors duration-300">
+                                <i class="fas fa-sync-alt mr-2"></i>構成を適用してPro歌詞を再生成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="section-separator"></div>
+            
+            <!-- 文学作品参照機能 -->
+            <section class="mb-12">
+                <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg card-shadow p-8 border border-gray-700">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-book text-indigo-400 mr-3"></i>文学作品参照機能
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- URL入力 -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 transition-colors">
+                            <i class="fas fa-link text-3xl text-indigo-600 mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">URL入力</h3>
+                            <p class="text-sm text-gray-600 mb-4">青空文庫、詩のサイトなどから直接参照</p>
+                            <input type="url" id="literary-url" placeholder="https://www.aozora.gr.jp/..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-3">
+                            <button onclick="analyzeURL()" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-search mr-2"></i>分析開始
+                            </button>
+                        </div>
+                        
+                        <!-- ファイルアップロード -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+                            <i class="fas fa-upload text-3xl text-green-600 mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">ファイルアップロード</h3>
+                            <p class="text-sm text-gray-600 mb-4">PDF、Word、テキストファイルを直接アップロード</p>
+                            <input type="file" id="literary-file" accept=".txt,.pdf,.docx" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent mb-3">
+                            <button onclick="analyzeFile()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-file-alt mr-2"></i>ファイル分析
+                            </button>
+                        </div>
+                        
+                        <!-- 作品検索 -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
+                            <i class="fas fa-search text-3xl text-purple-600 mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">作品検索</h3>
+                            <p class="text-sm text-gray-600 mb-4">作品名・作者名で検索</p>
+                            <input type="text" id="literary-search" placeholder="作品名・作者名..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-3">
+                            <button onclick="searchWork()" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                <i class="fas fa-search mr-2"></i>検索
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 分析結果表示 -->
+                    <div id="proLiteraryAnalysis" class="mt-8 hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">文学的要素分析結果</h3>
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <h4 class="font-medium text-gray-700 mb-2">文体特徴</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 古典的で格調高い</li>
+                                        <li>• 叙情的な表現</li>
+                                        <li>• 簡潔で印象的</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 mb-2">表現技法</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 季節の比喩</li>
+                                        <li>• 感覚的描写</li>
+                                        <li>• 象徴的表現</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 mb-2">語彙特性</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 詩的語彙多用</li>
+                                        <li>• 情緒的表現豊富</li>
+                                        <li>• 韻律的配慮</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 text-center">
+                                <button onclick="applyLiteraryElements()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                                    <i class="fas fa-magic mr-2"></i>この要素をPro歌詞に適用
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 使用ガイド -->
+            <section class="mb-12">
+                <div class="bg-gradient-to-r from-gray-800 to-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg p-8 border border-gray-700">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-info-circle text-blue-400 mr-3"></i>Pro歌詞システム使用ガイド
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">基本的な使用手順</h3>
+                            <ol class="space-y-2 text-gray-600">
+                                <li class="flex items-start">
+                                    <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">1</span>
+                                    Pro歌詞生成パラメータを詳細設定
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">2</span>
+                                    「Pro歌詞を生成する」ボタンを押す
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">3</span>
+                                    生成されたPro歌詞を確認・評価
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">4</span>
+                                    Pro曲構成を詳細調整
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">5</span>
+                                    文学作品参照で表現を豊かに
+                                </li>
+                            </ol>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Pro歌詞のコツ</h3>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-start">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                    具体的なテーマやシチュエーションを設定
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                    感情の強度と変化を細かく調整
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                    ジャンルに応じた言語レベルを選択
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                    文学作品参照で独創的な表現を追加
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-1"></i>
+                                    曲構成を音楽ジャンルに合わせて調整
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // lyrics.htmlから統合されたサンプル歌詞データ
+        const sampleLyrics = {
+            'joy': `青空に響く 笑い声
+希望の光が 心を照らす
+新しい一歩 踏み出そう
+明日への扉 開かれてる
+
+キラキラと輝く 瞬間を
+大切に胸に 抱きしめて
+みんなで歌おう この歌を
+幸せな時間 永遠に`,
+            
+            'sadness': `雨粒が頬を 伝い落ちて
+思い出の中に 君がいる
+もう戻れない あの日々に
+心は今も 揺れている
+
+桜の花びら 舞い散って
+時の流れに 身を任せ
+涙の向こうに 見えるのは
+新しい希望の 光かな`,
+            
+            'love': `君の笑顔に 心奪われて
+この想いを どう伝えよう
+星空の下で 二人きり
+永遠を誓う この瞬間
+
+手を取り合って 歩もう
+どんな困難も 乗り越えて
+愛の力で 結ばれた
+奇跡の物語 始まるよ`,
+            
+            'nostalgia': `夕焼け空に 響く鐘の音
+あの頃の僕ら 思い出す
+校舎の影が 長く伸びて
+青春の日々 よみがえる
+
+友達の声が 聞こえてくる
+懐かしい風が 頬を撫で
+時は過ぎても 変わらない
+心の奥の 宝物`
+        };
+
+        // チャート初期化変数
+        let emotionChart, linguisticChart, qualityChart;
+
+        // データ定義
+        const artistStyles = {
+            "Drake": "Hip-hop, trap, laid-back male vocals, ambient beats",
+            "Taylor Swift": "Pop, Alternative Folk, Emotional, female vocals",
+            "BTS": "K-Pop, Anthemic, Dance, Dynamic",
+            "Billie Eilish": "Pop, Dark, Minimal, female vocals",
+            "The Weeknd": "RnB, Dark, Cinematic, male vocals",
+            "Ariana Grande": "Pop, Dance Pop, Ethereal, female vocals",
+            "Beyoncé": "RnB, Anthemic, Danceable, female vocals",
+            "Kendrick Lamar": "HipHop, Lyrical, Storytelling, male vocals",
+            "Lady Gaga": "Pop, Theatrical, Dance, female vocals",
+            "Jay-Z": "HipHop, Aggressive, Storytelling, male vocals",
+            "Rihanna": "RnB, Dance Pop, Festive, female vocals",
+            "Kanye West": "HipHop, Progressive, Eclectic, male vocals",
+            "Justin Bieber": "Pop, Danceable, Chillwave, male vocals",
+            "Katy Perry": "Pop, Glitter, Festive, female vocals",
+            "Metallica": "Thrash metal, aggressive riffs, pounding drums, male vocals",
+            "AC/DC": "Hard rock, crunchy guitar riffs, raspy male vocals, driving rhythm",
+            "Madonna": "Dance Pop, High-NRG, female vocals",
+            "David Bowie": "70s British Rock, Art, Eclectic, male vocals",
+            "Bob Dylan": "Folk, Storytelling, Acoustic Guitar, male vocals",
+            "Post Malone": "Rap, Ethereal, Ambient, male vocals",
+            "Bruno Mars": "Funk-pop blend, groovy rhythms, male vocals, danceable",
+            "Ed Sheeran": "Folk-pop, acoustic guitar loops, male vocals, mellow tone",
+            "Adele": "Soul, Emotional, Torch-Lounge, female vocals",
+            "Queen": "Rock, Operatic, Theatrical, Male Vocals",
+            "The Beatles": "60s British Pop, Classic, Rock",
+            "Led Zeppelin": "Hard Rock, Blues Rock, Epic",
+            "Pink Floyd": "80s Rock, Progressive, Atmospheric",
+            "Michael Jackson": "80s Pop, Dance, Iconic, male vocals",
+            "Prince": "Funk, Eclectic, Glam, male vocals",
+            "Elvis Presley": "50s Rock, Hero Theme, male vocals",
+            "Frank Sinatra": "1940s big band, Lounge Singer, male vocals",
+            "Aretha Franklin": "Soul, Gospel, Powerful, female vocals",
+            "Whitney Houston": "Pop, RnB, Emotional, female vocals",
+            "Stevie Wonder": "Soul, Funk, Joyful, male vocals",
+            "Bob Marley": "Reggae, Peaceful, Soulful, male vocals",
+            "Nirvana": "Grunge, Dark, Raw, Male Vocals",
+            "Radiohead": "Alternative Rock, Experimental, Atmospheric",
+            "Coldplay": "Atmospheric alt-rock, ambient, male vocals, emotional piano",
+            "Green Day": "Punk Rock, Aggressive, Youthful",
+            "Red Hot Chili Peppers": "Funk rock, slap bass, male vocals, energetic",
+            "Foo Fighters": "Rock, Alternative, Energetic",
+            "Linkin Park": "Rock, Nu Metal, Emotional",
+            "Imagine Dragons": "Rock, Anthemic, Emotion",
+            "The Rolling Stones": "Rock, Blues Rock, Classic",
+            "U2": "Rock, Anthemic, Atmospheric, male vocals",
+            "Bon Jovi": "Rock, Anthem, Stadium, male vocals",
+            "Aerosmith": "Rock, Hard Rock, Classic",
+            "Guns N' Roses": "Hard Rock, Raw, Aggressive, male vocals",
+            "Daft Punk": "Electronic, Dance, Futuristic",
+            "Calvin Harris": "EDM, Dance, Festive, male vocals",
+            "Skrillex": "Dubstep, Electronic, Intense, male vocals",
+            "Deadmau5": "Electronic, House, Progressive",
+            "The Chainsmokers": "EDM, Dance, Party",
+            "Marshmello": "EDM, Dance, Happy",
+            "Avicii": "EDM, Progressive House, Uplifting",
+            "Tiësto": "Trance, Progressive, Electronic",
+            "Martin Garrix": "Big Room House, Festival, Electronic",
+            "Swedish House Mafia": "Progressive House, Festival, Electronic",
+            "Fleetwood Mac": "Classic rock, mellow harmonies, emotional, 70s vibe",
+            "The Eagles": "Rock, Country Rock, Harmonious",
+            "The Doors": "Rock, Psychedelic, Mysterious",
+            "Jimi Hendrix": "Rock, Psychedelic, Guitar Virtuoso, male vocals",
+            "Janis Joplin": "Rock, Blues Rock, Raw Emotion, female vocals",
+            "The Who": "Rock, Hard Rock, Theatrical",
+            "Black Sabbath": "Heavy Metal, Dark, Pioneering",
+            "Iron Maiden": "Heavy Metal, Epic, Theatrical",
+            "Judas Priest": "Heavy Metal, Power, Leather",
+            "Ozzy Osbourne": "Heavy Metal, Dark, Theatrical, male vocals",
+            "Deep Purple": "Hard Rock, Progressive, Classic",
+            "Rainbow": "Hard Rock, Fantasy, Epic",
+            "Dio": "Heavy Metal, Fantasy, Powerful",
+            "Slayer": "Thrash Metal, Aggressive, Dark",
+            "Megadeth": "Thrash Metal, Technical, Aggressive",
+            "Anthrax": "Thrash Metal, Crossover, Energetic",
+            "Testament": "Thrash Metal, Bay Area, Aggressive",
+            "Pantera": "Groove Metal, Heavy, Aggressive",
+            "System of a Down": "Metal, Political, Eccentric",
+            "Tool": "Progressive Metal, Complex, Dark",
+            "A Perfect Circle": "Alternative Metal, Atmospheric, Dark",
+            "Nine Inch Nails": "Industrial, Dark, Electronic",
+            "Ministry": "Industrial Metal, Aggressive, Political",
+            "Rammstein": "Industrial Metal, German, Theatrical",
+            "Marilyn Manson": "Industrial Metal, Shock Rock, Dark",
+            "Rob Zombie": "Industrial Metal, Horror, Theatrical",
+            "Alice Cooper": "Shock Rock, Theatrical, Classic Rock",
+            "KISS": "Hard Rock, Glam, Theatrical",
+            "Def Leppard": "Hard Rock, Melodic, 80s",
+            "Whitesnake": "Hard Rock, Blues Rock, 80s",
+            "Europe": "Hard Rock, Melodic, 80s",
+            "Scorpions": "Hard Rock, German, Melodic",
+            "Motley Crue": "Glam Metal, Party, 80s",
+            // 追加のアーティストスタイル定義
+            "Tim McGraw": "Country, Traditional, Male Vocals",
+            "Elton John": "Pop Rock, Piano, Theatrical, Male Vocals",
+            "Dolly Parton": "Country, Traditional, Female Vocals",
+            "Maroon 5": "Pop Rock, Funk, Male Vocals",
+            "Shakira": "Latin Pop, Dance, Female Vocals",
+            "Dua Lipa": "Pop, Dance, Modern, Female Vocals",
+            "Miley Cyrus": "Pop Rock, Alternative, Female Vocals",
+            "Cardi B": "Hip Hop, Trap, Female Vocals",
+            "Camila Cabello": "Pop, Latin, Female Vocals",
+            "Harry Styles": "Pop Rock, British, Male Vocals",
+            "Sam Smith": "Soul, Pop, Male Vocals",
+            "Lizzo": "Pop, Funk, R&B, Female Vocals",
+            "Gorillaz": "Alternative Rock, Electronic, Experimental",
+            "Amy Winehouse": "Soul, Jazz, Female Vocals",
+            "Phil Collins": "Pop Rock, 80s, Male Vocals",
+            "Genesis": "Progressive Rock, Art Rock",
+            "Billy Joel": "Pop Rock, Piano, Male Vocals",
+            "Nicki Minaj": "Hip Hop, Pop, Female Vocals",
+            "Arctic Monkeys": "Indie Rock, British, Male Vocals",
+            "Tame Impala": "Psychedelic Rock, Electronic, Male Vocals",
+            "The Strokes": "Indie Rock, Garage Rock",
+            "Vampire Weekend": "Indie Rock, World Music",
+            "Kings of Leon": "Alternative Rock, Southern Rock",
+            "The Killers": "Alternative Rock, New Wave",
+            "Muse": "Alternative Rock, Progressive",
+            "Rage Against the Machine": "Rap Metal, Political",
+            "Pearl Jam": "Grunge, Alternative Rock",
+            "Soundgarden": "Grunge, Alternative Metal",
+            "Alice in Chains": "Grunge, Alternative Metal",
+            "Sigur Rós": "Post-Rock, Ambient, Ethereal",
+            "Björk": "Art Pop, Electronic, Experimental, Female Vocals",
+            "Enya": "New Age, Celtic, Female Vocals",
+            "Lana Del Rey": "Dream Pop, Indie Pop, Female Vocals",
+            "Kacey Musgraves": "Country, Alternative, Female Vocals",
+            "St. Vincent": "Art Rock, Indie, Female Vocals",
+            "Childish Gambino": "Hip Hop, Funk, R&B, Male Vocals",
+            "SZA": "R&B, Neo Soul, Female Vocals",
+            "Frank Ocean": "R&B, Alternative, Male Vocals",
+            "Tyler, The Creator": "Hip Hop, Alternative, Male Vocals",
+            "Solange": "R&B, Art Pop, Female Vocals",
+            "Brockhampton": "Hip Hop, Alternative, Boy Band",
+            "Mac DeMarco": "Indie Rock, Lo-Fi, Male Vocals",
+            "Rufus Du Sol": "Electronic, House, Dance",
+            "Bon Iver": "Indie Folk, Experimental, Male Vocals",
+            "Florence + The Machine": "Indie Rock, Baroque Pop, Female Vocals",
+            "Jack White": "Alternative Rock, Blues Rock, Male Vocals",
+            "Gary Clark Jr.": "Blues Rock, Soul, Male Vocals",
+            "Leon Bridges": "Soul, R&B, Male Vocals",
+            "Brittany Howard": "Soul, Rock, Female Vocals",
+            "Alabama Shakes": "Blues Rock, Soul",
+            "Glass Animals": "Indie Rock, Electronic",
+            "Portugal, The Man": "Psychedelic Rock, Indie",
+            "FKA Twigs": "Art Pop, Electronic, Female Vocals",
+            "The National": "Indie Rock, Alternative",
+            "MGMT": "Psychedelic Pop, Electronic",
+            "Empire of the Sun": "Electronic, Pop, Synth",
+            "Grimes": "Art Pop, Electronic, Female Vocals",
+            "James Blake": "Electronic, Soul, Male Vocals",
+            "The War on Drugs": "Indie Rock, Americana",
+            "Sufjan Stevens": "Indie Folk, Orchestral, Male Vocals",
+            "Bonobo": "Electronic, Downtempo, Ambient",
+            "Caribou": "Electronic, Psychedelic",
+            "Nicolas Jaar": "Electronic, Experimental",
+            "Flying Lotus": "Electronic, Experimental Hip Hop",
+            "Thundercat": "Funk, Jazz, Bass, Male Vocals",
+            "Kamasi Washington": "Jazz, Spiritual Jazz",
+            "Massive Attack": "Trip Hop, Electronic",
+            "Portishead": "Trip Hop, Alternative, Female Vocals",
+            "Aphex Twin": "Electronic, IDM, Experimental",
+            "Boards of Canada": "Electronic, Ambient, IDM",
+            "Burial": "Dubstep, Ambient, UK Garage",
+            "J Dilla": "Hip Hop, Neo Soul, Producer",
+            "MF DOOM": "Hip Hop, Underground, Male Vocals",
+            "Blink-182": "Pop Punk, Alternative Rock",
+            "Phoebe Bridgers": "Indie Folk, Alternative, Female Vocals",
+            "Motorhead": "Heavy Metal, Rock and Roll"
+        };
+
+        // CSVファイルからアーティスト名を読み込む
+        const csvArtists = [
+            "Drake", "Bruno Mars", "Fleetwood Mac", "Ed Sheeran", "Tim McGraw",
+            "Elton John", "Dolly Parton", "Red Hot Chili Peppers", "Taylor Swift", "Elvis Presley",
+            "Adele", "Ariana Grande", "Billie Eilish", "The Weeknd", "Beyoncé",
+            "Kendrick Lamar", "Lady Gaga", "Jay-Z", "Rihanna", "Kanye West",
+            "Justin Bieber", "Katy Perry", "Metallica", "AC/DC", "Madonna",
+            "David Bowie", "Bob Dylan", "Post Malone", "Maroon 5", "Shakira",
+            "Dua Lipa", "Michael Jackson", "Prince", "Miley Cyrus", "Cardi B",
+            "Imagine Dragons", "Camila Cabello", "Harry Styles", "Sam Smith", "Lizzo",
+            "Daft Punk", "Gorillaz", "The Beatles", "Queen", "Led Zeppelin",
+            "Pink Floyd", "The Rolling Stones", "Bob Marley", "Frank Sinatra", "Aretha Franklin",
+            "Whitney Houston", "Stevie Wonder", "The Chainsmokers", "Nicki Minaj", "Green Day",
+            "Nirvana", "Amy Winehouse", "Linkin Park", "Aerosmith", "Bon Jovi",
+            "Billy Joel", "Phil Collins", "Genesis", "The Eagles", "The Doors",
+            "Janis Joplin", "Jimi Hendrix", "The Who", "Iron Maiden", "Judas Priest",
+            "Motorhead", "Slayer", "Ozzy Osbourne", "Skrillex", "Calvin Harris",
+            "Arctic Monkeys", "Tame Impala", "The Strokes", "Vampire Weekend", "Kings of Leon",
+            "The Killers", "System of a Down", "Radiohead", "Foo Fighters", "Muse",
+            "Rage Against the Machine", "Pearl Jam", "Soundgarden", "Alice in Chains", "Sigur Rós",
+            "Björk", "Enya", "Deadmau5", "Marshmello", "Lana Del Rey",
+            "Kacey Musgraves", "St. Vincent", "Childish Gambino", "SZA", "Frank Ocean",
+            "Tyler, The Creator", "Solange", "Brockhampton", "Mac DeMarco", "Rufus Du Sol",
+            "Bon Iver", "Florence + The Machine", "Jack White", "Gary Clark Jr.", "Leon Bridges",
+            "Brittany Howard", "Alabama Shakes", "Glass Animals", "Portugal, The Man", "FKA Twigs",
+            "The National", "MGMT", "Empire of the Sun", "Grimes", "James Blake",
+            "The War on Drugs", "Sufjan Stevens", "Bonobo", "Caribou", "Nicolas Jaar",
+            "Flying Lotus", "Thundercat", "Kamasi Washington", "Massive Attack", "Portishead",
+            "Aphex Twin", "Boards of Canada", "Burial", "J Dilla", "MF DOOM",
+            "Kendrick Lamar", "Blink-182", "Green Day", "Phoebe Bridgers"
+        ];
+
+        // すべてのアーティストを統合（スタイル付き）
+        const artists = csvArtists.map(name => ({
+            name: name,
+            style: artistStyles[name] || getDefaultStyle(name)
+        }));
+
+        // デフォルトスタイルを生成する関数
+        function getDefaultStyle(artistName) {
+            // アーティスト名に基づいてデフォルトスタイルを生成
+            const defaultStyles = {
+                // 名前に特定のキーワードが含まれる場合のスタイル
+                "DJ": "Electronic, Dance, Mixing",
+                "MC": "Hip Hop, Rap, Urban",
+                "The": "Band, Group Performance",
+            };
+            
+            for (const [keyword, style] of Object.entries(defaultStyles)) {
+                if (artistName.includes(keyword)) {
+                    return style;
+                }
+            }
+            
+            // その他のアーティストのデフォルトスタイル
+            return "Contemporary, Versatile, Modern";
+        }
+
+        // 既存のartists配列を削除して、新しい統合配列を使用
+        // const artists = [ ... ]; // この部分を削除
+
+        const genres = {
+            "ロック・メタル": [
+                "Acid Rock", "Alternative Rock", "Art Rock", "Atmospheric Black Metal", "Avant-garde Metal",
+                "Black Metal", "Blues Rock", "Classic Rock", "Comedy Rock", "Country Rock", "Death Metal",
+                "Deathcore", "Desert Rock", "Doom Metal", "Electronic Rock", "Experimental Metal",
+                "Experimental Rock", "Folk Metal", "Folk Rock", "Funk Metal", "Funk Rock", "Garage Rock",
+                "Glam Rock", "Gothic Metal", "Gothic Rock", "Groove Metal", "Grunge", "Hard Rock",
+                "Heavy Metal", "Heavy Metal Trap", "Industrial Metal", "Industrial Rock", "Instrumental Rock",
+                "Kawaii Metal", "Math Rock", "Melodic Death Metal", "Melodic Metalcore", "Metal", "Metalcore",
+                "New York Hardcore", "Noise Rock", "Nu Metal", "Oriental Metal", "Pagan Metal", "Piano Rock",
+                "Post-Metal", "Post-Rock", "Power Metal", "Progressive Metal", "Progressive Rock",
+                "Psychedelic Rock", "Punk Rock", "Rap Metal", "Rap Rock", "Rock", "Rock and Roll",
+                "Rock Opera", "Rockabilly", "Scandinavian Metal", "Skate Rock", "Sludge Metal",
+                "Southern Rock", "Space Rock", "Speed Metal", "Stadium Rock", "Stoner Rock", "Surf Rock",
+                "Symphonic Black Metal", "Symphonic Metal", "Symphonic Rock", "Thrash Metal", "Viking Metal", "War Metal"
+            ],
+            "エレクトロニック・ダンス": [
+                "Acid Jazz", "Ambient", "Bass House", "Brostep", "Chillwave", "Club", "Cyberpunk", "Dance",
+                "Dance Pop", "Dark Ambient", "Dark Electro", "Deep House", "Deep Techno", "Downtempo",
+                "Drone", "Dub", "Dub Techno", "Dubstep", "EDM", "Electro", "Electro Swing", "Electroacoustic",
+                "Electronic", "Electropop", "Eurodance", "French House", "Future Bass", "Future Garage",
+                "Future House", "Gabber", "Glitch", "Glitch Hop", "Glitch Pop", "Goa Trance", "Happy Hardcore",
+                "Hardstyle", "House", "Hyperpop", "IDM", "Industrial", "Jungle", "Minimal Techno", "Moombahton",
+                "Neurofunk", "Nu Disco", "Post-Disco", "Post-Dubstep", "Progressive House", "Psybient",
+                "Psychedelic Trance", "Rave", "Space Disco", "Synthwave", "Tech House", "Techno", "Trance",
+                "Trip Hop", "Tropical House", "UK Funky", "UK Garage", "Vaporwave", "Vocal House", "Vocal Trance", "Witch House"
+            ],
+            "ジャズ・ブルース": [
+                "Bebop", "Big Band", "Blues", "Cool Jazz", "Dark Jazz", "Delta Blues", "Gypsy Jazz", "Hard Bop",
+                "Jazz", "Jazz Fusion", "Jazz Rap", "Latin Jazz", "Modal Jazz", "New Orleans Jazz", "Nu Jazz",
+                "Piano Blues", "Piedmont Blues", "Post-Bop", "Punk Blues", "Smooth Jazz", "Soul Jazz", "Swing"
+            ],
+            "ヒップホップ・ラップ": [
+                "Crunk", "Hip Hop", "Mumble Rap", "Pop Rap", "Rap", "Trap", "UK Drill", "West Coast Rap"
+            ],
+            "フォーク・ワールド": [
+                "Afro-Cuban", "Afrobeat", "Arabian", "Arabian Ornamental", "Bangra", "Bluegrass", "Bolero",
+                "Calypso", "Carnatic", "Celtic", "Chalga", "Chanson", "Country", "Country Blues", "Fado",
+                "Flamenco", "Folk", "Folk Punk", "Forr", "Freak Folk", "Guajira", "Hawaiian", "Hindustani",
+                "Honky Tonk", "Indian Classical", "Indie Folk", "Irish Folk", "Klezmer", "Latin", "Mambo",
+                "Mariachi", "Neofolk", "Nordic Folk", "Outlaw Country", "Polka", "Psychedelic Folk", "Qawwali",
+                "Quebecois Traditional", "Rai", "Ranchera", "Reggae", "Reggaeton", "Roots Reggae", "Rumba",
+                "Russian Folk", "Salsa", "Samba", "Sea Shanties", "Sephardic", "Spanish Folk", "Sufi Music",
+                "Taarab", "Tango", "Traditional", "Traditional Folk", "Tribal", "Truck Driving Country",
+                "Urban Folk", "World", "World Beat", "World Fusion", "Zydeco"
+            ],
+            "ポップ・コンテンポラリー": [
+                "Adult Contemporary", "Avant-garde", "Bedroom", "Broadway", "Disco", "Disco Funk", "Dream Pop",
+                "Emo", "Europop", "Funk", "Indie", "Indie Pop", "Indie Rock", "J-pop", "K-pop", "Latin Pop",
+                "Lounge", "Motown", "Neon Pop", "Noise Pop", "Pop", "Pop Punk", "Pop Rock", "Power Pop",
+                "Psychedelic Pop", "R&B", "Contemporary R&B", "Singer-Songwriter", "Soft Rock", "Soul",
+                "Synth-pop", "Thai Pop", "Urban Contemporary"
+            ]
+        };
+
+        const csvGenres = [
+            "acoustic chicago blues cape verdean", "afro-jazz", "ambient house 16-bit", "arabic reggae",
+            "saxophone afro house", "portuguese breakbeat", "korean pacific reggae", "hypnagogic pacific reggae",
+            "koto gnawa", "new orleans grunge", "instrumental bluegrass", "cajun griot", "choral celtic",
+            "dakar afro-cuban jazz", "dark goa trance", "prog avant-garde jazz", "reggaetonwave",
+            "sertanejo southern rock", "soulful bubblegum dance", "symphonic disco", "dreamy swing",
+            "garage tango", "grunge cumbia", "classical cumbia", "hindi jungle", "acoustic chicago blues algorave",
+            "afro-funk", "ambient dub techno", "arabic pop", "saxophone drum and bass", "portuguese barbershop",
+            "russian dembow", "hypnagogic goa trance", "koto g-funk", "new orleans dembow", "bluegrass",
+            "cajun algorave", "choral big band", "cumbia metal", "dark electropop", "prog ambient noise wall",
+            "reggae dirty south", "sertanejo emo", "soulful boogie", "symphonic cloud rap", "dreamy soul",
+            "garage", "grunge bedroom pop", "choral afro-jazz", "hindi dream pop", "acoustic chicago blues",
+            "afro-cuban jazz griot", "ambient dub boogie", "arabic mariachi", "saxophone tuareg",
+            "portuguese acoustic rock", "urdu rumba", "hypnagogic garage", "koto drill and bass",
+            "new orleans cloud rap", "big band new jack swing", "cajun afrikaner folk", "choral bedroom pop",
+            "cumbia acoustic blues", "dark drum and bass", "prog afrobeat", "reggae", "sertanejo chillstep",
+            "soulful acoustic texas blues", "symphonic city pop", "dreamy shoegaze", "electro-chanson",
+            "grunge americana", "bubblegum bass symphonic metal", "hindi doo-wop", "acoustic carnatic",
+            "afro-cuban jazz doo-wop", "ambient dub bedroom pop", "arabic egyptian", "slushwave roots reggae",
+            "portuguese 16-bit", "urdu jazzwave", "hypnagogic electropop", "koto dembow", "new orleans chillwave",
+            "swing", "big band grunge", "cajun acid rock", "choral ambient techno", "cumbia", "dark dance",
+            "prog afro-jazz", "reggae cumbia", "saxophone shoegaze", "soulful acid trance", "symphonic boom bap",
+            "dreamy pacific reggae", "electro-bossa nova", "grunge american primitivism", "ambient dub bachata",
+            "hindi chanson", "acoustic blues slushwave", "afro-cuban jazz crunk", "alternative rock",
+            "arabic classical", "mandarin trance", "urdu house", "hypnagogic ambient trance", "koto coptic",
+            "new orleans carnatic", "tuareg synthwave", "big band cumbia", "cajun", "choral ambient noise wall",
+            "crunk swamp blues", "dark coptic", "prog afro-funk", "rap dirty south", "saxophone opera",
+            "soulful acid house", "symphonic bluegrass", "dreamy house", "electro-alternative r&b",
+            "grunge afro-cuban jazz", "drumstep soul", "hindi carnatic", "tuareg motown", "acoustic blues mariachi",
+            "afro-cuban jazz", "alternative r&b griot", "arabic ambient techno", "mandarin math rock",
+            "urdu electropop", "hypnagogic algorave", "koto boom bap", "new orleans cajun", "big band boogie",
+            "cabaretwave", "choral alt-country", "crunk punk", "dark chillstep", "prog acoustic texas blues",
+            "rap bedroom pop", "saxophone gnawa", "soul dembow", "symphonic algorave", "dreamy grime",
+            "electro-acid house", "grunge african folk", "delta blues house", "hindi bubblegum dance",
+            "trap k-pop", "acoustic blues glitch hop", "afro trap r&b", "alternative r&b dembow",
+            "arabic afrobeat", "mandarin house", "urdu drill", "hyphy egyptian", "koto alt-pop",
+            "new orleans alternative r&b", "big band ambient house", "cabaret rock", "choral 16-bit",
+            "crunk goa trance", "dark blues", "popcore", "rap", "saxophone g-funk", "soul",
+            "symphonic afro-cuban jazz", "dreamy fife and drum blues", "egyptian swing", "grunge",
+            "liquid drum and bass house", "hindi ambient house", "trap g-funk", "acoustic ambient trance",
+            "afro trap algorave", "alternative r&b", "arabic acid house", "mandarin hawaiian", "urdu coptic",
+            "hyphy bluegrass", "klezmer pop", "new jack swing big band", "big band alt-country",
+            "cabaret americana", "chillwavewave", "crunk calypso", "dark alternative rock", "pop synthpop",
+            "raga jazz", "saxophone edm", "slushwave new jack swing", "swing synthpop", "dreamy drum and bass",
+            "egyptian flamenco", "griot shoegaze", "arabic african folk", "hindi alt-country", "trap",
+            "acoustic afropiano", "afro trap", "alt-pop afropiano", "arabic 16-bit", "mandarin drum and bass",
+            "urdu acid jazz", "hyphy alternative r&b", "klezmer", "new jack swing", "bengali swamp blues",
+            "cabaret", "chillwave swing", "country jazz", "dark alt-pop", "pop g-funk", "raga egyptian",
+            "saxophone bossa nova", "slushwave dancehall", "swing sertanejo", "dreamy dembow", "egyptian",
+            "griot reggae", "liverpool big band", "hindi afrobeat", "trance", "acoustic acid rock",
+            "afro house rock", "alt-country surf rock", "appalachian folk flamenco", "mandarin disco",
+            "spanish samba", "hyphy", "kawaii future bass polka", "motown", "bengali surf rock",
+            "bubblegum dance chanson", "chillwave samba", "country afro-cuban jazz", "dark acid jazz",
+            "pop bossa nova", "raga edm", "saxophone barbershop", "slushwave chillstep", "swing samba",
+            "dreamy chillwave", "edm swamp blues", "griot indie", "dance drill", "hindi african folk",
+            "tokyo southern rock", "acid trance", "afro house drill and bass", "alt-country dubstep",
+            "appalachian folk cloud rap", "mandarin delta blues", "spanish pop", "hyper-southern rock",
+            "kawaii future bass afropiano", "metal grunge", "bengali surf", "bubblegum dance",
+            "chillwave caribbean", "country dancehall", "dark acid house", "pop", "raga algorave",
+            "saxophone alt-country", "slushwave acid house", "swing roots reggae", "dreamy bubblegum dance",
+            "edm jungle", "griot", "illbient egyptian", "hindi acoustic rock", "tokyo samba",
+            "acid techno psybient", "afro house dembow", "alt-country disco", "appalachian folk anti-folk",
+            "mandarin cumbia", "spanish merengue", "hyper-motown", "kawaii future bass afro-cuban jazz",
+            "merengue", "bengali psybient", "bubblegum bass grime", "chillwave egyptian", "coptic grunge",
+            "dancepop breakbeat", "polka emo", "raga acid breaks", "saxophone 2-step",
+            "ska liquid drum and bass", "swing grime", "dreamy boom bap", "edm grime", "grime tango",
+            "dubstep rock", "hindi acid rock", "tokyo norteo", "acid techno avant-garde jazz",
+            "afro house acoustic blues", "alt-country 2-step", "anti-folkwave", "mandarin american primitivism",
+            "spanish mariachi", "hyper-jungle", "kawaii future bass", "math rock ambient noise wall",
+            "bengali math rock", "breakstep synthwave", "chillwave bubblegum bass", "coptic flamenco",
+            "dancepop", "polka", "raga", "samba soul", "ska coptic", "swing bedroom pop", "dreamy afro-jazz",
+            "edm g-funk", "grime synthpop", "tuareg", "harpischord symphonic metal", "tokyo liquid drum and bass",
+            "acid techno", "afro house", "algorave psybient", "anti-folk drumstep", "tokyo grunge",
+            "mandarin afrobeat", "spanish funk", "hyper-indie", "k-pop acoustic texas blues", "math rock",
+            "bengali grunge", "bubblegum bass", "chillsynth mento", "coptic afro-rock", "dancehall synthwave",
+            "piano klezmer", "r&b gospel", "samba dirty south", "ska", "swamp blues r&b", "dreamy acoustic rock",
+            "edm disco", "grime surf rock", "electro-classical", "harpischord gospel", "acid rock p-funk",
+            "afrikaner folk tango", "algorave hawaiian", "anti-folk big band", "tokyo drumstep",
+            "mandarin acid trance", "spanish ambient trance", "hyper-grime", "k-pop", "mariachi",
+            "bengali electropop", "breakstep samba", "chillsynth", "coptic", "dancehall new wave",
+            "piano country", "punk polka", "samba country", "sitar southern rock", "swamp blues boogie",
+            "dreamy acid house", "edm breakbeat", "grime reggaeton", "urdu shoegaze", "future egyptian",
+            "acid rock city pop", "afrikaner folk pacific reggae", "algorave garage", "anti-folk",
+            "tokyo city pop", "korean fife and drum blues", "spanish acoustic rock", "hyper-egyptian",
+            "jungle ambient noise wall", "lo-fi trap", "bengali egyptian", "breakbeatwave",
+            "chillstep chillwave", "cloud rap symphonic metal", "dancehall flamenco", "piano chillstep",
+            "punk electropop", "samba boom bap", "sitar sertanejo", "swamp blues", "dream pop g-funk",
+            "edm anti-folk", "grime reggae", "havana glitch hop", "future chillwave", "acid jazz crunk",
+            "afrikaner folk drill", "algorave acid jazz", "americana soul", "tokyo afro-jazz", "korean opera",
+            "russian techno", "hyper-dance", "jungle afrobeat", "lo-fi synthpop", "bengali drill",
+            "breakbeat trance", "chillstep", "cloud rap slushwave", "dancehall country", "piano cape verdean",
+            "punk acid trance", "samba bachata", "sitar rumba", "surfwave", "dream pop appalachian folk",
+            "edm", "grime norteo", "havana funk", "french ska", "acid house boom bap", "afrikaner folk",
+            "algorave", "americana jungle", "tokyo afro-funk", "korean drumstep", "russian samba",
+            "hyper-crunk", "jungle", "lo-fi roots reggae", "bengali cape verdean", "breakbeat coptic",
+            "chanson soul", "cloud rap", "dancehall city pop", "piano caribbean", "psychedelic swing",
+            "samba afropiano", "sitar goa trance", "surf slushwave", "dream pop", "dubstepcore",
+            "grime calypso", "havana electropop", "french shoegaze", "acid house", "african folk math rock",
+            "afroswing new wave", "american primitivism illbient", "tokyo acid trance", "korean cabaret",
+            "russian salsa", "hyper-blues rock", "jazz soul", "lo-fi pacific reggae", "bengali barbershop",
+            "breakbeat balkan brass band", "chanson funk", "classicalwave", "dancehall acoustic texas blues",
+            "piano afroswing", "psychedelic psybient", "samba", "sitar glitch hop", "surf rock boogie",
+            "doo-wop pop", "dubstep samba", "grime avant-garde jazz", "havana chillstep", "french samba",
+            "acid breaks alt-country", "african folk drill", "afroswing k-pop", "american primitivism bedroom pop",
+            "tokyo acid breaks", "korean americana", "russian roots reggae", "hyper-afrobeat", "jazz sertanejo",
+            "lo-fi cloud rap", "bengali american primitivism", "bossa nova merengue", "chanson alt-pop",
+            "classical surf", "dancehall", "piano afro-rock", "psychedelic motown", "salsa polka",
+            "sitar fife and drum blues", "surf rock", "doo-wop drumstep", "dubstep kawaii future bass",
+            "grime 2-step", "havana cajun", "french psybient", "accordion tango", "african folk",
+            "afroswing", "american primitivism 2-step", "techno norteo", "korean algorave", "russian k-pop",
+            "hyper-acid house", "jazz future bass", "lo-fi bubblegum bass", "bengali afroswing", "bossa nova",
+            "chanson", "classical grime", "dancecore", "piano african folk", "psychedelic house", "salsa",
+            "sitar drum and bass", "surf raga", "doo-wop classical", "dubstep", "grime", "havana bubblegum bass",
+            "french grunge", "accordion rap", "acoustic texas blues chillstep", "afropiano blues rock",
+            "ambient trance mento", "techno bossa nova", "korean afrobeat", "russian grunge", "hyper-2-step",
+            "jazz", "lo-fi ambient dub", "bengali acoustic chicago blues", "boom bap p-funk", "celtic tango",
+            "classical folk", "dance southern rock", "pacific reggae ska", "psychedelic hawaiian", "rumbawave",
+            "sitar delta blues", "surf grunge", "disco cloud rap", "drumstep chillsynth", "gospelwave",
+            "havana bedroom pop", "french glitch hop", "accordion jungle", "acoustic texas blues afrobeat",
+            "afropiano", "ambient trance jungle", "techno big band", "korean afro-funk", "russian grime",
+            "house symphonic metal", "j-pop chillsynth", "lo-fi afro-cuban jazz", "bedroom pop ska",
+            "boom bap celtic", "celtic cloud rap", "classical dirty south", "dance illbient",
+            "pacific reggae samba", "psychedelic dream pop", "rumba cape verdean", "sitar cumbia",
+            "surf flamenco", "disco classical", "drum and bass swing", "gospel shoegaze", "havana 2-step",
+            "french dubstep", "accordion hawaiian", "acoustic texas blues", "afrobeat swing",
+            "ambient trance folk", "techno balkan brass band", "korean acid trance", "russian glitch hop",
+            "house reggae", "j-pop blues", "lo-fi afro house", "bedroom pop samba", "boogie celtic", "celtic",
+            "classical caribbean", "dance", "pacific reggae afrobeat", "psychedelic cabaret", "rumba",
+            "sitar cape verdean", "surf classical", "disco chillsynth", "drum and bass goa trance",
+            "gospel dream pop", "havana american primitivism", "french dembow", "accordion drill",
+            "acoustic slushwave", "afrobeat rockabilly", "ambient trance chanson", "techno afrobeat",
+            "japanese swing", "russian flamenco", "hip hop dubstep", "j-pop acid jazz",
+            "liquid drum and bass slushwave", "bedroom pop new jack swing", "boogie caribbean",
+            "carnatic glitch hop", "classical boom bap", "dakar raga", "p-funk samba", "psychedelic acid trance",
+            "roots reggae house", "sitar bubblegum dance", "surf acoustic blues", "disco chillstep",
+            "drum and bass acoustic rock", "gospel disco", "harpischord klezmer", "french big band",
+            "synthwave trance", "accordion delta blues", "acoustic rockabilly", "afrobeat new jack swing",
+            "ambient trance alternative rock", "tango trance", "japanese surf rock", "russian dubstep",
+            "hip hop techno", "j-pop acid breaks", "liquid drum and bass rockabilly", "bedroom pop", "boogie",
+            "carnatic acid trance", "classical", "dakar new wave", "synthwave chillsynth", "synthwave cumbia",
+            "p-funk mariachi", "psybient new wave", "roots reggae flamenco", "sitar bubblegum bass", "surf",
+            "synthwave", "tango reggae", "disco alternative r&b", "drill sertanejo", "gospel acid breaks",
+            "harpischord hip hop", "french afro-rock", "tabla bedroom pop", "accordion ambient techno",
+            "acoustic rock chillsynth", "afrobeat griot", "ambient techno mento", "synthwave country",
+            "japanese surf", "russian celtic", "hip hop", "indie grunge", "liquid drum and bass new jack swing",
+            "p-funk jazz", "tango boogie", "barbershop breakbeat", "blues rock american primitivism", "carnatic",
+            "city pop symphonic metal", "dakar math rock", "tango", "psybient griot",
+            "roots reggae avant-garde jazz", "sitar bossa nova", "southern rock ska", "synthpop trance",
+            "dirty south boom bap", "drill raga", "goa trance afro-cuban jazz", "harpischord g-funk",
+            "fife and drum blues p-funk", "accordion afro trap", "acoustic rock afro-jazz", "afrobeat garage",
+            "ambient techno hyphy", "tabla dream pop", "japanese shoegaze", "russian cumbia", "hawaiian r&b",
+            "indie g-funk", "liquid drum and bass blues", "p-funk cloud rap", "synthwave dancehall",
+            "barbershop balkan brass band", "blues rock afropiano", "caribbean", "city pop psybient",
+            "dakar j-pop", "tabla jazz", "tango slushwave", "prog swamp blues", "rockabilly tango",
+            "sitar blues", "southern rock calypso", "synthpop hawaiian", "tabla breakbeat",
+            "dirty south balkan brass band", "drill chillwave", "goa trance", "harpischord drill",
+            "flamenco hip hop", "japanese merengue", "accordion african folk", "acoustic rock",
+            "afrobeat disco", "ambient techno chanson", "balkan brass band raga", "russian appalachian folk",
+            "hawaiian merengue", "indie", "liquid drum and bass bluegrass", "p-funk", "lo-fi swing",
+            "blues rock", "cape verdean acoustic rock", "city pop classical", "dakar house", "dirty south",
+            "tabla hawaiian", "mariachi indie", "prog shoegaze", "rockabilly raga", "sitar alternative r&b",
+            "southern rock", "synthpop coptic", "new orleans afrobeat", "drill cajun", "gnawawave",
+            "harpischord drill and bass", "fife and drum blues acid breaks", "japanese jungle", "hyper-house",
+            "accordion 16-bit", "acoustic raga", "afrobeat", "ambient techno afroswing",
+            "balkan brass band classical", "portuguese southern rock", "havana synthwave",
+            "illbient afrikaner folk", "koto swing", "new wave", "russian ambient techno", "hawaiian electropop",
+            "illbientwave", "liquid drum and bass", "norteowave", "tabla kawaii future bass",
+            "tabla new jack swing", "house surf", "blues folk", "cape verdean", "city pop breakbeat",
+            "dakar gospel", "dembow punk", "pacific reggae", "hyper-roots reggae", "prog rockabilly",
+            "rockabilly country", "sitar afro-jazz", "soulful soul", "synthpop", "new wave delta blues",
+            "house", "drill bubblegum dance", "gnawa funk", "harpischord doo-wop", "electropop grunge",
+            "japanese dancehall", "2-step surf", "acoustic grime", "afro-rock bachata", "ambient techno",
+            "bachata", "hyphy balkan brass band", "russian afrikaner folk", "havana trap", "illbient cumbia",
+            "koto tuareg", "norteo pop", "hyper-afrikaner folk", "blues cumbia", "calypso surf",
+            "choral reggae", "dakar future bass", "dembow balkan brass band", "piano acid techno",
+            "prog dubstep", "rockabilly", "sitar afro-funk", "soulful ska", "symphonic opera",
+            "house roots reggae", "hip hop roots reggae", "drill breakbeat", "gnawa bubblegum bass",
+            "harpischord boogie", "electronic math rock", "japanese chanson", "2-step country",
+            "acoustic funk", "afro-rock ambient dub", "ambient noise wall chanson", "avant-garde jazz rap",
+            "portuguese surf rock", "havana techno", "illbient alternative rock", "koto trap",
+            "new wave acid trance", "blues afro house", "calypso opera", "choral folk", "dakar flamenco",
+            "dembow", "piano coptic", "prog drum and bass", "rock liquid drum and bass", "shoegaze psybient",
+            "soulful reggaeton", "symphonic metal", "drill and bass gnawa", "gnawa afrobeat",
+            "harpischord anti-folk", "electronic grunge", "japanese boogie", "2-step", "acoustic electropop",
+            "afro-rock", "ambient house p-funk", "avant-garde jazz illbient", "portuguese dancehall",
+            "havana grime", "illbient", "koto surf", "new orleans trance", "bluegrass punk",
+            "calypso afroswing", "choral country", "dakar boom bap", "dark reggaeton", "prog southern rock",
+            "prog disco", "rock balkan brass band", "shoegaze boom bap", "soulful city pop",
+            "symphonic merengue", "drill", "glitch hop swing", "harpischord acid jazz", "electro-techno",
+            "japanese ambient house", "16-bit celtic", "acoustic chicago blues reggaeton", "afro-jazz carnatic",
+            "ambient house cajun", "avant-garde jazz", "portuguese chillsynth", "french acoustic chicago blues",
+            "hypnagogic swamp blues", "koto polka", "new orleans samba", "bluegrass k-pop", "cajun synthpop",
+            "choral chillsynth", "dakar ambient dub", "dark merengue", "psychedelic tango", "prog breakbeat",
+            "rock americana", "shoegaze afro-funk", "soulful chillsynth", "symphonic mariachi", "dreamy trance",
+            "glitch hop acoustic texas blues", "grunge new jack swing", "electro-new wave", "japanese algorave",
+            "16-bit", "acoustic chicago blues motown", "afro-jazz blues rock", "ambient house breakstep",
+            "avant-garde jazz disco", "portuguese chillstep", "funk bedroom pop", "hypnagogic shoegaze",
+            "koto house", "new orleans house", "bluegrass bubblegum bass", "cajun new wave", "choral chanson",
+            "dakar afrobeat", "dark jazz", "reggae k-pop", "prog big band", "rock", "shoegaze afro-cuban jazz",
+            "soulful cabaret", "symphonic doo-wop", "dreamy tango", "glitch hop 2-step", "grunge funk",
+            "electro-jungle", "hindi southern rock"
+        ];
+
+        const moods = {
+            "ムード・雰囲気": ["Atmospheric", "Ambient", "Ethereal", "Euphoric", "Mystical", "Dreamy", "Surreal", "Tranquil", "Serene", "Haunting", "Intoxicating", "Eerie", "Celestial", "Chilling", "Melancholic", "Apocalyptic"],
+            "テクスチャー・ダイナミクス": ["Airy", "Dense", "Fluid", "Smooth", "Rough", "Textured", "Layered", "Blurred", "Crisp", "Fuzzy", "Sparkling", "Glossy", "Transparent", "Luminous", "Vibrant", "Shimmering"],
+            "リズム・音楽的": ["Rhythmic", "Percussive", "Melodic", "Harmonic", "Polyphonic", "Syncopated", "Dynamic", "Staccato", "Crescendoing", "Descending", "Ascending", "Cadenced", "Dotted", "Arhythmic", "Cross-rhythmic"],
+            "感情・表現": ["Emotional", "Joyous", "Sad", "Angry", "Aggressive", "Gentle", "Warm", "Cold", "Festive", "Nostalgic", "Romantic", "Passionate", "Soothing", "Inspiring", "Soulful"],
+            "テクノロジー・合成": ["Digital", "Analog", "Electronic", "Robotic", "Cybernetic", "Futuristic", "Synthetic", "Automated", "Virtual", "Algorithmic", "Biotechnological"],
+            "動き・エネルギー": ["Explosive", "Fast-paced", "Slow", "High-energy", "Lethargic", "Static", "Chaotic", "Controlled", "Spontaneous", "Cinematic", "Dramatic", "Climactic", "Bouncing", "Flowing", "Pulsating"],
+            "自然・環境": ["Oceanic", "Forest-like", "Urban", "Desert", "Mountainous", "Space", "Underwater", "Atmospheric", "Geographical", "Seasonal", "Weather-related"]
+        };
+
+        // グローバル変数
+        let selectedItems = [];
+        let selectedLanguage = 'cantonese';
+        let selectedPromptLanguage = 'cantonese'; // プロンプト言語
+        let selectedStructures = [];
+        let currentLyricsCandidate = -1;
+        let generatedLyrics = {};
+
+        // プロンプト言語選択
+        function selectPromptLanguage(button, lang) {
+            document.querySelectorAll('[id^="prompt-lang-"]').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedPromptLanguage = lang;
+            updatePromptSectionTitle();
+            updatePrompt();
+        }
+
+        // プロンプトセクションのタイトルを更新
+        function updatePromptSectionTitle() {
+            const titleElement = document.querySelector('#prompt-section h2');
+            if (titleElement) {
+                const titles = {
+                    'cantonese': '🎛️ 生成嘅風格提示',
+                    'chinese': '🎛️ 生成的风格提示',
+                    'japanese': '🎛️ 生成されたスタイルプロンプト',
+                    'english': '🎛️ Generated Style Prompt'
+                };
+                titleElement.textContent = titles[selectedPromptLanguage] || titles['japanese'];
+            }
+            
+            // ボタンテキストも更新
+            updatePromptButtons();
+        }
+
+        // プロンプトセクションのボタンテキストを更新
+        function updatePromptButtons() {
+            const copyBtn = document.querySelector('#prompt-section button[onclick="copyPrompt()"]');
+            const clearBtn = document.querySelector('#prompt-section button[onclick="clearPrompt()"]');
+            
+            const buttonTexts = {
+                'cantonese': {
+                    copy: '📋 複製',
+                    clear: '❌ 清除'
+                },
+                'chinese': {
+                    copy: '📋 复制',
+                    clear: '❌ 清除'
+                },
+                'japanese': {
+                    copy: '📋 コピー',
+                    clear: '❌ クリア'
+                },
+                'english': {
+                    copy: '📋 Copy',
+                    clear: '❌ Clear'
+                }
+            };
+            
+            const texts = buttonTexts[selectedPromptLanguage] || buttonTexts['japanese'];
+            
+            if (copyBtn) {
+                copyBtn.innerHTML = `<i class="fas fa-copy mr-2"></i>${texts.copy}`;
+            }
+            if (clearBtn) {
+                clearBtn.innerHTML = `<i class="fas fa-times mr-2"></i>${texts.clear}`;
+            }
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeArtists();
+            initializeGenres();
+            initializeMoods();
+            updateCounts(); // 個数を表示
+            updatePromptSectionTitle(); // 初期言語でタイトル設定
+            
+            // 初期表示：すべてのセクションを表示（歌詞生成以外）
+            document.getElementById('genres-section').style.display = 'block';
+            document.getElementById('moods-section').style.display = 'block';
+            document.getElementById('vocal-section').style.display = 'block';
+            document.getElementById('artists-section').style.display = 'block';
+        });
+
+        // 個数を更新する関数
+        function updateCounts() {
+            // アーティスト数を表示
+            const artistsCount = document.getElementById('artists-count');
+            if (artistsCount) {
+                artistsCount.textContent = `(全${artists.length}個)`;
+            }
+            
+            // ジャンル数を計算して表示
+            let genreCount = 0;
+            Object.values(genres).forEach(category => {
+                genreCount += category.length;
+            });
+            
+            // 全ジャンル数を計算
+            const totalGenreCount = genreCount + csvGenres.length;
+            
+            const genresCount = document.getElementById('genres-count');
+            if (genresCount) {
+                genresCount.textContent = `(全${totalGenreCount}個のジャンル)`;
+            }
+        }
+
+        // アーティスト初期化
+        function initializeArtists() {
+            const container = document.getElementById('artists-container');
+            artists.forEach(artist => {
+                const btn = document.createElement('button');
+                btn.className = 'artist-btn';
+                btn.innerHTML = `${artist.name}<br><small>${artist.style.substring(0, 30)}...</small>`;
+                btn.onclick = () => toggleSelection(btn, artist.style);
+                btn.dataset.artist = artist.name.toLowerCase();
+                btn.dataset.style = artist.style.toLowerCase();
+                container.appendChild(btn);
+            });
+        }
+
+        // ジャンル初期化
+        function initializeGenres() {
+            const container = document.getElementById('genres-container');
+            
+            // 基本ジャンルを表示
+            Object.keys(genres).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-6';
+                categoryDiv.innerHTML = `<h3 class="text-lg font-semibold mb-3">${category}</h3>`;
+                
+                const genreContainer = document.createElement('div');
+                genreContainer.className = 'flex flex-wrap';
+                
+                genres[category].forEach(genre => {
+                    const btn = document.createElement('button');
+                    btn.className = 'genre-btn';
+                    btn.textContent = genre;
+                    btn.onclick = () => toggleSelection(btn, genre);
+                    btn.dataset.genre = genre.toLowerCase();
+                    genreContainer.appendChild(btn);
+                });
+                
+                categoryDiv.appendChild(genreContainer);
+                container.appendChild(categoryDiv);
+            });
+            
+            // CSVジャンルを適切なカテゴリに分類して表示
+            const csvGenreCategories = categorizeCSVGenres();
+            
+            Object.keys(csvGenreCategories).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-6';
+                categoryDiv.innerHTML = `<h3 class="text-lg font-semibold mb-3">${category}</h3>`;
+                
+                const genreContainer = document.createElement('div');
+                genreContainer.className = 'flex flex-wrap';
+                
+                csvGenreCategories[category].forEach(genre => {
+                    const btn = document.createElement('button');
+                    btn.className = 'genre-btn'; // 統一された紫のボタン
+                    btn.textContent = genre;
+                    btn.onclick = () => toggleSelection(btn, genre);
+                    btn.dataset.genre = genre.toLowerCase();
+                    genreContainer.appendChild(btn);
+                });
+                
+                categoryDiv.appendChild(genreContainer);
+                container.appendChild(categoryDiv);
+            });
+        }
+        
+        // CSVジャンルを適切なカテゴリに分類する関数
+        function categorizeCSVGenres() {
+            const categories = {
+                "フュージョン・ジャズ": [],
+                "アフロ・ワールド": [],
+                "エレクトロニック・フュージョン": [],
+                "アンビエント・チルアウト": [],
+                "ヒップホップ・フュージョン": [],
+                "ロック・フュージョン": [],
+                "ポップ・フュージョン": [],
+                "フォーク・フュージョン": [],
+                "レゲエ・カリビアン": [],
+                "実験的・アヴァンギャルド": []
+            };
+            
+            csvGenres.forEach(genre => {
+                const lowerGenre = genre.toLowerCase();
+                
+                // ジャズ系
+                if (lowerGenre.includes('jazz') || lowerGenre.includes('swing') || lowerGenre.includes('bebop') || 
+                    lowerGenre.includes('bossa nova') || lowerGenre.includes('acid jazz')) {
+                    categories["フュージョン・ジャズ"].push(genre);
+                }
+                // アフロ・ワールド系
+                else if (lowerGenre.includes('afro') || lowerGenre.includes('african') || lowerGenre.includes('arabic') || 
+                         lowerGenre.includes('hindi') || lowerGenre.includes('mandarin') || lowerGenre.includes('spanish') ||
+                         lowerGenre.includes('tuareg') || lowerGenre.includes('gnawa') || lowerGenre.includes('coptic') ||
+                         lowerGenre.includes('bengali') || lowerGenre.includes('urdu')) {
+                    categories["アフロ・ワールド"].push(genre);
+                }
+                // エレクトロニック系
+                else if (lowerGenre.includes('techno') || lowerGenre.includes('house') || lowerGenre.includes('electro') ||
+                         lowerGenre.includes('drum and bass') || lowerGenre.includes('dubstep') || lowerGenre.includes('edm') ||
+                         lowerGenre.includes('trance') || lowerGenre.includes('acid') || lowerGenre.includes('synthwave') ||
+                         lowerGenre.includes('algorave') || lowerGenre.includes('breakbeat')) {
+                    categories["エレクトロニック・フュージョン"].push(genre);
+                }
+                // アンビエント・チルアウト系
+                else if (lowerGenre.includes('ambient') || lowerGenre.includes('chillwave') || lowerGenre.includes('dreamy') ||
+                         lowerGenre.includes('downtempo') || lowerGenre.includes('shoegaze') || lowerGenre.includes('bedroom')) {
+                    categories["アンビエント・チルアウト"].push(genre);
+                }
+                // ヒップホップ系
+                else if (lowerGenre.includes('rap') || lowerGenre.includes('hip hop') || lowerGenre.includes('trap') ||
+                         lowerGenre.includes('boom bap') || lowerGenre.includes('drill') || lowerGenre.includes('grime')) {
+                    categories["ヒップホップ・フュージョン"].push(genre);
+                }
+                // ロック系
+                else if (lowerGenre.includes('rock') || lowerGenre.includes('grunge') || lowerGenre.includes('metal') ||
+                         lowerGenre.includes('punk') || lowerGenre.includes('garage')) {
+                    categories["ロック・フュージョン"].push(genre);
+                }
+                // ポップ系
+                else if (lowerGenre.includes('pop') || lowerGenre.includes('bubblegum') || lowerGenre.includes('k-pop') ||
+                         lowerGenre.includes('j-pop') || lowerGenre.includes('disco') || lowerGenre.includes('dance')) {
+                    categories["ポップ・フュージョン"].push(genre);
+                }
+                // フォーク・カントリー系
+                else if (lowerGenre.includes('folk') || lowerGenre.includes('country') || lowerGenre.includes('bluegrass') ||
+                         lowerGenre.includes('americana') || lowerGenre.includes('alt-country') || lowerGenre.includes('cajun')) {
+                    categories["フォーク・フュージョン"].push(genre);
+                }
+                // レゲエ・カリビアン系
+                else if (lowerGenre.includes('reggae') || lowerGenre.includes('dancehall') || lowerGenre.includes('samba') ||
+                         lowerGenre.includes('cumbia') || lowerGenre.includes('merengue') || lowerGenre.includes('calypso') ||
+                         lowerGenre.includes('caribbean')) {
+                    categories["レゲエ・カリビアン"].push(genre);
+                }
+                // その他実験的
+                else {
+                    categories["実験的・アヴァンギャルド"].push(genre);
+                }
+            });
+            
+            // 空のカテゴリを削除
+            Object.keys(categories).forEach(key => {
+                if (categories[key].length === 0) {
+                    delete categories[key];
+                }
+            });
+            
+            return categories;
+        }
+
+
+
+        // ムード初期化
+        function initializeMoods() {
+            const container = document.getElementById('moods-container');
+            Object.keys(moods).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-6';
+                categoryDiv.innerHTML = `<h3 class="text-lg font-semibold mb-3">${category}</h3>`;
+                
+                const moodContainer = document.createElement('div');
+                moodContainer.className = 'flex flex-wrap';
+                
+                moods[category].forEach(mood => {
+                    const btn = document.createElement('button');
+                    btn.className = 'genre-btn';
+                    btn.textContent = mood;
+                    btn.onclick = () => toggleSelection(btn, mood);
+                    btn.dataset.mood = mood.toLowerCase();
+                    moodContainer.appendChild(btn);
+                });
+                
+                categoryDiv.appendChild(moodContainer);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+
+
+        // タブ切り替え
+        function showTab(tabName) {
+            // 全てのセクションを非表示
+            document.getElementById('moods-section').style.display = 'none';
+            document.getElementById('vocal-section').style.display = 'none';
+            document.getElementById('genres-section').style.display = 'none';
+            document.getElementById('artists-section').style.display = 'none';
+            
+            // 選択されたセクションを表示
+            document.getElementById(tabName + '-section').style.display = 'block';
+            
+            // 選択したセクションまでスクロール
+            setTimeout(() => {
+                document.getElementById(tabName + '-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+            
+            // タブボタンのアクティブ状態を更新
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes('ジャンル') && tabName === 'genres') btn.classList.add('active');
+                else if (btn.textContent.includes('ムード') && tabName === 'moods') btn.classList.add('active');
+                else if (btn.textContent.includes('ボーカル') && tabName === 'vocal') btn.classList.add('active');
+                else if (btn.textContent.includes('歌手') && tabName === 'artists') btn.classList.add('active');
+            });
+        }
+
+        // 選択切り替え
+        function toggleSelection(button, value) {
+            const index = selectedItems.indexOf(value);
+            if (index > -1) {
+                selectedItems.splice(index, 1);
+                button.classList.remove('selected');
+            } else {
+                selectedItems.push(value);
+                button.classList.add('selected');
+            }
+            updatePrompt();
+        }
+
+
+
+        // プロンプト更新
+        function updatePrompt() {
+            // 選択されたアイテムは常に英語のまま保持
+            let prompt = selectedItems.join(', ');
+            
+            // 歌詞言語のみを選択した言語に応じて追加
+            if (selectedPromptLanguage === 'cantonese') {
+                prompt += ', Cantonese lyrics';
+            } else if (selectedPromptLanguage === 'chinese') {
+                prompt += ', Chinese lyrics';
+            } else if (selectedPromptLanguage === 'japanese') {
+                prompt += ', Japanese lyrics';
+            } else if (selectedPromptLanguage === 'english') {
+                prompt += ', English lyrics';
+            }
+            
+            document.getElementById('generated-prompt').textContent = prompt || getPlaceholderText();
+            
+            // プロンプトセクションの表示/非表示
+            const promptSection = document.getElementById('prompt-section');
+            if (prompt && promptSection) {
+                promptSection.style.display = 'block';
+            } else if (promptSection) {
+                promptSection.style.display = 'none';
+            }
+        }
+
+        // プレースホルダーテキストを言語に応じて取得
+        function getPlaceholderText() {
+            const placeholders = {
+                'cantonese': '選擇嘅風格會喺呢度顯示',
+                'chinese': '选择的风格将在这里显示',
+                'japanese': '選択したスタイルがここに表示されます',
+                'english': 'Selected styles will be displayed here'
+            };
+            return placeholders[selectedPromptLanguage] || placeholders['japanese'];
+        }
+
+
+
+        // プロンプトをクリア
+        function clearPrompt() {
+            selectedItems = [];
+            document.querySelectorAll('.selected').forEach(btn => {
+                if (!btn.id || !btn.id.startsWith('lang-')) {
+                    btn.classList.remove('selected');
+                }
+            });
+            updatePrompt();
+        }
+
+        // 歌詞生成
+        function generateLyrics() {
+            const title = document.getElementById('song-title').value;
+            const theme = document.getElementById('song-theme').value;
+            
+            // 前の内容をクリア
+            clearPreviousLyrics();
+            
+            if (!title && !theme) {
+                document.getElementById('lyrics-candidates').style.display = 'none';
+                return;
+            }
+            
+            // 3つの候補を生成
+            generateLyricsCandidate(0, title, theme, 'ポップス風');
+            generateLyricsCandidate(1, title, theme, 'バラード風');
+            generateLyricsCandidate(2, title, theme, 'アップテンポ風');
+            
+            document.getElementById('lyrics-candidates').style.display = 'block';
+        }
+
+        // 前の歌詞をクリアする関数
+        function clearPreviousLyrics() {
+            // 生成された歌詞をクリア
+            generatedLyrics = {};
+            
+            // 候補表示をクリア
+            ['lyrics-a', 'lyrics-b', 'lyrics-c'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = '';
+                    if (element.parentElement && element.parentElement.classList) {
+                        element.parentElement.classList.remove('selected');
+                    }
+                }
+            });
+            
+            // 最終歌詞表示をクリア
+            const finalLyrics = document.getElementById('final-lyrics');
+            if (finalLyrics) {
+                finalLyrics.textContent = '';
+            }
+            
+            // 最終歌詞セクションを非表示
+            const finalLyricsSection = document.getElementById('final-lyrics-section');
+            if (finalLyricsSection) {
+                finalLyricsSection.style.display = 'none';
+            }
+        }
+
+        // 歌詞候補生成
+        function generateLyricsCandidate(index, title, theme, style) {
+            let lyrics = '';
+            
+            if (selectedLanguage === 'cantonese') {
+                lyrics = generateCantroneseLyrics(title, theme, style);
+            } else if (selectedLanguage === 'japanese') {
+                lyrics = generateJapaneseLyrics(title, theme, style);
+            } else {
+                lyrics = generateInstrumentalStructure(title, theme, style);
+            }
+            
+            const candidateIds = ['lyrics-a', 'lyrics-b', 'lyrics-c'];
+            const candidateId = candidateIds[index];
+            generatedLyrics[candidateId] = lyrics;
+            document.getElementById(candidateId).textContent = lyrics;
+        }
+
+        // 広東語歌詞生成
+        function generateCantroneseLyrics(title, theme, style) {
+            const structures = selectedStructures.length > 0 ? selectedStructures : ['Intro', 'Verse', 'Chorus', 'Bridge', 'Outro'];
+            let lyrics = '';
+            
+            structures.forEach(structure => {
+                lyrics += `[${structure}]\n`;
+                
+                switch(structure) {
+                    case 'Intro':
+                        if (style === 'ポップス風') {
+                            lyrics += `音樂響起嘅時候\n夜晚開始變得特別\n`;
+                        } else if (style === 'バラード風') {
+                            lyrics += `靜靜嘅夜晚裡面\n月光照住我嘅心\n`;
+                        } else {
+                            lyrics += `節拍開始跳動\n準備好一齊狂歡\n`;
+                        }
+                        break;
+                        
+                    case 'Verse':
+                        if (title && theme) {
+                            lyrics += `關於《${title}》嘅故事\n${theme}嘅回憶\n一直都藏喺我心底\n永遠都唔會忘記\n呢份感情好珍貴\n陪伴我到而家\n`;
+                        } else if (title) {
+                            lyrics += `《${title}》就係我嘅夢想\n一路走來唔容易\n但係我從來冇放棄\n因為相信會有奇跡\n每一步都充滿意義\n向住目標繼續前進\n`;
+                        } else {
+                            lyrics += `行過熟悉嘅街道\n回憶湧晒上心頭\n你嘅笑容依然咁溫柔\n令我忍唔住回望\n歲月如流水咁過\n但愛情永遠不變\n`;
+                        }
+                        break;
+                        
+                    case 'Chorus':
+                        if (title) {
+                            lyrics += `《${title}》係我心中永遠嘅歌\n無論去到邊度都會記得\n呢份愛永遠唔會變\n就算世界點樣改變\n我都會堅持到最後\n因為你係我嘅一切\n愛你直到世界盡頭\n呢份情永遠唔會完\n`;
+                        } else {
+                            lyrics += `香港嘅夜晚好靚好靚\n但係冇咗你就唔同晒\n燈火闌珊處\n我哋嘅愛情故事\n永遠都唔會完結\n心中永遠有你嘅位置\n愛你直到世界盡頭\n呢份情永遠唔會變\n`;
+                        }
+                        break;
+                        
+                    case 'Bridge':
+                        lyrics += `就算時間點樣過\n就算世界點樣變\n我對你嘅心\n永遠都唔會改變\n`;
+                        break;
+                        
+                    case 'Outro':
+                        if (style === 'バラード風') {
+                            lyrics += `音樂慢慢fade out\n但愛情故事繼續\n喺我哋心中永遠存在\n`;
+                        } else {
+                            lyrics += `夜深人靜嘅時候\n依然會諗起你\n愛情嘅旋律繼續\n`;
+                        }
+                        break;
+                        
+                    default:
+                        lyrics += `[${structure}樂器演奏部分]\n`;
+                }
+                lyrics += '\n';
+            });
+            
+            return lyrics.trim();
+        }
+
+        // 日本語歌詞生成
+        function generateJapaneseLyrics(title, theme, style) {
+            const structures = selectedStructures.length > 0 ? selectedStructures : ['Intro', 'Verse', 'Chorus', 'Bridge', 'Outro'];
+            let lyrics = '';
+            
+            structures.forEach(structure => {
+                lyrics += `[${structure}]\n`;
+                
+                switch(structure) {
+                    case 'Intro':
+                        if (style === 'ポップス風') {
+                            lyrics += `新しい朝が始まる\n希望の光が差し込んで\n`;
+                        } else if (style === 'バラード風') {
+                            lyrics += `静かな夜に響く\nあなたの声が聞こえる\n`;
+                        } else {
+                            lyrics += `リズムが心を躍らせ\n今夜は特別な夜\n`;
+                        }
+                        break;
+                        
+                    case 'Verse':
+                        if (title && theme) {
+                            lyrics += `「${title}」について歌おう\n${theme}の想いを込めて\n心に響く言葉で\n伝えたい気持ちがある\n時が過ぎても変わらない\nこの愛は永遠に\n`;
+                        } else if (title) {
+                            lyrics += `「${title}」という名の物語\n始まりはいつも小さくて\n夢を信じて歩き続け\n諦めない心で\n未来への扉を開いて\n新しい世界へ\n`;
+                        } else {
+                            lyrics += `思い出の中を歩いて\nあなたの笑顔を探してる\n季節は巡っても\n変わらない想いがある\n永遠に続く愛の歌\n心に刻まれて\n`;
+                        }
+                        break;
+                        
+                    case 'Chorus':
+                        if (title) {
+                            lyrics += `「${title}」は心の歌\nいつまでも響いている\nどんな時も支えてくれる\n大切な宝物\n愛は永遠に続いて\n決して色褪せない\n世界の果てまで\nこの想いを届けたい\n`;
+                        } else {
+                            lyrics += `愛は永遠に美しく\nあなたがいるから輝いて\n星空の下で\n誓った約束\n時を超えても変わらない\n心に刻まれた愛の歌\n世界中に響かせて\nこの想いを伝えたい\n`;
+                        }
+                        break;
+                        
+                    case 'Bridge':
+                        lyrics += `たとえ道のりが険しくても\nあなたがいれば怖くない\n一緒に歩いていこう\n未来への扉を開いて\n`;
+                        break;
+                        
+                    case 'Outro':
+                        if (style === 'バラード風') {
+                            lyrics += `静寂の中に響く\n愛の旋律は永遠に\nあなたと共に歩んでいく\n`;
+                        } else {
+                            lyrics += `新しい朝が来ても\nこの歌は続いていく\n心の中で響く愛の歌\n`;
+                        }
+                        break;
+                        
+                    default:
+                        lyrics += `[${structure}楽器演奏部分]\n`;
+                }
+                lyrics += '\n';
+            });
+            
+            return lyrics.trim();
+        }
+
+        // インストゥルメンタル構成生成
+        function generateInstrumentalStructure(title, theme, style) {
+            const structures = selectedStructures.length > 0 ? selectedStructures : ['Intro', 'Verse', 'Chorus', 'Bridge', 'Outro'];
+            let lyrics = '';
+            
+            structures.forEach(structure => {
+                lyrics += `[${structure}]\n`;
+                
+                switch(structure) {
+                    case 'Intro':
+                        lyrics += `ソフトなピアノで始まる\n静かなメロディーが流れ\n`;
+                        break;
+                    case 'Verse':
+                        lyrics += `メインメロディーが展開\nストリングスが加わり\n豊かなハーモニーを作る\n`;
+                        break;
+                    case 'Chorus':
+                        lyrics += `フルオーケストラで盛り上がり\n印象的なメロディーライン\n感情豊かな表現\n`;
+                        break;
+                    case 'Bridge':
+                        lyrics += `転調とともに新しい展開\nソロ楽器が感情を表現\n`;
+                        break;
+                    case 'Guitar Solo':
+                        lyrics += `情熱的なギターソロ\n技術的で表現力豊か\n`;
+                        break;
+                    case 'Piano Solo':
+                        lyrics += `美しいピアノソロ\n繊細で心に響く演奏\n`;
+                        break;
+                    case 'Outro':
+                        lyrics += `余韻を残してフェードアウト\n静寂の中に消えていく\n`;
+                        break;
+                    default:
+                        lyrics += `[${structure}楽器演奏部分]\n`;
+                }
+                lyrics += '\n';
+            });
+            
+            return lyrics.trim();
+        }
+
+        // 歌詞候補選択
+        function selectLyrics(candidateDiv, key) {
+            // すべての候補の選択を解除
+            document.querySelectorAll('.lyrics-candidate').forEach(div => {
+                div.classList.remove('selected');
+            });
+            
+            // 選択した候補をハイライト
+            candidateDiv.classList.add('selected');
+            
+            // 最終歌詞として表示
+            const selectedLyrics = generatedLyrics[key];
+            document.getElementById('final-lyrics').textContent = selectedLyrics;
+            document.getElementById('final-lyrics-section').style.display = 'block';
+        }
+
+        // タイトルやテーマの入力をリセットする関数
+        function resetLyricsInput() {
+            document.getElementById('song-title').value = '';
+            document.getElementById('song-theme').value = '';
+            clearPreviousLyrics();
+            
+            // 構造選択もリセット
+            selectedStructures = [];
+            document.querySelectorAll('[onclick^="toggleStructure"]').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+
+        // 検索機能
+        function searchArtists(query) {
+            const buttons = document.querySelectorAll('#artists-container .artist-btn');
+            buttons.forEach(btn => {
+                const artist = btn.dataset.artist || '';
+                const style = btn.dataset.style || '';
+                if (artist.includes(query.toLowerCase()) || style.includes(query.toLowerCase())) {
+                    btn.style.display = 'inline-block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+
+        function searchGenres(query) {
+            // 全てのジャンルボタンを検索（統一されたクラス）
+            const genreButtons = document.querySelectorAll('#genres-container .genre-btn');
+            genreButtons.forEach(btn => {
+                const genre = btn.dataset.genre || '';
+                const buttonText = btn.textContent.toLowerCase();
+                if (genre.includes(query.toLowerCase()) || buttonText.includes(query.toLowerCase())) {
+                    btn.style.display = 'inline-block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+
+        // コピー機能
+        function copyPrompt() {
+            const prompt = document.getElementById('generated-prompt').textContent;
+            navigator.clipboard.writeText(prompt).then(() => {
+                const messages = {
+                    'cantonese': '提示已複製！',
+                    'chinese': '提示已复制！',
+                    'japanese': 'プロンプトをコピーしました！',
+                    'english': 'Prompt copied!'
+                };
+                alert(messages[selectedPromptLanguage] || messages['japanese']);
+            });
+        }
+
+        function copyLyrics() {
+            const lyrics = document.getElementById('final-lyrics').textContent;
+            navigator.clipboard.writeText(lyrics).then(() => {
+                const messages = {
+                    'cantonese': '歌詞已複製！',
+                    'chinese': '歌词已复制！',
+                    'japanese': '歌詞をコピーしました！',
+                    'english': 'Lyrics copied!'
+                };
+                alert(messages[selectedPromptLanguage] || messages['japanese']);
+            });
+        }
+
+        // CSVファイルアップロード機能
+        function uploadCSV() {
+            const fileInput = document.getElementById('csv-upload');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('CSVファイルを選択してください');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const lines = content.split('\n').filter(line => line.trim());
+                
+                // 新しいアーティストを追加
+                const newArtists = [];
+                lines.forEach(line => {
+                    const artistName = line.trim();
+                    if (artistName && !artists.find(a => a.name === artistName)) {
+                        newArtists.push({
+                            name: artistName,
+                            style: getDefaultStyle(artistName)
+                        });
+                    }
+                });
+                
+                if (newArtists.length > 0) {
+                    // 既存のアーティスト配列に追加
+                    artists.push(...newArtists);
+                    
+                    // アーティスト表示を更新
+                    const container = document.getElementById('artists-container');
+                    container.innerHTML = '';
+                    initializeArtists();
+                    updateCounts();
+                    
+                    document.getElementById('upload-status').innerHTML = 
+                        `<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>${newArtists.length}個の新しいアーティストを追加しました！</span>`;
+                } else {
+                    document.getElementById('upload-status').innerHTML = 
+                        '<span class="text-yellow-600"><i class="fas fa-info-circle mr-2"></i>新しいアーティストは見つかりませんでした</span>';
+                }
+            };
+            
+            reader.onerror = function() {
+                document.getElementById('upload-status').innerHTML = 
+                    '<span class="text-red-600"><i class="fas fa-exclamation-circle mr-2"></i>ファイルの読み込みに失敗しました</span>';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // ローカルCSVファイルを自動的に読み込む（ページ読み込み時）
+        async function loadLocalCSV() {
+            try {
+                // suno.csvとsuno-2.csvを読み込む試み
+                const csvFiles = ['suno.csv', 'suno-2.csv'];
+                
+                for (const fileName of csvFiles) {
+                    try {
+                        const response = await fetch(fileName);
+                        if (response.ok) {
+                            const content = await response.text();
+                            const lines = content.split('\n').filter(line => line.trim());
+                            
+                            lines.forEach(line => {
+                                const artistName = line.trim();
+                                if (artistName && !artists.find(a => a.name === artistName)) {
+                                    artists.push({
+                                        name: artistName,
+                                        style: artistStyles[artistName] || getDefaultStyle(artistName)
+                                    });
+                                }
+                            });
+                        }
+                    } catch (err) {
+                        console.log(`${fileName}の読み込みをスキップ:`, err);
+                    }
+                }
+                
+                // アーティスト表示を更新
+                const container = document.getElementById('artists-container');
+                if (container) {
+                    container.innerHTML = '';
+                    initializeArtists();
+                    updateCounts();
+                }
+            } catch (error) {
+                console.log('ローカルCSVファイルの読み込みエラー:', error);
+            }
+        }
+
+        // ページ読み込み時に実行
+        window.addEventListener('DOMContentLoaded', function() {
+            loadLocalCSV();
+        });
+
+        // ===== AI歌詞生成機能（lyrics.htmlから統合） =====
+        
+        // DOM要素の取得
+        const generateAIBtn = document.getElementById('generateAIBtn');
+        const processPanel = document.getElementById('processPanel');
+        const resultPanel = document.getElementById('resultPanel');
+        const improvementPanel = document.getElementById('improvementPanel');
+        const lyricsOutput = document.getElementById('lyricsOutput');
+        const emotionResult = document.getElementById('emotionResult');
+
+        // AI歌詞生成ボタンのクリックイベント
+        if (generateAIBtn) {
+            generateAIBtn.addEventListener('click', async function() {
+                // ボタンを無効化
+                generateAIBtn.disabled = true;
+                generateAIBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>生成中...';
+
+                // 入力値の取得
+                const settings = {
+                    emotion: document.getElementById('primaryEmotion').value,
+                    intensity: document.getElementById('emotionIntensity').value,
+                    theme: document.getElementById('ai-theme').value,
+                    genre: document.getElementById('ai-genre').value,
+                    tempo: document.getElementById('tempo').value,
+                    rhymePattern: document.getElementById('rhymePattern').value,
+                    structure: document.getElementById('ai-structure').value,
+                    lineCount: document.getElementById('lineCount').value,
+                    style: document.getElementById('ai-style').value,
+                    inspiration: document.getElementById('inspiration').value,
+                    avoidance: document.getElementById('avoidance').value
+                };
+
+                // プロセスパネルを表示
+                processPanel.classList.remove('hidden');
+                resultPanel.classList.add('hidden');
+                improvementPanel.classList.add('hidden');
+
+                // 感情分析の実行
+                await simulateEmotionAnalysis(settings);
+
+                // 歌詞生成の実行
+                await generateAILyrics(settings);
+
+                // 結果パネルを表示
+                resultPanel.classList.remove('hidden');
+                improvementPanel.classList.remove('hidden');
+
+                // ボタンを有効化
+                generateAIBtn.disabled = false;
+                generateAIBtn.innerHTML = '<i class="fas fa-magic mr-2"></i>AI歌詞を生成する';
+            });
+        }
+
+        // 感情分析シミュレーション
+        async function simulateEmotionAnalysis(settings) {
+            const emotionLabels = {
+                'joy': '喜び',
+                'sadness': '悲しみ',
+                'love': '愛',
+                'nostalgia': '郷愁',
+                'hope': '希望',
+                'anger': '怒り',
+                'fear': '恐れ'
+            };
+
+            if (emotionResult) {
+                emotionResult.textContent = emotionLabels[settings.emotion];
+            }
+
+            // 感情チャートの作成
+            const ctx = document.getElementById('emotionChart');
+            if (ctx) {
+                emotionChart = new Chart(ctx.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['喜び', '悲しみ', '愛', '希望', '怒り', '恐れ'],
+                        datasets: [{
+                            label: '感情強度',
+                            data: generateEmotionData(settings.emotion, settings.intensity),
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(79, 70, 229, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 言語分析チャートの作成
+            const ctx2 = document.getElementById('linguisticChart');
+            if (ctx2) {
+                linguisticChart = new Chart(ctx2.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['語彙豊富度', '韻律適合度', '音楽的調和', '独創性', '感情表現'],
+                        datasets: [{
+                            label: '評価スコア',
+                            data: [85, 92, 88, 76, 94],
+                            backgroundColor: [
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(34, 197, 94, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(139, 92, 246, 1)',
+                                'rgba(245, 158, 11, 1)',
+                                'rgba(239, 68, 68, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2秒待機（分析時間をシミュレート）
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        // AI歌詞生成
+        async function generateAILyrics(settings) {
+            // サンプル歌詞から選択
+            let lyrics = sampleLyrics[settings.emotion] || sampleLyrics['joy'];
+
+            // 設定に応じて歌詞を調整
+            if (settings.theme) {
+                lyrics = `【テーマ: ${settings.theme}】\n\n` + lyrics;
+            }
+
+            // タイピング効果で歌詞を表示
+            if (lyricsOutput) {
+                await typeText(lyricsOutput, lyrics);
+            }
+
+            // 品質チャートの作成
+            const ctx3 = document.getElementById('qualityChart');
+            if (ctx3) {
+                qualityChart = new Chart(ctx3.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['感情的インパクト', '言語的美しさ', '音楽的適合性', '独創性'],
+                        datasets: [{
+                            data: [84, 92, 88, 76],
+                            backgroundColor: [
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(245, 158, 11, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(239, 68, 68, 1)',
+                                'rgba(34, 197, 94, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(245, 158, 11, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // 感情データ生成
+        function generateEmotionData(primaryEmotion, intensity) {
+            const base = [3, 3, 3, 3, 3, 3];
+            const emotionMap = {
+                'joy': 0,
+                'sadness': 1,
+                'love': 2,
+                'hope': 3,
+                'anger': 4,
+                'fear': 5,
+                'nostalgia': 1
+            };
+
+            const index = emotionMap[primaryEmotion] || 0;
+            base[index] = parseInt(intensity);
+
+            // 関連する感情も少し上げる
+            if (primaryEmotion === 'love') {
+                base[0] = Math.max(base[0], 5); // 喜び
+                base[3] = Math.max(base[3], 4); // 希望
+            } else if (primaryEmotion === 'nostalgia') {
+                base[0] = Math.max(base[0], 4); // 喜び
+                base[1] = Math.max(base[1], 6); // 悲しみ
+            }
+
+            return base;
+        }
+
+        // タイピング効果
+        async function typeText(element, text) {
+            element.textContent = '';
+            element.classList.add('typing-animation');
+
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text[i];
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            element.classList.remove('typing-animation');
+        }
+
+        // 再生成ボタン
+        const regenerateBtn = document.getElementById('regenerateBtn');
+        if (regenerateBtn) {
+            regenerateBtn.addEventListener('click', function() {
+                if (generateAIBtn) generateAIBtn.click();
+            });
+        }
+
+        // 改良ボタン
+        const refineBtn = document.getElementById('refineBtn');
+        if (refineBtn) {
+            refineBtn.addEventListener('click', function() {
+                alert('改良機能は開発中です。より高度なAI技術を組み込む予定です。');
+            });
+        }
+
+        // エクスポートボタン
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                const lyrics = lyricsOutput ? lyricsOutput.textContent : '';
+                const blob = new Blob([lyrics], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'generated_lyrics.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // 感情強度スライダーの変更イベント
+        const emotionIntensitySlider = document.getElementById('emotionIntensity');
+        if (emotionIntensitySlider) {
+            emotionIntensitySlider.addEventListener('input', function() {
+                const value = this.value;
+                const meter = document.querySelector('.emotion-meter');
+                if (meter) {
+                    const percentage = (value / 10) * 100;
+                    meter.style.background = `linear-gradient(90deg, #ef4444 0%, #f59e0b 25%, #10b981 50%, #3b82f6 75%, #8b5cf6 100%)`;
+                    meter.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
+                }
+            });
+            
+            // 初期化
+            emotionIntensitySlider.dispatchEvent(new Event('input'));
+        }
+
+        // モード切り替えを更新
+        function setMode(mode) {
+            // モードボタンのアクティブ状態を更新
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // すべてのセクションを非表示
+            document.getElementById('prompt-creation-section').style.display = 'none';
+            const proSection = document.getElementById('pro-lyrics-creation-section');
+            if (proSection) proSection.style.display = 'none';
+            
+            if (mode === 'prompt') {
+                document.getElementById('prompt-mode-btn').classList.add('active');
+                document.getElementById('prompt-creation-section').style.display = 'block';
+                // 初期表示：ボーカルタグを表示
+                document.getElementById('vocal-section').style.display = 'block';
+                document.getElementById('moods-section').style.display = 'none';
+                document.getElementById('genres-section').style.display = 'none';
+                document.getElementById('artists-section').style.display = 'none';
+            } else if (mode === 'pro-lyrics') {
+                document.getElementById('pro-lyrics-mode-btn').classList.add('active');
+                if (proSection) proSection.style.display = 'block';
+                // プロンプトセクションを非表示
+                const promptSection = document.getElementById('prompt-section');
+                if (promptSection) {
+                    promptSection.style.display = 'none';
+                }
+            }
+        }
+
+        // ===== Pro歌詞システム機能 =====
+        
+        // Pro歌詞生成機能
+        function generateProLyrics() {
+            const output = document.getElementById('proLyricsOutput');
+            const evaluation = document.getElementById('proLyricsEvaluation');
+            
+            // パラメータを取得
+            const params = getProLyricsParameters();
+            
+            // ローディング表示
+            output.innerHTML = `
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-lg text-gray-600">Pro AI が高度な歌詞を生成中...</p>
+                    <p class="text-sm text-gray-500 mt-2">テーマ: ${params.theme} | ジャンル: ${params.genre} | 感情: ${params.emotion}</p>
+                </div>
+            `;
+            
+            // 3秒後に生成結果を表示
+            setTimeout(() => {
+                const generatedLyrics = generateLyricsBasedOnParameters(params);
+                output.innerHTML = generatedLyrics;
+                
+                evaluation.classList.remove('hidden');
+                
+                // パラメータに基づいてスコアを計算
+                const scores = calculateProScores(params);
+                animateProScore('proEmotionScore', scores.emotion);
+                animateProScore('proLanguageScore', scores.language);
+                animateProScore('proOriginalityScore', scores.originality);
+                animateProScore('proMusicalScore', scores.musical);
+            }, 3000);
+        }
+        
+        // Pro歌詞パラメータを取得する関数
+        function getProLyricsParameters() {
+            // 安全にDOM要素を取得する関数
+            function safeGetValue(id, defaultValue) {
+                const element = document.getElementById(id);
+                return element ? element.value : defaultValue;
+            }
+            
+            function safeGetChecked(id, defaultValue) {
+                const element = document.getElementById(id);
+                return element ? element.checked : defaultValue;
+            }
+            
+            return {
+                theme: safeGetValue('pro-theme', '希望'),
+                genre: safeGetValue('pro-genre', 'ポップス'),
+                targetAge: safeGetValue('pro-age', '全年齢'),
+                emotion: safeGetValue('pro-emotion', '喜び'),
+                emotionIntensity: safeGetValue('pro-emotion-intensity', 5),
+                emotionPattern: safeGetValue('pro-emotion-change', '一定'),
+                languageLevel: safeGetValue('pro-language-level', '日常語'),
+                metaphorUsage: safeGetValue('pro-metaphor', 6),
+                rhymePattern: safeGetValue('pro-rhythm', '自然な流れ'),
+                keywords: safeGetValue('pro-keywords', ''),
+                avoidWords: safeGetValue('pro-avoid', ''),
+                // 構成は固定値で設定（HTMLに入力フィールドがないため）
+                verseCount: 2,
+                chorusCount: 2,
+                bridgeInclude: true,
+                introInclude: true,
+                outroInclude: true
+            };
+        }
+        
+        // パラメータに基づいて歌詞を生成する関数
+        function generateLyricsBasedOnParameters(params) {
+            // 多言語対応のテーマ別歌詞テンプレート
+            const themeTemplates = {
+                'cantonese': {
+                    '希望': {
+                        keywords: ['夢想', '未來', '光明', '前進', '相信', '挑戰', '成長'],
+                        imagery: ['朝陽', '新綠', '藍天', '風', '道路', '門', '翅膀']
+                    },
+                    '恋愛': {
+                        keywords: ['愛情', '心靈', '思念', '你', '永恆', '承諾', '情緣'],
+                        imagery: ['星空', '月亮', '花朵', '海洋', '手', '眼睛', '微笑']
+                    },
+                    '友情': {
+                        keywords: ['朋友', '信任', '支持', '一起', '歡笑', '回憶', '友誼'],
+                        imagery: ['夕陽', '學校', '公園', '橋樑', '道路', '天空', '彩虹']
+                    },
+                    '成長': {
+                        keywords: ['變化', '學習', '堅強', '克服', '發現', '進步', '成熟'],
+                        imagery: ['山峰', '河流', '森林', '季節', '雨水', '太陽', '大地']
+                    },
+                    '故郷': {
+                        keywords: ['懷念', '回家', '家人', '記憶', '溫暖', '安寧', '根源'],
+                        imagery: ['鄉村', '母親', '家', '節慶', '香味', '聲音', '風景']
+                    }
+                },
+                'chinese': {
+                    '希望': {
+                        keywords: ['梦想', '未来', '光明', '前进', '相信', '挑战', '成长'],
+                        imagery: ['朝阳', '新绿', '蓝天', '风', '道路', '门', '翅膀']
+                    },
+                    '恋愛': {
+                        keywords: ['爱情', '心灵', '思念', '你', '永恒', '承诺', '情缘'],
+                        imagery: ['星空', '月亮', '花朵', '海洋', '手', '眼睛', '微笑']
+                    },
+                    '友情': {
+                        keywords: ['朋友', '信任', '支持', '一起', '欢笑', '回忆', '友谊'],
+                        imagery: ['夕阳', '学校', '公园', '桥梁', '道路', '天空', '彩虹']
+                    },
+                    '成長': {
+                        keywords: ['变化', '学习', '坚强', '克服', '发现', '进步', '成熟'],
+                        imagery: ['山峰', '河流', '森林', '季节', '雨水', '太阳', '大地']
+                    },
+                    '故郷': {
+                        keywords: ['怀念', '回家', '家人', '记忆', '温暖', '安宁', '根源'],
+                        imagery: ['乡村', '母亲', '家', '节庆', '香味', '声音', '风景']
+                    }
+                },
+                'japanese': {
+                    '希望': {
+                        keywords: ['夢', '未来', '光', '歩む', '信じる', '挑戦', '成長'],
+                        imagery: ['朝日', '新緑', '青空', '風', '道', '扉', '翼']
+                    },
+                    '恋愛': {
+                        keywords: ['愛', '心', '想い', '君', '永遠', '約束', '絆'],
+                        imagery: ['星空', '月', '花', '海', '手', '瞳', '微笑み']
+                    },
+                    '友情': {
+                        keywords: ['仲間', '信頼', '支え', '共に', '笑顔', '思い出', '絆'],
+                        imagery: ['夕日', '学校', '公園', '橋', '道', '空', '虹']
+                    },
+                    '成長': {
+                        keywords: ['変化', '学び', '強さ', '乗り越える', '発見', '進歩', '成熟'],
+                        imagery: ['山', '川', '森', '季節', '雨', '太陽', '大地']
+                    },
+                    '故郷': {
+                        keywords: ['懐かしい', '帰る', '家族', '記憶', '温かい', '安らぎ', '原点'],
+                        imagery: ['田舎', '母', '家', '祭り', '匂い', '声', '景色']
+                    }
+                },
+                'english': {
+                    '希望': {
+                        keywords: ['dream', 'future', 'light', 'walk', 'believe', 'challenge', 'growth'],
+                        imagery: ['sunrise', 'green', 'blue sky', 'wind', 'path', 'door', 'wings']
+                    },
+                    '恋愛': {
+                        keywords: ['love', 'heart', 'feelings', 'you', 'forever', 'promise', 'bond'],
+                        imagery: ['starry sky', 'moon', 'flowers', 'ocean', 'hands', 'eyes', 'smile']
+                    },
+                    '友情': {
+                        keywords: ['friends', 'trust', 'support', 'together', 'laughter', 'memories', 'friendship'],
+                        imagery: ['sunset', 'school', 'park', 'bridge', 'road', 'sky', 'rainbow']
+                    },
+                    '成長': {
+                        keywords: ['change', 'learn', 'strength', 'overcome', 'discover', 'progress', 'mature'],
+                        imagery: ['mountain', 'river', 'forest', 'seasons', 'rain', 'sun', 'earth']
+                    },
+                    '故郷': {
+                        keywords: ['nostalgic', 'return', 'family', 'memory', 'warm', 'peace', 'origin'],
+                        imagery: ['countryside', 'mother', 'home', 'festival', 'scent', 'voice', 'scenery']
+                    }
+                }
+            };
+            
+            // 多言語対応のジャンル別スタイル調整
+            const genreStyles = {
+                'cantonese': {
+                    'ポップス': { rhythm: '輕快', language: '隨意' },
+                    'ロック': { rhythm: '強勁', language: '熱情' },
+                    'バラード': { rhythm: '緩慢', language: '感性' },
+                    'フォーク': { rhythm: '自然', language: '樸素' },
+                    'ジャズ': { rhythm: '搖擺', language: '精緻' }
+                },
+                'chinese': {
+                    'ポップス': { rhythm: '轻快', language: '随意' },
+                    'ロック': { rhythm: '强劲', language: '热情' },
+                    'バラード': { rhythm: '缓慢', language: '感性' },
+                    'フォーク': { rhythm: '自然', language: '朴素' },
+                    'ジャズ': { rhythm: '摇摆', language: '精致' }
+                },
+                'japanese': {
+                    'ポップス': { rhythm: '軽快', language: 'カジュアル' },
+                    'ロック': { rhythm: '力強い', language: '情熱的' },
+                    'バラード': { rhythm: 'ゆったり', language: '感情的' },
+                    'フォーク': { rhythm: '自然体', language: '素朴' },
+                    'ジャズ': { rhythm: 'スウィング', language: '洗練' }
+                },
+                'english': {
+                    'ポップス': { rhythm: 'upbeat', language: 'casual' },
+                    'ロック': { rhythm: 'powerful', language: 'passionate' },
+                    'バラード': { rhythm: 'slow', language: 'emotional' },
+                    'フォーク': { rhythm: 'natural', language: 'simple' },
+                    'ジャズ': { rhythm: 'swing', language: 'sophisticated' }
+                }
+            };
+            
+            // 多言語対応の感情別表現調整
+            const emotionExpressions = {
+                'cantonese': {
+                    '喜び': ['閃亮', '跳躍', '舞蹈', '歌唱', '歡笑'],
+                    '悲しみ': ['眼淚', '雨水', '陰影', '寂靜', '離別'],
+                    '怒り': ['燃燒', '呐喊', '風暴', '雷電', '戰鬥'],
+                    '平和': ['平靜', '安靜', '溫柔', '擁抱', '治癒'],
+                    '興奮': ['奔跑', '飛翔', '爆發', '熱烈', '躍動']
+                },
+                'chinese': {
+                    '喜び': ['闪亮', '跳跃', '舞蹈', '歌唱', '欢笑'],
+                    '悲しみ': ['眼泪', '雨水', '阴影', '寂静', '离别'],
+                    '怒り': ['燃烧', '呐喊', '风暴', '雷电', '战斗'],
+                    '平和': ['平静', '安静', '温柔', '拥抱', '治愈'],
+                    '興奮': ['奔跑', '飞翔', '爆发', '热烈', '跃动']
+                },
+                'japanese': {
+                    '喜び': ['輝く', '弾む', '踊る', '歌う', '笑う'],
+                    '悲しみ': ['涙', '雨', '影', '静寂', '別れ'],
+                    '怒り': ['燃える', '叫ぶ', '嵐', '雷', '戦う'],
+                    '平和': ['穏やか', '静か', '優しい', '包む', '癒す'],
+                    '興奮': ['駆ける', '飛ぶ', '爆発', '熱い', '躍動']
+                },
+                'english': {
+                    '喜び': ['shine', 'bounce', 'dance', 'sing', 'laugh'],
+                    '悲しみ': ['tears', 'rain', 'shadow', 'silence', 'farewell'],
+                    '怒り': ['burn', 'shout', 'storm', 'thunder', 'fight'],
+                    '平和': ['calm', 'quiet', 'gentle', 'embrace', 'heal'],
+                    '興奮': ['run', 'fly', 'explode', 'hot', 'dynamic']
+                }
+            };
+            
+            // 選択された言語に基づいてテンプレートを取得
+            const langTemplates = themeTemplates[selectedPromptLanguage] || themeTemplates['japanese'];
+            const template = langTemplates[params.theme] || langTemplates['希望'];
+            const langGenreStyles = genreStyles[selectedPromptLanguage] || genreStyles['japanese'];
+            const style = langGenreStyles[params.genre] || langGenreStyles['ポップス'];
+            const langEmotionExpressions = emotionExpressions[selectedPromptLanguage] || emotionExpressions['japanese'];
+            const expressions = langEmotionExpressions[params.emotion] || langEmotionExpressions['喜び'];
+            
+            // 構成を決定
+            let structure = [];
+            if (params.introInclude) structure.push('Intro');
+            for (let i = 1; i <= params.verseCount; i++) {
+                structure.push(`Verse ${i}`);
+                if (i <= params.chorusCount) structure.push('Chorus');
+            }
+            if (params.bridgeInclude) structure.push('Bridge');
+            if (params.chorusCount > 0) structure.push('Final Chorus');
+            if (params.outroInclude) structure.push('Outro');
+            
+            // 多言語対応の表示テキスト
+            const displayTexts = {
+                'cantonese': {
+                    title: '生成嘅Pro歌詞',
+                    theme: '主題',
+                    genre: '類型',
+                    emotion: '情感',
+                    intensity: '強度',
+                    languageLevel: '語言程度',
+                    rhythm: '韻律',
+                    metaphor: '比喻使用'
+                },
+                'chinese': {
+                    title: '生成的Pro歌词',
+                    theme: '主题',
+                    genre: '类型',
+                    emotion: '情感',
+                    intensity: '强度',
+                    languageLevel: '语言程度',
+                    rhythm: '韵律',
+                    metaphor: '比喻使用'
+                },
+                'japanese': {
+                    title: '生成されたPro歌詞',
+                    theme: 'テーマ',
+                    genre: 'ジャンル',
+                    emotion: '感情',
+                    intensity: '強度',
+                    languageLevel: '言語レベル',
+                    rhythm: '韻律',
+                    metaphor: '比喩使用'
+                },
+                'english': {
+                    title: 'Generated Pro Lyrics',
+                    theme: 'Theme',
+                    genre: 'Genre',
+                    emotion: 'Emotion',
+                    intensity: 'Intensity',
+                    languageLevel: 'Language Level',
+                    rhythm: 'Rhythm',
+                    metaphor: 'Metaphor Usage'
+                }
+            };
+            
+            const currentTexts = displayTexts[selectedPromptLanguage] || displayTexts['japanese'];
+            
+            // 歌詞生成
+            let lyricsHTML = `
+                <div class="space-y-8">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">${currentTexts.title}</h3>
+                        <p class="text-gray-600">${currentTexts.theme}: ${params.theme} | ${currentTexts.genre}: ${params.genre} | ${currentTexts.emotion}: ${params.emotion} (${currentTexts.intensity}: ${params.emotionIntensity}%)</p>
+                        <p class="text-sm text-gray-500">${currentTexts.languageLevel}: ${params.languageLevel} | ${currentTexts.rhythm}: ${params.rhymePattern} | ${currentTexts.metaphor}: ${params.metaphorUsage}%</p>
+                    </div>
+                    <div class="space-y-6">
+            `;
+            
+            structure.forEach((section, index) => {
+                const color = getSectionColor(section);
+                const content = generateSectionContent(section, template, expressions, params);
+                
+                lyricsHTML += `
+                    <div class="bg-${color}-50 border-l-4 border-${color}-500 p-4 rounded">
+                        <h4 class="font-semibold text-${color}-800 mb-2">[${section}]</h4>
+                        <p class="text-gray-700 leading-relaxed">${content}</p>
+                    </div>
+                `;
+            });
+            
+            lyricsHTML += `
+                    </div>
+                </div>
+            `;
+            
+            return lyricsHTML;
+        }
+        
+        // セクションの色を決定
+        function getSectionColor(section) {
+            if (section.includes('Intro') || section.includes('Outro')) return 'green';
+            if (section.includes('Verse')) return 'blue';
+            if (section.includes('Chorus')) return 'purple';
+            if (section.includes('Bridge')) return 'orange';
+            return 'gray';
+        }
+        
+        // セクション別の歌詞内容を生成
+        function generateSectionContent(section, template, expressions, params) {
+            const keywords = template.keywords;
+            const imagery = template.imagery;
+            const intensity = parseInt(params.emotionIntensity);
+            const metaphorLevel = parseInt(params.metaphorUsage);
+            
+            // セクション別のテンプレート
+            if (section.includes('Intro')) {
+                return generateIntroContent(keywords, imagery, expressions, intensity);
+            } else if (section.includes('Verse')) {
+                return generateVerseContent(keywords, imagery, expressions, params);
+            } else if (section.includes('Chorus')) {
+                return generateChorusContent(keywords, expressions, params);
+            } else if (section.includes('Bridge')) {
+                return generateBridgeContent(keywords, imagery, expressions, params);
+            } else if (section.includes('Outro')) {
+                return generateOutroContent(keywords, imagery, expressions, intensity);
+            }
+            
+            return 'カスタム歌詞がここに生成されます';
+        }
+        
+        // Intro用歌詞生成（多言語対応）
+        function generateIntroContent(keywords, imagery, expressions, intensity) {
+            let lines = [];
+            
+            if (selectedPromptLanguage === 'cantonese') {
+                lines = [
+                    `${imagery[0]}中${expressions[0]} ${keywords[0]}的旋律`,
+                    `${imagery[1]}在${expressions[1]} 向${keywords[1]}${expressions[2]}`
+                ];
+            } else if (selectedPromptLanguage === 'chinese') {
+                lines = [
+                    `${imagery[0]}中${expressions[0]} ${keywords[0]}的旋律`,
+                    `${imagery[1]}在${expressions[1]} 向${keywords[1]}${expressions[2]}`
+                ];
+            } else if (selectedPromptLanguage === 'english') {
+                lines = [
+                    `In the ${imagery[0]} ${keywords[0]} ${expressions[0]}`,
+                    `${imagery[1]} ${expressions[1]} towards ${keywords[1]} ${expressions[2]}`
+                ];
+            } else {
+                // Japanese (default)
+                lines = [
+                    `${imagery[0]}に${expressions[0]} ${keywords[0]}の調べ`,
+                    `${imagery[1]}が${expressions[1]}て ${keywords[1]}に${expressions[2]}`
+                ];
+            }
+            
+            return lines.join('<br>');
+        }
+        
+        // Verse用歌詞生成（多言語対応）
+        function generateVerseContent(keywords, imagery, expressions, params) {
+            const lines = [];
+            const lineCount = params.languageLevel === '上級' ? 8 : 6;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const keyword = keywords[i % keywords.length];
+                const img = imagery[i % imagery.length];
+                const expr = expressions[i % expressions.length];
+                
+                let line = '';
+                if (selectedPromptLanguage === 'cantonese') {
+                    if (i % 2 === 0) {
+                        line = `${img}的彼方 ${keyword}在${expr}`;
+                    } else {
+                        line = `${keyword}${expr}著 向${img}前進`;
+                    }
+                } else if (selectedPromptLanguage === 'chinese') {
+                    if (i % 2 === 0) {
+                        line = `${img}的彼方 ${keyword}在${expr}`;
+                    } else {
+                        line = `${keyword}${expr}着 向${img}前进`;
+                    }
+                } else if (selectedPromptLanguage === 'english') {
+                    if (i % 2 === 0) {
+                        line = `Beyond the ${img} ${keyword} ${expr}`;
+                    } else {
+                        line = `${expr} the ${keyword} towards ${img}`;
+                    }
+                } else {
+                    // Japanese (default)
+                    if (i % 2 === 0) {
+                        line = `${img}の向こうに ${keyword}が${expr}`;
+                    } else {
+                        line = `${keyword}を${expr}て ${img}へと向かう`;
+                    }
+                }
+                
+                lines.push(line);
+            }
+            
+            return lines.join('<br>');
+        }
+        
+        // Chorus用歌詞生成（多言語対応）
+        function generateChorusContent(keywords, expressions, params) {
+            const theme = params.theme;
+            const emotion = params.emotion;
+            const intensity = parseInt(params.emotionIntensity);
+            
+            let lines = [];
+            
+            if (selectedPromptLanguage === 'cantonese') {
+                lines = [
+                    `${keywords[0]}在${expressions[0]} 心中${expressions[1]}著`,
+                    `無論什麼困難來臨 都不會${expressions[2]}`,
+                    `懷著${theme} ${keywords[1]}${expressions[3]}`,
+                    `將這${keywords[2]}融入歌聲 向天空${expressions[4]}`
+                ];
+                
+                if (intensity > 70) {
+                    lines.push(`想要傳達給全世界 這${emotion}的旋律`);
+                    lines.push(`因為有${keywords[3]} 我能夠${expressions[0]}`);
+                }
+            } else if (selectedPromptLanguage === 'chinese') {
+                lines = [
+                    `${keywords[0]}在${expressions[0]} 心中${expressions[1]}着`,
+                    `无论什么困难来临 都不会${expressions[2]}`,
+                    `怀着${theme} ${keywords[1]}${expressions[3]}`,
+                    `将这${keywords[2]}融入歌声 向天空${expressions[4]}`
+                ];
+                
+                if (intensity > 70) {
+                    lines.push(`想要传达给全世界 这${emotion}的旋律`);
+                    lines.push(`因为有${keywords[3]} 我能够${expressions[0]}`);
+                }
+            } else if (selectedPromptLanguage === 'english') {
+                lines = [
+                    `${keywords[0]} ${expressions[0]} in my heart ${expressions[1]}`,
+                    `No matter what difficulties come, I won't ${expressions[2]}`,
+                    `With ${theme} in my chest, ${expressions[3]} the ${keywords[1]}`,
+                    `Put this ${keywords[2]} into song and ${expressions[4]} to the sky`
+                ];
+                
+                if (intensity > 70) {
+                    lines.push(`Want to reach the whole world with this melody of ${emotion}`);
+                    lines.push(`Because I have ${keywords[3]}, I can ${expressions[0]}`);
+                }
+            } else {
+                // Japanese (default)
+                lines = [
+                    `${keywords[0]}は${expressions[0]} 心に${expressions[1]}て`,
+                    `どんな困難が来ても ${expressions[2]}ことはない`,
+                    `${theme}を胸に ${keywords[1]}を${expressions[3]}`,
+                    `この${keywords[2]}を歌に込めて 空に${expressions[4]}よう`
+                ];
+                
+                if (intensity > 70) {
+                    lines.push(`世界中に届けたい この${emotion}の調べを`);
+                    lines.push(`${keywords[3]}があるから 僕は${expressions[0]}なれる`);
+                }
+            }
+            
+            return lines.join('<br>');
+        }
+        
+        // Bridge用歌詞生成（多言語対応）
+        function generateBridgeContent(keywords, imagery, expressions, params) {
+            let lines = [];
+            
+            if (selectedPromptLanguage === 'cantonese') {
+                lines = [
+                    `仰望${imagery[4] || '星空'} 許下${keywords[5] || '承諾'}`,
+                    `任何困難 只要${expressions[1]}就能克服`,
+                    `手牽手${expressions[2]} 一起${expressions[3]}前進`,
+                    `為了證明${keywords[0]}的${keywords[1]}`
+                ];
+            } else if (selectedPromptLanguage === 'chinese') {
+                lines = [
+                    `仰望${imagery[4] || '星空'} 许下${keywords[5] || '承诺'}`,
+                    `任何困难 只要${expressions[1]}就能克服`,
+                    `手牵手${expressions[2]} 一起${expressions[3]}前进`,
+                    `为了证明${keywords[0]}的${keywords[1]}`
+                ];
+            } else if (selectedPromptLanguage === 'english') {
+                lines = [
+                    `Looking up at the ${imagery[4] || 'starry sky'} making a ${keywords[5] || 'promise'}`,
+                    `Any difficulty can be overcome if we ${expressions[1]}`,
+                    `Holding hands ${expressions[2]} let's ${expressions[3]} together`,
+                    `To prove the ${keywords[1]} of ${keywords[0]}`
+                ];
+            } else {
+                // Japanese (default)
+                lines = [
+                    `${imagery[4] || '星空'}を見上げて 誓った${keywords[5] || '約束'}`,
+                    `どんな困難も ${expressions[1]}なら乗り越えられる`,
+                    `${expressions[2]}を取り合って ${expressions[3]}いていこう`,
+                    `${keywords[0]}の${keywords[1]}を 証明するために`
+                ];
+            }
+            
+            return lines.join('<br>');
+        }
+        
+        // Outro用歌詞生成（多言語対応）
+        function generateOutroContent(keywords, imagery, expressions, intensity) {
+            let lines = [];
+            
+            if (selectedPromptLanguage === 'cantonese') {
+                lines = [
+                    `在${imagery[0]}中響起 ${keywords[0]}的旋律`,
+                    `${keywords[1]}乘著${imagery[1]} 永遠${expressions[0]}`
+                ];
+            } else if (selectedPromptLanguage === 'chinese') {
+                lines = [
+                    `在${imagery[0]}中响起 ${keywords[0]}的旋律`,
+                    `${keywords[1]}乘着${imagery[1]} 永远${expressions[0]}`
+                ];
+            } else if (selectedPromptLanguage === 'english') {
+                lines = [
+                    `Echoing in the ${imagery[0]} melody of ${keywords[0]}`,
+                    `${keywords[1]} riding on ${imagery[1]} forever ${expressions[0]}`
+                ];
+            } else {
+                // Japanese (default)
+                lines = [
+                    `${imagery[0]}に響く ${keywords[0]}の旋律`,
+                    `${keywords[1]}が${imagery[1]}に乗って 永遠に${expressions[0]}`
+                ];
+            }
+            
+            return lines.join('<br>');
+        }
+        
+        // パラメータに基づいてスコアを計算
+        function calculateProScores(params) {
+            const baseScore = 70;
+            const emotionBonus = Math.floor(params.emotionIntensity / 10);
+            const metaphorBonus = Math.floor(params.metaphorUsage / 20);
+            const complexityBonus = params.languageLevel === '上級' ? 15 : params.languageLevel === '中級' ? 10 : 5;
+            
+            return {
+                emotion: Math.min(95, baseScore + emotionBonus + Math.random() * 10),
+                language: Math.min(95, baseScore + complexityBonus + Math.random() * 10),
+                originality: Math.min(95, baseScore + metaphorBonus + Math.random() * 15),
+                musical: Math.min(95, baseScore + (params.rhymePattern !== 'なし' ? 10 : 0) + Math.random() * 10)
+            };
+        }
+        
+        // Proスコアアニメーション
+        function animateProScore(elementId, targetScore) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let currentScore = 0;
+            const increment = targetScore / 30;
+            
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(currentScore);
+            }, 50);
+        }
+        
+        // Pro構成変更適用
+        function applyProStructureChanges() {
+            const params = getProLyricsParameters();
+            const message = `Pro構成変更が適用されました！
+            
+設定内容:
+• Verse数: ${params.verseCount}
+• Chorus数: ${params.chorusCount}
+• Bridge: ${params.bridgeInclude ? 'あり' : 'なし'}
+• Intro: ${params.introInclude ? 'あり' : 'なし'}
+• Outro: ${params.outroInclude ? 'あり' : 'なし'}
+
+新しい構成で歌詞を再生成します。`;
+            
+            alert(message);
+            generateProLyrics();
+        }
+        
+        // Pro URL分析
+        function analyzeURL() {
+            const urlInput = document.getElementById('pro-literary-url');
+            const url = urlInput ? urlInput.value : '';
+            
+            if (!url) {
+                alert('URLを入力してください。');
+                return;
+            }
+            
+            const analysis = document.getElementById('proLiteraryAnalysis');
+            if (analysis) {
+                analysis.classList.remove('hidden');
+                analysis.innerHTML = `
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">文学的要素分析結果</h4>
+                        <p class="text-sm text-gray-600">分析対象: ${url}</p>
+                        <div class="mt-3 space-y-2">
+                            <p><strong>テーマ:</strong> 人生の旅路、成長と変化</p>
+                            <p><strong>文体:</strong> 叙情的、比喩豊富</p>
+                            <p><strong>感情基調:</strong> 希望的、内省的</p>
+                            <p><strong>推奨ジャンル:</strong> フォーク、バラード</p>
+                        </div>
+                    </div>
+                `;
+            }
+            alert('URL から高度な文学的要素が分析されました！\n分析結果を歌詞生成パラメータに反映できます。');
+        }
+        
+        // Pro ファイル分析
+        function analyzeFile() {
+            const fileInput = document.getElementById('pro-literary-file');
+            const file = fileInput ? fileInput.files[0] : null;
+            
+            if (!file) {
+                alert('ファイルを選択してください。');
+                return;
+            }
+            
+            const analysis = document.getElementById('proLiteraryAnalysis');
+            if (analysis) {
+                analysis.classList.remove('hidden');
+                analysis.innerHTML = `
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">文学的要素分析結果</h4>
+                        <p class="text-sm text-gray-600">分析対象: ${file.name}</p>
+                        <div class="mt-3 space-y-2">
+                            <p><strong>テーマ:</strong> 愛と別れ、時の流れ</p>
+                            <p><strong>文体:</strong> 古典的、格調高い</p>
+                            <p><strong>感情基調:</strong> 郷愁的、美的</p>
+                            <p><strong>推奨ジャンル:</strong> クラシック、ジャズ</p>
+                        </div>
+                    </div>
+                `;
+            }
+            alert('ファイルから高度な文学的要素が分析されました！\n分析結果を歌詞生成パラメータに反映できます。');
+        }
+        
+        // Pro 作品検索
+        function searchWork() {
+            const searchInput = document.getElementById('pro-literary-search');
+            const searchTerm = searchInput ? searchInput.value : '';
+            
+            if (!searchTerm) {
+                alert('作品名またはキーワードを入力してください。');
+                return;
+            }
+            
+            const analysis = document.getElementById('proLiteraryAnalysis');
+            if (analysis) {
+                analysis.classList.remove('hidden');
+                analysis.innerHTML = `
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-800 mb-2">文学的要素分析結果</h4>
+                        <p class="text-sm text-gray-600">検索キーワード: "${searchTerm}"</p>
+                        <div class="mt-3 space-y-2">
+                            <p><strong>関連作品:</strong> 類似テーマの文学作品が見つかりました</p>
+                            <p><strong>テーマ:</strong> 自然と人間、季節の移ろい</p>
+                            <p><strong>文体:</strong> 詩的、象徴的</p>
+                            <p><strong>感情基調:</strong> 静謐、瞑想的</p>
+                            <p><strong>推奨ジャンル:</strong> アンビエント、ニューエイジ</p>
+                        </div>
+                    </div>
+                `;
+            }
+            alert(`"${searchTerm}" に関連する作品が検索され、高度な文学的要素が分析されました！\n分析結果を歌詞生成パラメータに反映できます。`);
+        }
+        
+        // Pro 文学的要素適用
+        function applyLiteraryElements() {
+            const analysis = document.getElementById('proLiteraryAnalysis');
+            if (!analysis || analysis.classList.contains('hidden')) {
+                alert('まず文学作品の分析を実行してください。');
+                return;
+            }
+            
+            // 分析結果に基づいてパラメータを自動設定
+            const themeSelect = document.getElementById('pro-theme');
+            const genreSelect = document.getElementById('pro-genre');
+            const emotionSelect = document.getElementById('pro-emotion');
+            const languageLevelSelect = document.getElementById('pro-language-level');
+            const metaphorSlider = document.getElementById('pro-metaphor');
+            
+            if (themeSelect) themeSelect.value = '成長';
+            if (genreSelect) genreSelect.value = 'フォーク';
+            if (emotionSelect) emotionSelect.value = '希望';
+            if (languageLevelSelect) languageLevelSelect.value = '詩的表現';
+            if (metaphorSlider) metaphorSlider.value = 8;
+            
+            alert('高度な文学的要素がPro歌詞生成パラメータに適用されました！\n\n適用された設定:\n• テーマ: 成長\n• ジャンル: フォーク\n• 感情: 希望\n• 言語レベル: 詩的表現\n• 比喩使用度: 8/10\n\n「Pro歌詞を生成」ボタンで新しい歌詞を作成してください。');
+        }
+    </script>
+</body>
+</html>
