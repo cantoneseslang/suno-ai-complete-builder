@@ -39,6 +39,24 @@
                 window.SUNO_CONFIG.supabase.anonKey
             );
             
+            // 認証状態変化の監視
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                console.log('Auth state changed:', event, session);
+                
+                if (event === 'SIGNED_OUT') {
+                    console.log('User signed out');
+                    redirectToAuth();
+                } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                    console.log('User signed in or token refreshed');
+                    if (session) {
+                        await checkUsageLimits(session.user.id);
+                        authCheckComplete = true;
+                        await updateUsageDisplay();
+                        document.body.style.display = 'block';
+                    }
+                }
+            });
+            
             // セッションチェック
             checkAuthSession();
         }
@@ -46,22 +64,28 @@
         // 認証セッションチェック
         async function checkAuthSession() {
             try {
+                // セッションの自動リフレッシュを試行
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 
                 if (error) {
                     console.error('Auth session error:', error);
-                    redirectToAuth();
+                    // エラーが発生した場合、セッションリフレッシュを試行
+                    await attemptSessionRefresh();
                     return;
                 }
                 
                 if (!session) {
-                    // 未認証の場合は認証ページにリダイレクト
-                    redirectToAuth();
-                    return;
+                    // セッションがない場合、リフレッシュを試行
+                    const refreshSuccess = await attemptSessionRefresh();
+                    if (!refreshSuccess) {
+                        // 未認証の場合は認証ページにリダイレクト
+                        redirectToAuth();
+                        return;
+                    }
                 }
                 
                 // 認証済みの場合は使用制限をチェック
-                await checkUsageLimits(session.user.id);
+                await checkUsageLimits(session?.user?.id);
                 authCheckComplete = true;
                 
                 // 使用状況表示を初期化
@@ -72,7 +96,34 @@
                 
             } catch (error) {
                 console.error('Auth check error:', error);
-                redirectToAuth();
+                await attemptSessionRefresh();
+            }
+        }
+        
+        // セッションリフレッシュを試行
+        async function attemptSessionRefresh() {
+            try {
+                console.log('Attempting session refresh...');
+                const { data, error } = await supabaseClient.auth.refreshSession();
+                
+                if (error) {
+                    console.error('Session refresh error:', error);
+                    return false;
+                }
+                
+                if (data.session) {
+                    console.log('Session refreshed successfully');
+                    await checkUsageLimits(data.session.user.id);
+                    authCheckComplete = true;
+                    await updateUsageDisplay();
+                    document.body.style.display = 'block';
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('Session refresh attempt failed:', error);
+                return false;
             }
         }
         
@@ -4054,13 +4105,26 @@
                 
                 if (error) {
                     console.error('Usage check error:', error);
+                    // エラーが発生した場合、認証済みユーザーには制限を適用しない
+                    return true;
+                }
+                
+                // 制限に達している場合、使用制限をリセットする機能を提供
+                if (data.prompt_generations_used >= data.prompt_generations_limit) {
+                    console.log('Usage limit reached, offering reset option');
+                    const shouldReset = confirm('使用制限に達しました。制限をリセットして続行しますか？\n\n注意: この操作は開発者向けの機能です。');
+                    if (shouldReset) {
+                        await resetUsageLimits(session.user.id);
+                        return true;
+                    }
                     return false;
                 }
                 
                 return data.prompt_generations_used < data.prompt_generations_limit;
             } catch (error) {
                 console.error('Prompt generation limit check error:', error);
-                return false;
+                // エラーが発生した場合、認証済みユーザーには制限を適用しない
+                return true;
             }
         }
         
@@ -4077,12 +4141,52 @@
                 
                 if (error) {
                     console.error('Usage check error:', error);
+                    // エラーが発生した場合、認証済みユーザーには制限を適用しない
+                    return true;
+                }
+                
+                // 制限に達している場合、使用制限をリセットする機能を提供
+                if (data.lyric_generations_used >= data.lyric_generations_limit) {
+                    console.log('Lyric usage limit reached, offering reset option');
+                    const shouldReset = confirm('歌詞生成の使用制限に達しました。制限をリセットして続行しますか？\n\n注意: この操作は開発者向けの機能です。');
+                    if (shouldReset) {
+                        await resetUsageLimits(session.user.id);
+                        return true;
+                    }
                     return false;
                 }
                 
                 return data.lyric_generations_used < data.lyric_generations_limit;
             } catch (error) {
                 console.error('Lyric generation limit check error:', error);
+                // エラーが発生した場合、認証済みユーザーには制限を適用しない
+                return true;
+            }
+        }
+        
+        // 使用制限をリセットする関数
+        async function resetUsageLimits(userId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('usage_limits')
+                    .update({
+                        prompt_generations_used: 0,
+                        lyric_generations_used: 0,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', userId);
+                
+                if (error) {
+                    console.error('Reset usage limits error:', error);
+                    return false;
+                }
+                
+                console.log('Usage limits reset successfully');
+                // 使用状況表示を更新
+                await updateUsageDisplay();
+                return true;
+            } catch (error) {
+                console.error('Reset usage limits error:', error);
                 return false;
             }
         }
@@ -4421,5 +4525,72 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // 認証状態の定期チェック機能
+        let authCheckInterval;
+        
+        function startAuthMonitoring() {
+            // 30秒ごとに認証状態をチェック
+            authCheckInterval = setInterval(async () => {
+                try {
+                    if (!supabaseClient) return;
+                    
+                    const { data: { session }, error } = await supabaseClient.auth.getSession();
+                    
+                    if (error || !session) {
+                        console.log('Session expired or error, attempting refresh...');
+                        const refreshSuccess = await attemptSessionRefresh();
+                        if (!refreshSuccess) {
+                            console.log('Session refresh failed, redirecting to login...');
+                            clearInterval(authCheckInterval);
+                            redirectToAuth();
+                        }
+                    } else {
+                        // セッションが有効な場合は使用状況を更新
+                        await updateUsageDisplay();
+                    }
+                } catch (error) {
+                    console.error('Auth monitoring error:', error);
+                }
+            }, 30000); // 30秒間隔
+        }
+        
+        function stopAuthMonitoring() {
+            if (authCheckInterval) {
+                clearInterval(authCheckInterval);
+            }
+        }
+        
+        // ページの可視性が変更されたときの処理
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+                // ページが表示されたときに認証状態をチェック
+                if (supabaseClient) {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        await attemptSessionRefresh();
+                    }
+                }
+            }
+        });
+        
+        // ページがアンロードされるときにタイマーを停止
+        window.addEventListener('beforeunload', stopAuthMonitoring);
+        
+        // 認証監視を開始
+        if (authCheckComplete) {
+            startAuthMonitoring();
+        }
+        
+        // 認証完了後に監視を開始
+        const originalCheckAuthSession = checkAuthSession;
+        checkAuthSession = async function() {
+            await originalCheckAuthSession();
+            if (authCheckComplete) {
+                startAuthMonitoring();
+            }
+        };
+    </script>
 </body>
 </html>
