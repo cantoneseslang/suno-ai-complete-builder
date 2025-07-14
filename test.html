@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - Suno AI Complete Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+        .test-container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .success {
+            background: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎵 Suno AI Complete Builder - テストページ</h1>
+        <p>このページが表示されれば、基本的なHTML/CSS/JavaScriptは動作しています。</p>
+        
+        <div class="success">
+            ✅ HTML読み込み: 成功
+        </div>
+        
+        <div id="css-test" class="success" style="display:none;">
+            ✅ CSS適用: 成功
+        </div>
+        
+        <div id="js-test" style="display:none;">
+            ✅ JavaScript実行: 成功
+        </div>
+        
+        <button onclick="testFunction()">JavaScriptテスト</button>
+        <button onclick="window.location.href='/'">メインページに戻る</button>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        // CSS テスト
+        document.getElementById('css-test').style.display = 'block';
+        
+        // JavaScript テスト関数
+        function testFunction() {
+            const result = document.getElementById('result');
+            const jsTest = document.getElementById('js-test');
+            
+            jsTest.style.display = 'block';
+            jsTest.className = 'success';
+            
+            result.innerHTML = `
+                <div class="success">
+                    <h3>🎉 全テスト完了！</h3>
+                    <p>HTML、CSS、JavaScriptが正常に動作しています。</p>
+                    <p>メインページの問題は別の原因です。</p>
+                </div>
+            `;
+        }
+        
+        // ページ読み込み完了時
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Test page loaded successfully');
+        });
+    </script>
+</body>
+</html> 
