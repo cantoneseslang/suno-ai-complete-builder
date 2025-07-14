@@ -14,8 +14,8 @@
     <!-- Stripe -->
     <script src="https://js.stripe.com/v3/"></script>
     
-    <!-- Authentication Styles -->
-    <link rel="stylesheet" href="auth-styles.css">
+    <!-- Authentication Styles (一時的に無効化) -->
+    <!-- <link rel="stylesheet" href="auth-styles.css"> -->
     
     <!-- Configuration -->
     <script src="config.js"></script>
@@ -4175,6 +4175,10 @@
         
         // 使用制限チェック関数
         async function checkPromptGenerationLimit() {
+            // 一時的に無効化 - 常に生成可能として返す
+            return true;
+            
+            /*
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) return false;
@@ -4195,9 +4199,14 @@
                 console.error('Prompt generation limit check error:', error);
                 return false;
             }
+            */
         }
         
         async function checkLyricGenerationLimit() {
+            // 一時的に無効化 - 常に生成可能として返す
+            return true;
+            
+            /*
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) return false;
@@ -4218,6 +4227,7 @@
                 console.error('Lyric generation limit check error:', error);
                 return false;
             }
+            */
         }
         
         // 使用回数を増やす関数
