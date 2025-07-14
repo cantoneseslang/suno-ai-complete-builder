@@ -7,6 +7,18 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- Authentication Styles -->
+    <link rel="stylesheet" href="auth-styles.css">
+    
+    <!-- Configuration -->
+    <script src="config.js"></script>
     <style>
         /* ダークモード基本設定 */
         body {
@@ -671,6 +683,13 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <!-- 認証コンテナ -->
+    <div id="auth-container"></div>
+    <div id="user-container"></div>
+    
+    <!-- アップグレードコンテナ -->
+    <div id="upgrade-container"></div>
+    
     <!-- テーマ切り替えボタン -->
     <button class="theme-toggle" onclick="toggleTheme()" title="テーマ切り替え">
         <i id="theme-icon" class="fas fa-sun"></i>
@@ -2114,7 +2133,19 @@
 
 
         // プロンプト更新
-        function updatePrompt() {
+        async function updatePrompt() {
+            // 認証チェック
+            if (!currentUser) {
+                alert('プロンプト生成にはログインが必要です');
+                return;
+            }
+            
+            // 使用制限チェック
+            if (await requiresPremium('prompt')) {
+                await handlePremiumRequired('prompt');
+                return;
+            }
+            
             // 選択されたアイテムは常に英語のまま保持
             let prompt = selectedItems.join(', ');
             
@@ -2135,6 +2166,19 @@
             const promptSection = document.getElementById('prompt-section');
             if (prompt && promptSection) {
                 promptSection.style.display = 'block';
+                
+                // 使用回数を増やして保存
+                if (prompt !== getPlaceholderText()) {
+                    await incrementUsage('prompt');
+                    await savePromptGeneration({
+                        vocalTags: selectedItems.filter(item => getVocalTags().includes(item)),
+                        moodStyles: selectedItems.filter(item => getMoodStyles().includes(item)),
+                        genres: selectedItems.filter(item => getAllGenres().includes(item)),
+                        artistStyles: selectedItems.filter(item => getArtistStyles().includes(item)),
+                        language: selectedPromptLanguage,
+                        generatedPrompt: prompt
+                    });
+                }
             } else if (promptSection) {
                 promptSection.style.display = 'none';
             }
@@ -2886,7 +2930,19 @@
         // ===== Pro歌詞システム機能 =====
         
         // Pro歌詞生成機能
-        function generateProLyrics() {
+        async function generateProLyrics() {
+            // 認証チェック
+            if (!currentUser) {
+                alert('Pro歌詞生成にはログインが必要です');
+                return;
+            }
+            
+            // 使用制限チェック
+            if (await requiresPremium('lyrics')) {
+                await handlePremiumRequired('lyrics');
+                return;
+            }
+            
             const output = document.getElementById('proLyricsOutput');
             const evaluation = document.getElementById('proLyricsEvaluation');
             
@@ -2903,7 +2959,7 @@
             `;
             
             // 3秒後に生成結果を表示
-            setTimeout(() => {
+            setTimeout(async () => {
                 const generatedLyrics = generateLyricsBasedOnParameters(params);
                 output.innerHTML = generatedLyrics;
                 
@@ -2915,6 +2971,27 @@
                 animateProScore('proLanguageScore', scores.language);
                 animateProScore('proOriginalityScore', scores.originality);
                 animateProScore('proMusicalScore', scores.musical);
+                
+                // 使用回数を増やして保存
+                await incrementUsage('lyrics');
+                await saveLyricGeneration({
+                    genre: params.genre,
+                    theme: params.theme,
+                    targetAge: params.targetAge,
+                    primaryEmotion: params.emotion,
+                    emotionIntensity: params.emotionIntensity,
+                    emotionChange: params.emotionChange,
+                    languageLevel: params.languageLevel,
+                    metaphorUsage: params.metaphorUsage,
+                    rhythmPattern: params.rhythmPattern,
+                    keywords: params.keywords,
+                    avoidExpressions: params.avoidExpressions,
+                    language: selectedPromptLanguage,
+                    songStructure: getCurrentSongStructure(),
+                    literaryReference: params.literaryReference || '',
+                    generatedLyrics: generatedLyrics,
+                    qualityScores: scores
+                });
             }, 3000);
         }
         
@@ -3658,7 +3735,43 @@
                 closeHelp();
             }
         });
+        
+        // ヘルパー関数
+        function getVocalTags() {
+            return ['Male Vocal', 'Female Vocal', 'Duet', 'Choir', 'Whisper', 'Spoken Word', 'Harmonies', 'Vulnerable Vocals'];
+        }
+        
+        function getMoodStyles() {
+            return ['Upbeat', 'Melancholic', 'Energetic', 'Peaceful', 'Dramatic', 'Romantic', 'Mysterious', 'Nostalgic'];
+        }
+        
+        function getAllGenres() {
+            // この関数は実際のジャンルリストを返す必要があります
+            return []; // 実装が必要
+        }
+        
+        function getArtistStyles() {
+            return []; // suno.csvから読み込まれたアーティストスタイル
+        }
+        
+        function getCurrentSongStructure() {
+            // 現在の楽曲構成を取得
+            return {
+                intro: 8,
+                verse1: 16,
+                chorus: 16,
+                verse2: 16,
+                chorus2: 16,
+                bridge: 8,
+                finalChorus: 16,
+                outro: 8
+            };
+        }
     </script>
+    
+    <!-- 認証とStripeスクリプト -->
+    <script src="auth.js"></script>
+    <script src="stripe-integration.js"></script>
 
     <!-- ヘルプモーダル -->
     <div id="help-modal" class="help-modal">
