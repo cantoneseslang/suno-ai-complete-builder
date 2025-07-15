@@ -2801,8 +2801,8 @@ window.SUNO_CONFIG = config;
 
         // グローバル変数
         let selectedItems = [];
-        let selectedLanguage = 'cantonese';
         let selectedPromptLanguage = 'cantonese'; // プロンプト言語
+        let selectedLanguage = 'cantonese';
         let selectedStructures = [];
         let currentLyricsCandidate = -1;
         let generatedLyrics = {};
@@ -3242,7 +3242,10 @@ window.SUNO_CONFIG = config;
                 prompt = prompt ? prompt + ', English lyrics' : 'English lyrics';
             }
             
-            document.getElementById('generated-prompt').textContent = prompt || getPlaceholderText();
+            const promptElement = document.getElementById('generated-prompt');
+            if (promptElement) {
+                promptElement.textContent = prompt || getPlaceholderText();
+            }
             
             // プロンプトセクションの表示/非表示
             const promptSection = document.getElementById('prompt-section');
@@ -3251,7 +3254,9 @@ window.SUNO_CONFIG = config;
             // 常にプロンプトセクションを表示（初期状態でも表示）
             if (promptSection) {
                 promptSection.style.display = 'block';
-                console.log('Showing prompt section');
+                promptSection.style.visibility = 'visible';
+                promptSection.style.opacity = '0.9';
+                console.log('Showing prompt section with forced visibility');
                 
                 // 使用回数を増やして保存（実際にアイテムが選択されている場合のみ）
                 if (selectedItems.length > 0 && prompt !== getPlaceholderText()) {
@@ -5821,21 +5826,32 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Initializing prompt section...');
             
             // 初期プロンプトを設定
-            if (selectedPromptLanguage === 'cantonese') {
-                document.getElementById('generated-prompt').textContent = 'Cantonese lyrics';
-            } else if (selectedPromptLanguage === 'chinese') {
-                document.getElementById('generated-prompt').textContent = 'Chinese lyrics';
-            } else if (selectedPromptLanguage === 'japanese') {
-                document.getElementById('generated-prompt').textContent = 'Japanese lyrics';
-            } else if (selectedPromptLanguage === 'english') {
-                document.getElementById('generated-prompt').textContent = 'English lyrics';
+            const promptElement = document.getElementById('generated-prompt');
+            if (promptElement) {
+                if (selectedPromptLanguage === 'cantonese') {
+                    promptElement.textContent = 'Cantonese lyrics';
+                } else if (selectedPromptLanguage === 'chinese') {
+                    promptElement.textContent = 'Chinese lyrics';
+                } else if (selectedPromptLanguage === 'japanese') {
+                    promptElement.textContent = 'Japanese lyrics';
+                } else if (selectedPromptLanguage === 'english') {
+                    promptElement.textContent = 'English lyrics';
+                }
             }
             
-            // フローティングウィンドウを表示
+            // フローティングウィンドウを強制表示
             const promptSection = document.getElementById('prompt-section');
             if (promptSection) {
                 promptSection.style.display = 'block';
+                promptSection.style.visibility = 'visible';
+                promptSection.style.opacity = '0.9';
+                promptSection.style.zIndex = '9999';
                 console.log('Prompt section initialized and displayed');
+            }
+            
+            // updatePrompt関数を呼び出して確実に表示
+            if (typeof updatePrompt === 'function') {
+                updatePrompt();
             }
         }
 
@@ -5844,6 +5860,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(initializePromptSection, 100);
         setTimeout(initializePromptSection, 500);
         setTimeout(initializePromptSection, 1000);
+        setTimeout(initializePromptSection, 2000);
         
         // DOMContentLoadedイベントでも実行
         if (document.readyState === 'loading') {
@@ -5851,6 +5868,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             initializePromptSection();
         }
+        
+        // window.onloadイベントでも実行
+        window.addEventListener('load', initializePromptSection);
     </script>
 </body>
 </html>
