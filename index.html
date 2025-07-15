@@ -1211,7 +1211,7 @@
         </div>
 
         <!-- 生成されたプロンプト表示（フロート） -->
-        <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-6 max-w-lg z-50 border-2 border-purple-500" style="display: none;">
+        <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-6 max-w-lg z-50 border-2 border-purple-500" style="display: block;">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
                 <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200">
@@ -2321,21 +2321,32 @@
             document.getElementById('vocal-section').style.display = 'block';
             document.getElementById('artists-section').style.display = 'block';
             
-            // フローティングウィンドウを初期表示
-            setTimeout(function() {
-                const promptSection = document.getElementById('prompt-section');
-                if (promptSection) {
-                    promptSection.style.display = 'block';
-                    console.log('Initial prompt section displayed');
-                    
-                    // 初期プロンプトテキストを設定
-                    const generatedPrompt = document.getElementById('generated-prompt');
-                    if (generatedPrompt) {
-                        generatedPrompt.textContent = getPlaceholderText();
-                    }
-                }
-            }, 100);
+            // フローティングウィンドウを初期表示（複数のタイミングで確実に実行）
+            showInitialPromptSection();
+            setTimeout(showInitialPromptSection, 100);
+            setTimeout(showInitialPromptSection, 500);
+            setTimeout(showInitialPromptSection, 1000);
         });
+
+        // 初期プロンプトセクション表示関数
+        function showInitialPromptSection() {
+            const promptSection = document.getElementById('prompt-section');
+            if (promptSection) {
+                promptSection.style.display = 'block';
+                promptSection.style.visibility = 'visible';
+                promptSection.style.opacity = '1';
+                console.log('Initial prompt section displayed');
+                
+                // 初期プロンプトテキストを設定
+                const generatedPrompt = document.getElementById('generated-prompt');
+                if (generatedPrompt) {
+                    generatedPrompt.textContent = getPlaceholderText();
+                    console.log('Initial prompt text set:', getPlaceholderText());
+                }
+            } else {
+                console.log('prompt-section element not found');
+            }
+        }
 
         // 個数を更新する関数
         function updateCounts() {
