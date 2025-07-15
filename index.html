@@ -2577,7 +2577,9 @@
                 }
             }
             
-            // 使用制限チェック（エラー時は制限なし）
+            // 使用制限チェック（一時的に完全無効化）
+            console.log('使用制限チェックをスキップ - 制限なしで動作');
+            /*
             try {
                 const canGenerate = await checkPromptGenerationLimit();
                 if (!canGenerate) {
@@ -2587,6 +2589,7 @@
             } catch (error) {
                 console.log('使用制限チェックエラー、制限なしで続行:', error);
             }
+            */
             
             // 選択されたアイテムは常に英語のまま保持
             let prompt = selectedItems.join(', ');
@@ -3380,7 +3383,9 @@
                 }
             }
             
-            // 使用制限チェック（エラー時は制限なし）
+            // 使用制限チェック（一時的に完全無効化）
+            console.log('歌詞使用制限チェックをスキップ - 制限なしで動作');
+            /*
             try {
                 const canGenerate = await checkLyricGenerationLimit();
                 if (!canGenerate) {
@@ -3390,6 +3395,7 @@
             } catch (error) {
                 console.log('使用制限チェックエラー、制限なしで続行:', error);
             }
+            */
             
             const output = document.getElementById('proLyricsOutput');
             const evaluation = document.getElementById('proLyricsEvaluation');
@@ -4218,7 +4224,7 @@
                 
                 if (error) {
                     console.error('Usage check error:', error);
-                    return false;
+                    return true; // エラー時は制限なしで動作
                 }
                 
                 return data.prompt_generations_used < data.prompt_generations_limit;
@@ -4243,7 +4249,7 @@
                 
                 if (error) {
                     console.error('Usage check error:', error);
-                    return false;
+                    return true; // エラー時は制限なしで動作
                 }
                 
                 return data.lyric_generations_used < data.lyric_generations_limit;
