@@ -1771,7 +1771,7 @@ window.SUNO_CONFIG = config;
         </div>
 
         <!-- 生成されたプロンプト表示（フロート） -->
-        <div id="prompt-section" class="bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-4 max-w-2xl border-2 border-purple-500" style="display: block !important; visibility: visible !important; opacity: 0.9 !important; z-index: 9999 !important; position: fixed !important; bottom: 20px !important; right: 20px !important; width: 400px !important; max-width: 90vw !important; height: auto !important; max-height: 300px !important;">
+        <div id="prompt-section" class="bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-4 max-w-2xl border-2 border-purple-500" style="display: block !important; visibility: visible !important; opacity: 0.9 !important; z-index: 9999 !important; position: fixed !important; bottom: 20px !important; right: 20px !important; left: auto !important; width: 400px !important; max-width: 90vw !important; height: auto !important; max-height: 200px !important; transform: none !important;">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
                 <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200">
@@ -3256,6 +3256,14 @@ window.SUNO_CONFIG = config;
                 promptSection.style.display = 'block';
                 promptSection.style.visibility = 'visible';
                 promptSection.style.opacity = '0.9';
+                promptSection.style.position = 'fixed';
+                promptSection.style.bottom = '20px';
+                promptSection.style.right = '20px';
+                promptSection.style.left = 'auto';
+                promptSection.style.width = '400px';
+                promptSection.style.maxWidth = '90vw';
+                promptSection.style.maxHeight = '200px';
+                promptSection.style.transform = 'none';
                 console.log('Showing prompt section with forced visibility');
                 
                 // 使用回数を増やして保存（実際にアイテムが選択されている場合のみ）
@@ -5846,6 +5854,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 promptSection.style.visibility = 'visible';
                 promptSection.style.opacity = '0.9';
                 promptSection.style.zIndex = '9999';
+                promptSection.style.position = 'fixed';
+                promptSection.style.bottom = '20px';
+                promptSection.style.right = '20px';
+                promptSection.style.left = 'auto';
+                promptSection.style.width = '400px';
+                promptSection.style.maxWidth = '90vw';
+                promptSection.style.maxHeight = '200px';
+                promptSection.style.transform = 'none';
                 console.log('Prompt section initialized and displayed');
             }
             
