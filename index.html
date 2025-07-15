@@ -2326,6 +2326,12 @@
             setTimeout(showInitialPromptSection, 100);
             setTimeout(showInitialPromptSection, 500);
             setTimeout(showInitialPromptSection, 1000);
+            
+            // 初期プロンプトを更新
+            setTimeout(function() {
+                updatePrompt();
+                console.log('Initial prompt updated');
+            }, 1500);
         });
 
         // 初期プロンプトセクション表示関数
@@ -2337,11 +2343,19 @@
                 promptSection.style.opacity = '1';
                 console.log('Initial prompt section displayed');
                 
-                // 初期プロンプトテキストを設定
+                // 初期プロンプトテキストを設定（デフォルトでCantonese lyricsを表示）
                 const generatedPrompt = document.getElementById('generated-prompt');
                 if (generatedPrompt) {
-                    generatedPrompt.textContent = getPlaceholderText();
-                    console.log('Initial prompt text set:', getPlaceholderText());
+                    const initialPrompt = 'Cantonese lyrics';
+                    generatedPrompt.textContent = initialPrompt;
+                    console.log('Initial prompt text set:', initialPrompt);
+                }
+                
+                // 初期状態で広東語ボタンを選択状態にする
+                const cantoneseBtn = document.getElementById('prompt-lang-cantonese');
+                if (cantoneseBtn) {
+                    cantoneseBtn.classList.add('selected');
+                    console.log('Cantonese button selected');
                 }
             } else {
                 console.log('prompt-section element not found');
@@ -2624,13 +2638,13 @@
             
             // 歌詞言語のみを選択した言語に応じて追加
             if (selectedPromptLanguage === 'cantonese') {
-                prompt += ', Cantonese lyrics';
+                prompt = prompt ? prompt + ', Cantonese lyrics' : 'Cantonese lyrics';
             } else if (selectedPromptLanguage === 'chinese') {
-                prompt += ', Chinese lyrics';
+                prompt = prompt ? prompt + ', Chinese lyrics' : 'Chinese lyrics';
             } else if (selectedPromptLanguage === 'japanese') {
-                prompt += ', Japanese lyrics';
+                prompt = prompt ? prompt + ', Japanese lyrics' : 'Japanese lyrics';
             } else if (selectedPromptLanguage === 'english') {
-                prompt += ', English lyrics';
+                prompt = prompt ? prompt + ', English lyrics' : 'English lyrics';
             }
             
             document.getElementById('generated-prompt').textContent = prompt || getPlaceholderText();
