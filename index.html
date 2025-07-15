@@ -740,12 +740,21 @@ window.SUNO_CONFIG = config;
             // ページコンテンツを表示
             showPageContent();
             
+            // フローティングウィンドウの位置を即座に修正
+            forceFixedPosition();
+            
             // 初期プロンプトセクションを表示（複数回実行して確実に表示）
             showInitialPromptSection();
             setTimeout(showInitialPromptSection, 100);
             setTimeout(showInitialPromptSection, 500);
             setTimeout(showInitialPromptSection, 1000);
             setTimeout(showInitialPromptSection, 2000);
+            
+            // 位置修正も複数回実行
+            setTimeout(forceFixedPosition, 100);
+            setTimeout(forceFixedPosition, 500);
+            setTimeout(forceFixedPosition, 1000);
+            setTimeout(forceFixedPosition, 2000);
         });
         
         // 完全に読み込み完了後にも実行
@@ -754,6 +763,24 @@ window.SUNO_CONFIG = config;
             setTimeout(showInitialPromptSection, 100);
             setTimeout(showInitialPromptSection, 500);
         });
+        
+        // フローティングウィンドウの位置を定期的にチェック・修正
+        function forceFixedPosition() {
+            const promptSection = document.getElementById('prompt-section');
+            if (promptSection) {
+                promptSection.style.position = 'fixed';
+                promptSection.style.top = '300px';
+                promptSection.style.left = '50%';
+                promptSection.style.transform = 'translateX(-50%)';
+                promptSection.style.zIndex = '9999';
+            }
+        }
+        
+        // 定期的に位置を修正
+        setInterval(forceFixedPosition, 1000);
+        
+        // スクロール時にも位置を修正
+        window.addEventListener('scroll', forceFixedPosition);
     </script>
     
     <style>
@@ -933,13 +960,13 @@ window.SUNO_CONFIG = config;
             z-index: 9999 !important;
         }
         
-        /* 他の要素との干渉を防ぐ */
-        * {
-            position: relative;
-        }
-        
+        /* フローティングウィンドウの固定位置を強制 */
         #prompt-section {
             position: fixed !important;
+            top: 300px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 9999 !important;
         }
         @keyframes slideIn {
             from {
