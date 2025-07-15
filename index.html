@@ -610,6 +610,14 @@ window.SUNO_CONFIG = config;
             document.body.style.display = 'block';
         }
         
+        function showPageContent() {
+            document.body.classList.remove('auth-checking');
+            document.body.style.display = 'block';
+            document.body.style.visibility = 'visible';
+            document.body.style.opacity = '1';
+            console.log('Page content displayed');
+        }
+        
         // Supabase初期化
         function initializeAuth() {
             // 設定の読み込み待ち
@@ -719,11 +727,21 @@ window.SUNO_CONFIG = config;
         
         // ページ読み込み時に認証チェック実行
         document.addEventListener('DOMContentLoaded', () => {
-            // 初期状態でページを非表示にする
-            document.body.style.display = 'none';
+            console.log('Initializing Suno AI Complete Builder...');
             
-            // 認証チェック開始
-            setTimeout(initializeAuth, 100);
+            // 認証システムを無効にして、直接メインコンテンツを表示
+            document.body.style.display = 'block';
+            document.body.style.visibility = 'visible';
+            document.body.style.opacity = '1';
+            
+            // 認証システムが利用可能でない場合はスタンドアロンモードで動作
+            console.log('Authentication system not available, running in standalone mode');
+            
+            // ページコンテンツを表示
+            showPageContent();
+            
+            // 初期プロンプトセクションを表示
+            showInitialPromptSection();
         });
     </script>
     
@@ -1572,8 +1590,8 @@ window.SUNO_CONFIG = config;
 </head>
 <body class="min-h-screen" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
     <!-- 認証コンテナ -->
-    <div id="auth-container"></div>
-    <div id="user-container"></div>
+    <div id="auth-container" style="display: none;"></div>
+    <div id="user-container" style="display: none;"></div>
     
     <!-- アップグレードコンテナ -->
     <div id="upgrade-container"></div>
@@ -4718,92 +4736,19 @@ window.SUNO_CONFIG = config;
         
         // 使用制限チェック関数
         async function checkPromptGenerationLimit() {
-            try {
-                if (!supabaseClient) return true; // 認証システム無効時は制限なし
-                
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) return true; // 未認証時は制限なし
-                
-                const { data, error } = await supabaseClient
-                    .from('usage_limits')
-                    .select('*')
-                    .eq('user_id', session.user.id)
-                    .single();
-                
-                if (error) {
-                    console.error('Usage check error:', error);
-                    return true; // エラー時は制限なしで動作
-                }
-                
-                return data.prompt_generations_used < data.prompt_generations_limit;
-            } catch (error) {
-                console.error('Prompt generation limit check error:', error);
-                return true; // エラー時は制限なしで動作
-            }
+            console.log('使用制限チェックをスキップ - 制限なしで動作');
+            return true; // 常に制限なしで動作
         }
         
         async function checkLyricGenerationLimit() {
-            try {
-                if (!supabaseClient) return true; // 認証システム無効時は制限なし
-                
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) return true; // 未認証時は制限なし
-                
-                const { data, error } = await supabaseClient
-                    .from('usage_limits')
-                    .select('*')
-                    .eq('user_id', session.user.id)
-                    .single();
-                
-                if (error) {
-                    console.error('Usage check error:', error);
-                    return true; // エラー時は制限なしで動作
-                }
-                
-                return data.lyric_generations_used < data.lyric_generations_limit;
-            } catch (error) {
-                console.error('Lyric generation limit check error:', error);
-                return true; // エラー時は制限なしで動作
-            }
+            console.log('歌詞生成制限チェックをスキップ - 制限なしで動作');
+            return true; // 常に制限なしで動作
         }
         
         // 使用回数を増やす関数
         async function incrementUsageCount(type) {
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) return false;
-                
-                const field = type === 'prompt' ? 'prompt_generations_used' : 'lyric_generations_used';
-                
-                // 現在の値を取得してから増加
-                const { data: currentData } = await supabaseClient
-                    .from('usage_limits')
-                    .select(field)
-                    .eq('user_id', session.user.id)
-                    .single();
-                
-                const newValue = (currentData?.[field] || 0) + 1;
-                
-                const { error } = await supabaseClient
-                    .from('usage_limits')
-                    .update({ 
-                        [field]: newValue,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('user_id', session.user.id);
-                
-                if (error) {
-                    console.error('Increment usage error:', error);
-                    return false;
-                }
-                
-                // 使用状況を更新表示（一時的に無効化）
-                // updateUsageDisplay();
-                return true;
-            } catch (error) {
-                console.error('Increment usage count error:', error);
-                return false;
-            }
+            console.log(`使用回数増加をスキップ - ${type} 制限なしで動作`);
+            return true; // 常に成功を返す
         }
         
         // 使用制限モーダル表示
