@@ -5759,17 +5759,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     <!-- 生成されたプロンプト表示（フロート） -->
-    <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-3 max-w-lg z-50 border-2 border-purple-500" style="display: none; height: auto !important; min-height: unset !important;">
+    <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-2.5 max-w-lg z-50 border-2 border-purple-500" style="display: none; height: auto !important; min-height: unset !important;">
         <div class="flex justify-between items-center mb-1">
             <h2 class="text-sm font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
             <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200 p-0">
                 <i class="fas fa-times-circle text-sm"></i>
             </button>
         </div>
-        <div class="bg-gray-800 bg-opacity-80 p-2 rounded-lg mb-2 overflow-y-auto border border-gray-600" style="max-height: 80px !important;">
+        <div class="bg-gray-800 bg-opacity-80 p-2 rounded-lg mb-1 overflow-y-auto border border-gray-600" style="max-height: 60px !important;">
             <pre id="generated-prompt" class="whitespace-pre-wrap text-xs font-medium text-gray-200 m-0">選択したスタイルがここに表示されます</pre>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-1">
             <button onclick="copyPrompt()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded flex-1 transition-all text-xs">
                 <i class="fas fa-copy mr-1 text-xs"></i>コピー
             </button>
