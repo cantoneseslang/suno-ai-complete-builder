@@ -2320,6 +2320,21 @@
             document.getElementById('moods-section').style.display = 'block';
             document.getElementById('vocal-section').style.display = 'block';
             document.getElementById('artists-section').style.display = 'block';
+            
+            // フローティングウィンドウを初期表示
+            setTimeout(function() {
+                const promptSection = document.getElementById('prompt-section');
+                if (promptSection) {
+                    promptSection.style.display = 'block';
+                    console.log('Initial prompt section displayed');
+                    
+                    // 初期プロンプトテキストを設定
+                    const generatedPrompt = document.getElementById('generated-prompt');
+                    if (generatedPrompt) {
+                        generatedPrompt.textContent = getPlaceholderText();
+                    }
+                }
+            }, 100);
         });
 
         // 個数を更新する関数
@@ -2613,21 +2628,19 @@
             const promptSection = document.getElementById('prompt-section');
             console.log('UpdatePrompt - selectedItems:', selectedItems, 'prompt:', prompt);
             
-            if (selectedItems.length > 0 && promptSection) {
+            // 常にプロンプトセクションを表示（初期状態でも表示）
+            if (promptSection) {
                 promptSection.style.display = 'block';
                 console.log('Showing prompt section');
                 
-                // 使用回数を増やして保存
-                if (prompt !== getPlaceholderText()) {
+                // 使用回数を増やして保存（実際にアイテムが選択されている場合のみ）
+                if (selectedItems.length > 0 && prompt !== getPlaceholderText()) {
                     try {
                         await incrementUsageCount('prompt');
                     } catch (error) {
                         console.log('使用回数更新エラー:', error);
                     }
                 }
-            } else if (promptSection) {
-                promptSection.style.display = 'none';
-                console.log('Hiding prompt section');
             }
         }
 
