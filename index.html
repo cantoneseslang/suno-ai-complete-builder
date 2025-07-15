@@ -740,8 +740,19 @@ window.SUNO_CONFIG = config;
             // ページコンテンツを表示
             showPageContent();
             
-            // 初期プロンプトセクションを表示
+            // 初期プロンプトセクションを表示（複数回実行して確実に表示）
             showInitialPromptSection();
+            setTimeout(showInitialPromptSection, 100);
+            setTimeout(showInitialPromptSection, 500);
+            setTimeout(showInitialPromptSection, 1000);
+            setTimeout(showInitialPromptSection, 2000);
+        });
+        
+        // 完全に読み込み完了後にも実行
+        window.addEventListener('load', function() {
+            console.log('Window load event - showing prompt section');
+            setTimeout(showInitialPromptSection, 100);
+            setTimeout(showInitialPromptSection, 500);
         });
     </script>
     
@@ -881,6 +892,10 @@ window.SUNO_CONFIG = config;
         }
         #prompt-section {
             animation: slideIn 0.3s ease-out;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 9999 !important;
         }
         @keyframes slideIn {
             from {
@@ -2823,7 +2838,20 @@ window.SUNO_CONFIG = config;
                 promptSection.style.position = 'fixed';
                 promptSection.style.bottom = '20px';
                 promptSection.style.right = '20px';
+                promptSection.style.left = 'auto';
+                promptSection.style.top = 'auto';
+                promptSection.style.width = 'auto';
+                promptSection.style.maxWidth = '32rem';
+                promptSection.style.transform = 'none';
+                promptSection.style.background = 'rgba(17, 24, 39, 0.95)';
+                promptSection.style.backdropFilter = 'blur(16px)';
+                promptSection.style.border = '2px solid #8b5cf6';
+                promptSection.style.borderRadius = '0.5rem';
+                promptSection.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.8)';
+                promptSection.classList.remove('hidden');
                 console.log('Initial prompt section displayed with force styles');
+                console.log('Prompt section computed style:', window.getComputedStyle(promptSection).display);
+                console.log('Prompt section position:', promptSection.getBoundingClientRect());
                 
                 // 初期プロンプトテキストを設定（デフォルトでCantonese lyricsを表示）
                 const generatedPrompt = document.getElementById('generated-prompt');
@@ -4861,8 +4889,8 @@ window.SUNO_CONFIG = config;
     <script>
 // Authentication and Supabase integration for SUNO AI Complete Builder
 
-// Initialize Supabase client
-let supabaseClient = null;
+// Initialize Supabase client (use existing global variable)
+// let supabaseClient = null; // Already declared above
 let currentUser = null;
 
 // Initialize Supabase
