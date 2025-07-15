@@ -5814,5 +5814,43 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
     </div>
+
+    <script>
+        // ページ読み込み時の初期化
+        function initializePromptSection() {
+            console.log('Initializing prompt section...');
+            
+            // 初期プロンプトを設定
+            if (selectedPromptLanguage === 'cantonese') {
+                document.getElementById('generated-prompt').textContent = 'Cantonese lyrics';
+            } else if (selectedPromptLanguage === 'chinese') {
+                document.getElementById('generated-prompt').textContent = 'Chinese lyrics';
+            } else if (selectedPromptLanguage === 'japanese') {
+                document.getElementById('generated-prompt').textContent = 'Japanese lyrics';
+            } else if (selectedPromptLanguage === 'english') {
+                document.getElementById('generated-prompt').textContent = 'English lyrics';
+            }
+            
+            // フローティングウィンドウを表示
+            const promptSection = document.getElementById('prompt-section');
+            if (promptSection) {
+                promptSection.style.display = 'block';
+                console.log('Prompt section initialized and displayed');
+            }
+        }
+
+        // 複数のタイミングで初期化を実行
+        setTimeout(initializePromptSection, 0);
+        setTimeout(initializePromptSection, 100);
+        setTimeout(initializePromptSection, 500);
+        setTimeout(initializePromptSection, 1000);
+        
+        // DOMContentLoadedイベントでも実行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePromptSection);
+        } else {
+            initializePromptSection();
+        }
+    </script>
 </body>
 </html>
