@@ -919,54 +919,12 @@ window.SUNO_CONFIG = config;
         }
         #prompt-section {
             animation: slideIn 0.3s ease-out;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 0.9 !important;
-            z-index: 9999 !important;
-            position: fixed !important;
-            top: 300px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 95% !important;
-            max-width: 800px !important;
-            height: auto !important;
-            max-height: 300px !important;
-            margin: 0 auto !important;
-            /* 強制的に固定位置を維持 */
-            position: fixed !important;
-            will-change: transform !important;
-            backface-visibility: hidden !important;
         }
         
         /* プロンプト文章エリアは100%透明度 */
         #prompt-section #generated-prompt,
         #prompt-section .bg-gray-800 {
             opacity: 1 !important;
-        }
-        
-        /* スクロール時の固定位置を確実にする */
-        body {
-            overflow-y: auto;
-            height: 100vh;
-        }
-        
-        #prompt-section {
-            pointer-events: auto;
-            /* 追加の固定位置強化 */
-            position: fixed !important;
-            top: 300px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            z-index: 9999 !important;
-        }
-        
-        /* フローティングウィンドウの固定位置を強制 */
-        #prompt-section {
-            position: fixed !important;
-            top: 300px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            z-index: 9999 !important;
         }
         @keyframes slideIn {
             from {
@@ -1771,7 +1729,7 @@ window.SUNO_CONFIG = config;
         </div>
 
         <!-- 生成されたプロンプト表示（フロート） -->
-        <div id="prompt-section" class="bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-4 max-w-2xl border-2 border-purple-500" style="display: block !important; visibility: visible !important; opacity: 0.9 !important; z-index: 9999 !important; position: fixed !important; bottom: 20px !important; right: 20px !important; left: auto !important; width: 400px !important; max-width: 90vw !important; height: auto !important; max-height: 200px !important; transform: none !important;">
+        <div id="prompt-section" class="fixed bottom-4 right-4 left-4 md:left-auto bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-6 max-w-lg z-50 border-2 border-purple-500" style="display: none;">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
                 <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200">
@@ -3251,20 +3209,10 @@ window.SUNO_CONFIG = config;
             const promptSection = document.getElementById('prompt-section');
             console.log('UpdatePrompt - selectedItems:', selectedItems, 'prompt:', prompt);
             
-            // 常にプロンプトセクションを表示（初期状態でも表示）
-            if (promptSection) {
+            // プロンプトセクションの表示/非表示
+            if (prompt && promptSection) {
                 promptSection.style.display = 'block';
-                promptSection.style.visibility = 'visible';
-                promptSection.style.opacity = '0.9';
-                promptSection.style.position = 'fixed';
-                promptSection.style.bottom = '20px';
-                promptSection.style.right = '20px';
-                promptSection.style.left = 'auto';
-                promptSection.style.width = '400px';
-                promptSection.style.maxWidth = '90vw';
-                promptSection.style.maxHeight = '200px';
-                promptSection.style.transform = 'none';
-                console.log('Showing prompt section with forced visibility');
+                console.log('Showing prompt section');
                 
                 // 使用回数を増やして保存（実際にアイテムが選択されている場合のみ）
                 if (selectedItems.length > 0 && prompt !== getPlaceholderText()) {
@@ -3274,6 +3222,8 @@ window.SUNO_CONFIG = config;
                         console.log('使用回数更新エラー:', error);
                     }
                 }
+            } else if (promptSection) {
+                promptSection.style.display = 'none';
             }
         }
 
@@ -5828,65 +5778,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     </div>
 
-    <script>
-        // ページ読み込み時の初期化
-        function initializePromptSection() {
-            console.log('Initializing prompt section...');
-            
-            // 初期プロンプトを設定
-            const promptElement = document.getElementById('generated-prompt');
-            if (promptElement) {
-                if (selectedPromptLanguage === 'cantonese') {
-                    promptElement.textContent = 'Cantonese lyrics';
-                } else if (selectedPromptLanguage === 'chinese') {
-                    promptElement.textContent = 'Chinese lyrics';
-                } else if (selectedPromptLanguage === 'japanese') {
-                    promptElement.textContent = 'Japanese lyrics';
-                } else if (selectedPromptLanguage === 'english') {
-                    promptElement.textContent = 'English lyrics';
-                }
-            }
-            
-            // フローティングウィンドウを強制表示
-            const promptSection = document.getElementById('prompt-section');
-            if (promptSection) {
-                promptSection.style.display = 'block';
-                promptSection.style.visibility = 'visible';
-                promptSection.style.opacity = '0.9';
-                promptSection.style.zIndex = '9999';
-                promptSection.style.position = 'fixed';
-                promptSection.style.bottom = '20px';
-                promptSection.style.right = '20px';
-                promptSection.style.left = 'auto';
-                promptSection.style.width = '400px';
-                promptSection.style.maxWidth = '90vw';
-                promptSection.style.maxHeight = '200px';
-                promptSection.style.transform = 'none';
-                console.log('Prompt section initialized and displayed');
-            }
-            
-            // updatePrompt関数を呼び出して確実に表示
-            if (typeof updatePrompt === 'function') {
-                updatePrompt();
-            }
-        }
 
-        // 複数のタイミングで初期化を実行
-        setTimeout(initializePromptSection, 0);
-        setTimeout(initializePromptSection, 100);
-        setTimeout(initializePromptSection, 500);
-        setTimeout(initializePromptSection, 1000);
-        setTimeout(initializePromptSection, 2000);
-        
-        // DOMContentLoadedイベントでも実行
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializePromptSection);
-        } else {
-            initializePromptSection();
-        }
-        
-        // window.onloadイベントでも実行
-        window.addEventListener('load', initializePromptSection);
-    </script>
 </body>
 </html>
