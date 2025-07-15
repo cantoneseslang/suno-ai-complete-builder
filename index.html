@@ -2555,9 +2555,11 @@
             if (index > -1) {
                 selectedItems.splice(index, 1);
                 button.classList.remove('selected');
+                console.log('Removed:', value, 'Current items:', selectedItems);
             } else {
                 selectedItems.push(value);
                 button.classList.add('selected');
+                console.log('Added:', value, 'Current items:', selectedItems);
             }
             updatePrompt();
         }
@@ -2609,8 +2611,11 @@
             
             // プロンプトセクションの表示/非表示
             const promptSection = document.getElementById('prompt-section');
-            if (prompt && promptSection) {
+            console.log('UpdatePrompt - selectedItems:', selectedItems, 'prompt:', prompt);
+            
+            if (selectedItems.length > 0 && promptSection) {
                 promptSection.style.display = 'block';
+                console.log('Showing prompt section');
                 
                 // 使用回数を増やして保存
                 if (prompt !== getPlaceholderText()) {
@@ -2619,10 +2624,10 @@
                     } catch (error) {
                         console.log('使用回数更新エラー:', error);
                     }
-
                 }
             } else if (promptSection) {
                 promptSection.style.display = 'none';
+                console.log('Hiding prompt section');
             }
         }
 
