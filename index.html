@@ -897,13 +897,14 @@ window.SUNO_CONFIG = config;
             opacity: 1 !important;
             z-index: 9999 !important;
             position: fixed !important;
-            top: 50% !important;
+            top: 30% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
-            width: 90% !important;
+            width: 95% !important;
             max-width: 800px !important;
             height: auto !important;
             max-height: 300px !important;
+            margin: 0 auto !important;
         }
         @keyframes slideIn {
             from {
@@ -1624,11 +1625,11 @@ window.SUNO_CONFIG = config;
         <i id="theme-icon" class="fas fa-sun"></i>
     </button>
     
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8 text-white">
+    <div class="container mx-auto px-4 py-4">
+        <h1 class="text-4xl font-bold text-center mb-4 text-white">
             <i class="fas fa-music mr-3 text-purple-400"></i>Suno AI Complete Builder 2025
         </h1>
-        <p class="text-center text-lg opacity-75 mb-8 text-gray-300">包括的AI音楽制作システム - プロンプト作成から高度な歌詞生成まで</p>
+
         
         <!-- メイン機能選択 -->
         <div class="bg-gray-800 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl border border-gray-700 p-4 mb-6">
@@ -1708,7 +1709,7 @@ window.SUNO_CONFIG = config;
         </div>
 
         <!-- 生成されたプロンプト表示（フロート） -->
-        <div id="prompt-section" class="fixed bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-4 max-w-2xl border-2 border-purple-500" style="display: block !important; visibility: visible !important; opacity: 1 !important; z-index: 9999 !important; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; height: auto; max-height: 300px;">
+        <div id="prompt-section" class="fixed bg-gray-900 bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-lg shadow-2xl p-4 max-w-2xl border-2 border-purple-500" style="display: block !important; visibility: visible !important; opacity: 1 !important; z-index: 9999 !important; top: 30%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 800px; height: auto; max-height: 300px; margin: 0 auto;">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-bold text-white">🎛️ 生成されたスタイルプロンプト</h2>
                 <button onclick="document.getElementById('prompt-section').style.display='none'" class="text-gray-400 hover:text-gray-200">
@@ -2844,11 +2845,12 @@ window.SUNO_CONFIG = config;
                 promptSection.style.opacity = '1';
                 promptSection.style.zIndex = '9999';
                 promptSection.style.position = 'fixed';
-                promptSection.style.top = '50%';
+                promptSection.style.top = '30%';
                 promptSection.style.left = '50%';
                 promptSection.style.transform = 'translate(-50%, -50%)';
-                promptSection.style.width = '90%';
+                promptSection.style.width = '95%';
                 promptSection.style.maxWidth = '800px';
+                promptSection.style.margin = '0 auto';
                 promptSection.style.height = 'auto';
                 promptSection.style.maxHeight = '300px';
                 promptSection.style.background = 'rgba(17, 24, 39, 0.95)';
